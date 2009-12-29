@@ -8,13 +8,12 @@ use Config;
 use Regexp::Common;
 use t::Common '5.008';
 
-local $^W = 0;
+use warnings;
 
-my $MAX = $Config {use64bitint} ? "9000000000000000" : 0x7FFFFFFF;
+my $MAX = $Config {use64bitint} ? do {no warnings; "9000000000000000"}
+                                : 0x7FFFFFFF;
 
-local $^W = 1;
-
-($VERSION) = q $Revision: 2.104 $ =~ /[\d.]+/;
+($VERSION) = q $Revision: 2.105 $ =~ /[\d.]+/;
 
 sub create_parts;
 
@@ -64,6 +63,9 @@ sub create_parts {
 __END__
  
  $Log: test_squares.t,v $
+ Revision 2.105  2008/05/26 17:07:27  abigail
+ use warnings
+
  Revision 2.104  2004/07/01 10:11:27  abigail
  Fixed problems with 32bit integer Perls
 

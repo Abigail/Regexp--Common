@@ -1,14 +1,14 @@
-# $Id: comment.pm,v 2.116 2005/03/16 00:00:02 abigail Exp $
+# $Id: comment.pm,v 2.120 2008/05/26 15:46:07 abigail Exp $
 
 package Regexp::Common::comment;
 
 use strict;
-local $^W = 1;
+use warnings;
 
 use Regexp::Common qw /pattern clean no_defaults/;
 use vars qw /$VERSION/;
 
-($VERSION) = q $Revision: 2.116 $ =~ /[\d.]+/g;
+($VERSION) = q $Revision: 2.120 $ =~ /[\d.]+/g;
 
 my @generic = (
     {languages => [qw /ABC Forth/],
@@ -30,7 +30,8 @@ my @generic = (
     {languages => [qw {ALPACA B C C-- LPC PL/I}],
      from_to   => [[qw {/* */}]]},
 
-    {languages => [qw /awk fvwm2 Icon mutt Perl Python QML R Ruby shell Tcl/],
+    {languages => [qw /awk fvwm2 Icon m4 mutt Perl Python QML
+                       R Ruby shell Tcl/],
      to_eol    => ['#']},
 
     {languages => [[BASIC => 'mvEnterprise']],
@@ -39,7 +40,7 @@ my @generic = (
     {languages => [qw /Befunge-98 Funge-98 Shelta/],
      id        => [';']},
 
-    {languages => ['beta-Juliet', 'Crystal Report', 'Portia'],
+    {languages => ['beta-Juliet', 'Crystal Report', 'Portia', 'Ubercode'],
      to_eol    => ['//']},
 
     {languages => ['BML'],
@@ -118,6 +119,9 @@ my @generic = (
 
     {languages => [qw /*W/],
      from_to   => [[qw {|| !!}]]},
+
+    {languages => [qw /ZZT-OOP/],
+     to_eol    => ["'"]},
 );
 
 my @plain_or_nested = (
@@ -126,6 +130,8 @@ my @plain_or_nested = (
    [Haskell      =>  "-{2,}",     "{-"  => "-}"],
    [Hugo         =>  "!(?!\\\\)", "!\\" => "\\!"],
    [SLIDE        =>  "#",         "(*"  => "*)"],
+  ['Modula-2'    =>  undef,       "(*"  => "*)"],
+  ['Modula-3'    =>  undef,       "(*"  => "*)"],
 );
 
 #
@@ -144,7 +150,6 @@ sub combine      {
 sub to_eol  ($)  {"(?k:(?k:$_[0])(?k:[^\\n]*)(?k:\\n))"}
 sub id      ($)  {"(?k:(?k:$_[0])(?k:[^$_[0]]*)(?k:$_[0]))"}  # One char only!
 sub from_to      {
-    local $^W = 1;
     my ($begin, $end) = @_;
 
     my $qb  = quotemeta $begin;
@@ -158,7 +163,6 @@ sub from_to      {
 
 my $count = 0;
 sub nested {
-    local $^W = 1;
     my ($begin, $end) = @_;
 
     $count ++;
@@ -229,7 +233,7 @@ foreach my $group (@generic) {
 # http://www.pascal-central.com/docs/iso10206.txt
 pattern name    => [qw /comment Pascal/],
         create  => '(?k:' . '(?k:[{]|[(][*])'
-                          . '(?k:[^}*]*(?:[*][^)][^}*]*)*)'
+                          . '(?k:[^}*]*(?:[*](?![)])[^}*]*)*)'
                           . '(?k:[}]|[*][)])'
                           . ')'
         ;
@@ -281,10 +285,11 @@ pattern name    => [qw /comment Squeak/],
 @Regexp::Common::comment::scores = (1,  3,  3,  2,  1,  4,  2,  4,  1,  8,
                                     5,  1,  3,  1,  1,  3, 10,  1,  1,  1,
                                     1,  4,  4,  8,  4, 10);
+{
+my ($s, $x);
 pattern name    =>  [qw /comment Beatnik/],
         create  =>  sub {
             use re 'eval';
-            my ($s, $x);
             my $re = qr {\b([A-Za-z]+)\b
                          (?(?{($s, $x) = (0, lc $^N);
                               $s += $Regexp::Common::comment::scores
@@ -294,6 +299,7 @@ pattern name    =>  [qw /comment Beatnik/],
         },
         version  => 5.008,
         ;
+}
 
 
 # http://www.cray.com/craydoc/manuals/007-3692-005/html-007-3692-005/
@@ -315,9 +321,6 @@ pattern name    =>  [qw /comment COBOL/],
 
 1;
 
-# Todo:
-#   Modula
-#
 
 __END__
 
@@ -729,6 +732,26 @@ L<ftp://ftp.intersys.com/pub/openm/ism/ism64docs.zip>,
 L<http://mtechnology.intersys.com/mproducts/openm/index.html>, and
 L<http://mcenter.com/mtrc/index.html>.
 
+=item m4
+
+By default, the preprocessor language I<m4> uses single line comments,
+that start with a C<#> and continue to the end of the line, including
+the newline. The pattern C<$RE {comment} {m4}> matches such comments.
+In I<m4>, it is possible to change the starting token though.
+See L<http://wolfram.schneider.org/bsd/7thEdManVol2/m4/m4.pdf>,
+L<http://www.cs.stir.ac.uk/~kjt/research/pdf/expl-m4.pdf>, and
+L<http://www.gnu.org/software/m4/manual/>.
+
+=item Modula-2
+
+In C<Modula-2>, comments start with C<(*>, and end with C<*)>. Comments
+may be nested. See L<http://www.modula2.org/>.
+
+=item Modula-3
+
+In C<Modula-3>, comments start with C<(*>, and end with C<*)>. Comments
+may be nested. See L<http://www.m3.org/>.
+
 =item mutt
 
 Configuration files for I<mutt> have comments starting with a
@@ -931,6 +954,11 @@ and ending at the end of the line.
 The document formatting language I<troff> uses comments starting
 with C<\">, and continuing till the end of the line.
 
+=item Ubercode
+
+The Windows programming language I<Ubercode> uses comments that start with
+C<//> and continue to the end of the line. See L<http://www.ubercode.com>.
+
 =item vi
 
 In configuration files for the editor I<vi>, one can use comments
@@ -944,6 +972,12 @@ In the language I<*W>, comments start with C<||>, and end with C<!!>.
 
 Comments in DNS I<zonefile>s start with C<;>, and continue till the
 end of the line.
+
+=item ZZT-OOP
+
+The in-game language I<ZZT-OOP> uses comments that start with a C<'> 
+character, and end at the following newline. See
+L<http://dave2.rocketjump.org/rad/zzthelp/lang.html>.
 
 =back
 
@@ -961,6 +995,18 @@ Press. B<1990>. ISBN 0-19-853737-9. Ch. 10.3, pp 390-391.
 =head1 HISTORY
 
  $Log: comment.pm,v $
+ Revision 2.120  2008/05/26 15:46:07  abigail
+ Fix "Variable "%s" is not available
+
+ Revision 2.119  2008/05/26 15:43:52  abigail
+ Fixed bug in pattern for Pascal comments
+
+ Revision 2.118  2008/05/23 21:30:09  abigail
+ Changed email address
+
+ Revision 2.117  2008/05/23 21:28:01  abigail
+ Changed license
+
  Revision 2.116  2005/03/16 00:00:02  abigail
  CQL, INTERCAL, R
 
@@ -1107,20 +1153,25 @@ Damian Conway (damian@conway.org)
 
 =head1 MAINTAINANCE
 
-This package is maintained by Abigail S<(I<regexp-common@abigail.nl>)>.
+This package is maintained by Abigail S<(I<regexp-common@abigail.be>)>.
 
 =head1 BUGS AND IRRITATIONS
 
 Bound to be plenty.
 
 For a start, there are many common regexes missing.
-Send them in to I<regexp-common@abigail.nl>.
+Send them in to I<regexp-common@abigail.be>.
 
 =head1 COPYRIGHT
 
-     Copyright (c) 2001 - 2003, Damian Conway. All Rights Reserved.
-       This module is free software. It may be used, redistributed
-      and/or modified under the terms of the Perl Artistic License
-            (see http://www.perl.com/perl/misc/Artistic.html)
+This software is Copyright (c) 2001 - 2008, Damian Conway and Abigail.
+
+This module is free software, and maybe used under any of the following
+licenses:
+
+ 1) The Perl Artistic License.     See the file COPYRIGHT.AL.
+ 2) The Perl Artistic License 2.0. See the file COPYRIGHT.AL2.
+ 3) The BSD Licence.               See the file COPYRIGHT.BSD.
+ 4) The MIT Licence.               See the file COPYRIGHT.MIT.
 
 =cut

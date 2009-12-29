@@ -7,27 +7,26 @@ use lib "blib/lib";
 use Regexp::Common qw /RE_comment_ALL/;
 use t::Common qw /run_new_tests/;
 
+use warnings;
 
-$^W = 1;
+($VERSION) = q $Revision: 2.103 $ =~ /[\d.]+/;
 
-($VERSION) = q $Revision: 2.102 $ =~ /[\d.]+/;
+BEGIN {$^W = 0 if $] < 5.006}
 
-BEGIN {$^W = 0}
+my @delimited = do {
+    no warnings;
+    (   [qw {comment  ;} => ['Algol 60']],
+        [qw {/*      */} => [qw {ALPACA B C C-- LPC PL/I}]],
+        [qw {;        ;} => [qw {Befunge-98 Funge-98 Shelta}]],
+        [qw {<?_c  _c?>} => [qw {BML}]],
+        [qw !{        }! => [qw {False}]],
+        [qw {,        ,} => [qw {Haifu}]],
+        [qw {(*      *)} => [qw {Oberon}]],
+        [qw {"        "} => [qw {Smalltalk}]],
+        [qw {||      !!} => [qw {*W}]],
+    )
+};
 
-my @delimited = (
-    [qw {comment  ;} => ['Algol 60']],
-    [qw {/*      */} => [qw {ALPACA B C C-- LPC PL/I}]],
-    [qw {;        ;} => [qw {Befunge-98 Funge-98 Shelta}]],
-    [qw {<?_c  _c?>} => [qw {BML}]],
-    [qw !{        }! => [qw {False}]],
-    [qw {,        ,} => [qw {Haifu}]],
-    [qw {(*      *)} => [qw {Oberon}]],
-    [qw {"        "} => [qw {Smalltalk}]],
-    [qw {||      !!} => [qw {*W}]],
-);
-
-
-BEGIN {$^W = 1}
 
 #
 # Some basic comments, not including delimiters.
@@ -102,6 +101,9 @@ run_new_tests tests        => \@tests,
 __END__
 
  $Log: delimited.t,v $
+ Revision 2.103  2008/05/26 17:05:17  abigail
+ use warnings
+
  Revision 2.102  2005/01/09 23:12:27  abigail
  BML comments
 

@@ -9,7 +9,7 @@ use t::Common;
 
 $^W = 1;
 
-($VERSION) = q $Revision: 2.103 $ =~ /[\d.]+/;
+($VERSION) = q $Revision: 2.104 $ =~ /[\d.]+/;
 
 sub create_parts;
 
@@ -84,8 +84,8 @@ sub create_parts {
     $bad  [1] = [qw /se{}cret/];
 
     # Hosts.
-    $good [2] = [qw /www.abigail.nl www.PERL.com 127.0.0.1 w3.abigail.nl/];
-    push @{$good [2]} => qw /a.b.c.d.e.f.g.h.i.j.k.x w--w--w.abigail.nl/
+    $good [2] = [qw /www.abigail.be www.PERL.com 127.0.0.1 w3.abigail.be/];
+    push @{$good [2]} => qw /a.b.c.d.e.f.g.h.i.j.k.x w--w--w.abigail.be/
                              unless $] < 5.006;
     $bad  [2] = [qw /www.example..com w+w.example.com w--.example.com
                      127.0.0.0.1 -w.example.com www.example.1com/];
@@ -109,6 +109,9 @@ sub filter {
 __END__
 
 $Log: telnet.t,v $
+Revision 2.104  2008/05/23 21:32:07  abigail
+Changed domain name
+
 Revision 2.103  2004/06/09 21:35:31  abigail
 Reducing the number of tests for pre-5.6 perls (for speed)
 

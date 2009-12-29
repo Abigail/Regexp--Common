@@ -7,11 +7,9 @@ use vars qw /$VERSION/;
 use Regexp::Common qw /RE_zip_Norway/;
 use t::Common qw /run_new_tests cross pdd dd a/;
 
-$^W = 1;
+use warnings;
 
-($VERSION) = q $Revision: 2.103 $ =~ /[\d.]+/;
-
-sub create_parts;
+($VERSION) = q $Revision: 2.104 $ =~ /[\d.]+/;
 
 my $norway      = $RE {zip} {Norway};
 my $yes_prefix  = $RE {zip} {Norway} {-prefix  => 'yes'};
@@ -122,6 +120,9 @@ __END__
 =pod
 
  $Log: norway.t,v $
+ Revision 2.104  2008/05/26 17:05:47  abigail
+ use warnings
+
  Revision 2.103  2005/01/01 16:36:47  abigail
  Renamed 'version' option of 'run_new_tests' to 'version_from'
 

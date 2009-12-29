@@ -7,9 +7,9 @@ use vars qw /$VERSION/;
 use Regexp::Common qw /RE_zip_US/;
 use t::Common qw /run_new_tests cross gimme sample pdd/;
 
-$^W = 1;
+use warnings;
 
-($VERSION) = q $Revision: 2.105 $ =~ /[\d.]+/;
+($VERSION) = q $Revision: 2.106 $ =~ /[\d.]+/;
 
 my $basic   = $RE {zip} {US};
 my $ext_yes = $RE {zip} {US} {-extended => 'yes'};
@@ -320,6 +320,9 @@ __END__
 =pod
 
  $Log: us.t,v $
+ Revision 2.106  2008/05/26 17:05:47  abigail
+ use warnings
+
  Revision 2.105  2005/01/01 16:38:12  abigail
  Completely rewritten. Now uses run_new_tests, and tests for -keep changes.
 

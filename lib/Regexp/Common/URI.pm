@@ -1,4 +1,4 @@
-# $Id: URI.pm,v 2.108 2004/06/09 21:45:24 abigail Exp $
+# $Id: URI.pm,v 2.110 2008/05/23 21:30:09 abigail Exp $
 
 package Regexp::Common::URI;
 
@@ -22,7 +22,7 @@ foreach my $uri (@uris) {
     die $@ if $@;
 }
 
-($VERSION) = q $Revision: 2.108 $ =~ /[\d.]+/g;
+($VERSION) = q $Revision: 2.110 $ =~ /[\d.]+/g;
 
 my %uris;
 
@@ -112,6 +112,12 @@ Vaha-Sipila, A.: I<URLs for Telephone Calls>. April 2000.
 =head1 HISTORY
 
  $Log: URI.pm,v $
+ Revision 2.110  2008/05/23 21:30:09  abigail
+ Changed email address
+
+ Revision 2.109  2008/05/23 21:28:01  abigail
+ Changed license
+
  Revision 2.108  2004/06/09 21:45:24  abigail
  POD
 
@@ -192,20 +198,25 @@ Damian Conway (damian@conway.org)
 
 =head1 MAINTAINANCE
 
-This package is maintained by Abigail S<(I<regexp-common@abigail.nl>)>.
+This package is maintained by Abigail S<(I<regexp-common@abigail.be>)>.
 
 =head1 BUGS AND IRRITATIONS
 
 Bound to be plenty.
 
 For a start, there are many common regexes missing.
-Send them in to I<regexp-common@abigail.nl>.
+Send them in to I<regexp-common@abigail.be>.
 
 =head1 COPYRIGHT
 
-     Copyright (c) 2001 - 2003, Damian Conway. All Rights Reserved.
-       This module is free software. It may be used, redistributed
-      and/or modified under the terms of the Perl Artistic License
-            (see http://www.perl.com/perl/misc/Artistic.html)
+This software is Copyright (c) 2001 - 2008, Damian Conway and Abigail.
+
+This module is free software, and maybe used under any of the following
+licenses:
+
+ 1) The Perl Artistic License.     See the file COPYRIGHT.AL.
+ 2) The Perl Artistic License 2.0. See the file COPYRIGHT.AL2.
+ 3) The BSD Licence.               See the file COPYRIGHT.BSD.
+ 4) The MIT Licence.               See the file COPYRIGHT.MIT.
 
 =cut

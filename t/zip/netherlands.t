@@ -6,9 +6,9 @@ use vars qw /$VERSION/;
 
 use Regexp::Common;
 
-$^W = 1;
+use warnings;
 
-($VERSION) = q $Revision: 2.107 $ =~ /[\d.]+/;
+($VERSION) = q $Revision: 2.108 $ =~ /[\d.]+/;
 
 sub failures;
 
@@ -292,6 +292,9 @@ sub failures {
 =pod
 
  $Log: netherlands.t,v $
+ Revision 2.108  2008/05/26 17:05:47  abigail
+ use warnings
+
  Revision 2.107  2003/02/10 21:29:37  abigail
  Cut down on the number of tests
 

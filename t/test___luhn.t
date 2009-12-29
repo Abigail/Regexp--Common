@@ -4,11 +4,12 @@ use strict;
 use lib  qw {blib/lib};
 use vars qw /$VERSION/;
 
+use Regexp::Common;
 use Regexp::Common::_support qw /luhn/;
 
-$^W = 1;
+use warnings;
 
-($VERSION) = q $Revision: 2.100 $ =~ /[\d.]+/;
+($VERSION) = q $Revision: 2.101 $ =~ /[\d.]+/;
 
 my $TESTS = 100;
 
@@ -66,6 +67,9 @@ __END__
 =pod
 
  $Log: test___luhn.t,v $
+ Revision 2.101  2008/05/26 17:07:26  abigail
+ use warnings
+
  Revision 2.100  2004/07/01 14:48:08  abigail
  Initial version
 

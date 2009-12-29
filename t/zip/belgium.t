@@ -7,9 +7,9 @@ use vars qw /$VERSION/;
 use Regexp::Common;
 use t::Common;
 
-$^W = 1;
+use warnings;
 
-($VERSION) = q $Revision: 2.102 $ =~ /[\d.]+/;
+($VERSION) = q $Revision: 2.103 $ =~ /[\d.]+/;
 
 sub create_parts;
 
@@ -126,6 +126,9 @@ __END__
 =pod
 
  $Log: belgium.t,v $
+ Revision 2.103  2008/05/26 17:05:47  abigail
+ use warnings
+
  Revision 2.102  2003/02/09 13:30:57  abigail
  Moved to belgium.t
 

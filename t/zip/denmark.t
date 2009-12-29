@@ -7,9 +7,9 @@ use vars qw /$VERSION/;
 use Regexp::Common;
 use t::Common;
 
-$^W = 1;
+use warnings;
 
-($VERSION) = q $Revision: 2.102 $ =~ /[\d.]+/;
+($VERSION) = q $Revision: 2.103 $ =~ /[\d.]+/;
 
 sub create_parts;
 
@@ -139,6 +139,9 @@ __END__
 =pod
 
  $Log: denmark.t,v $
+ Revision 2.103  2008/05/26 17:05:47  abigail
+ use warnings
+
  Revision 2.102  2004/12/14 23:11:38  abigail
  Don't run all tests for pre-5.00503 perls
 

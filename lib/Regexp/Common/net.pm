@@ -1,13 +1,13 @@
-package Regexp::Common::net; {
-
-use strict;
-local $^W = 1;
+package Regexp::Common::net;
 
 use Regexp::Common qw /pattern clean no_defaults/;
 
+use strict;
+use warnings;
+
 use vars qw /$VERSION/;
 
-($VERSION) = q $Revision: 2.105 $ =~ /[\d.]+/g;
+($VERSION) = q $Revision: 2.108 $ =~ /[\d.]+/g;
 
 my %IPunit = (
     dec => q{(?k:25[0-5]|2[0-4][0-9]|[0-1]?[0-9]{1,2})},
@@ -83,7 +83,6 @@ pattern name   => [qw (net domain -nospace=)],
         ;
 
 
-}
 
 1;
 
@@ -294,6 +293,15 @@ L<Regexp::Common> for a general description of how to use this interface.
 =head1 HISTORY
 
  $Log: net.pm,v $
+ Revision 2.108  2008/05/26 17:08:11  abigail
+ ipv6 not ready yet
+
+ Revision 2.107  2008/05/23 21:30:09  abigail
+ Changed email address
+
+ Revision 2.106  2008/05/23 21:28:01  abigail
+ Changed license
+
  Revision 2.105  2004/12/28 23:31:54  abigail
  Replaced C<\d> with [0-9] (Unicode reasons)
 
@@ -349,20 +357,25 @@ Damian Conway I<damian@conway.org>.
 
 =head1 MAINTAINANCE
 
-This package is maintained by Abigail S<(I<regexp-common@abigail.nl>)>.
+This package is maintained by Abigail S<(I<regexp-common@abigail.be>)>.
 
 =head1 BUGS AND IRRITATIONS
 
 Bound to be plenty.
 
 For a start, there are many common regexes missing.
-Send them in to I<regexp-common@abigail.nl>.
+Send them in to I<regexp-common@abigail.be>.
 
 =head1 COPYRIGHT
 
- Copyright (c) 2001 - 2004, Damian Conway and Abigail. All Rights Reserved.
-       This module is free software. It may be used, redistributed
-      and/or modified under the terms of the Perl Artistic License
-            (see http://www.perl.com/perl/misc/Artistic.html)
+This software is Copyright (c) 2001 - 2008, Damian Conway and Abigail.
+
+This module is free software, and maybe used under any of the following
+licenses:
+
+ 1) The Perl Artistic License.     See the file COPYRIGHT.AL.
+ 2) The Perl Artistic License 2.0. See the file COPYRIGHT.AL2.
+ 3) The BSD Licence.               See the file COPYRIGHT.BSD.
+ 4) The MIT Licence.               See the file COPYRIGHT.MIT.
 
 =cut

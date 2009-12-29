@@ -1,6 +1,9 @@
-# $Id: test_comments.t,v 2.110 2005/03/16 00:20:33 abigail Exp $
+# $Id: test_comments.t,v 2.111 2008/05/26 17:07:26 abigail Exp $
 #
 # $Log: test_comments.t,v $
+# Revision 2.111  2008/05/26 17:07:26  abigail
+# use warnings
+#
 # Revision 2.110  2005/03/16 00:20:33  abigail
 # Moved many comments to t/comment/*.t
 #
@@ -193,15 +196,18 @@ foreach my $info (@from_to) {
         $M .= "# $language\n";
 
         pass "${from}a comment ${to}";
-        my $str = "${from}${t}${t}${t}${t}${t}${t}${t}${t}${t}${t}${to}";
-        if (${to} =~ /^(?:\Q${t}\E)+$/) {fail $str;}
-        else                            {pass $str;}
+        my @str = ("${from}${t}${t}${t}${t}${t}${t}${t}${t}${t}${t}${to}",
+                   "${from}${t}${to}",
+        );
+        if (${to} =~ /^(?:\Q${t}\E)+$/) {fail $_ for @str;}
+        else                            {pass $_ for @str;}
         if ($language eq 'Pascal:Alice') {
             fail "${from}a\nmultiline\ncomment${to}";
         }
         else {
             pass "${from}a\nmultiline\ncomment${to}";
         }
+        pass "${from}${to}";
         fail "${from}a ${from}pretend${to} nested comment${to}";
         pass "${from}a ${from}pretend${to}";
         pass "${from} {) ${to}";

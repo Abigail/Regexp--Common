@@ -9,7 +9,7 @@ use t::Common;
 
 $^W    = 1;
 
-($VERSION) = q $Revision: 2.101 $ =~ /[\d.]+/;
+($VERSION) = q $Revision: 2.102 $ =~ /[\d.]+/;
 
 sub create_parts;
 
@@ -78,7 +78,7 @@ sub create_parts {
     # Hosts.
     # Host/ports are tested with other URIs as well, we're not using
     # all the combinations here.
-    $good [0] = [qw /www.abigail.nl 127.0.0.1 w--w--w3.ABIGAIL.nl/];
+    $good [0] = [qw /www.abigail.be 127.0.0.1 w--w--w3.ABIGAIL.nl/];
     $bad  [0] = [qw /www.example..com w+w.example.com 127.0.0.0.1/];
 
     # Ports.
@@ -124,6 +124,9 @@ sub filter {
 __END__
 
  $Log: wais.t,v $
+ Revision 2.102  2008/05/23 21:32:07  abigail
+ Changed domain name
+
  Revision 2.101  2003/08/01 11:28:10  abigail
  Fixed a warning
 

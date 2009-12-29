@@ -6,9 +6,9 @@ use lib qw {blib/lib};
 use Regexp::Common;
 use vars qw /$VERSION/;
 
-$^W = 1;
+use warnings;
 
-($VERSION) = q $Revision: 2.102 $ =~ /[\d.]+/;
+($VERSION) = q $Revision: 2.103 $ =~ /[\d.]+/;
 
 my ($regex, $count);
 
@@ -76,6 +76,9 @@ foreach (@passes) {
 =pod
  
  $Log: test_roman.t,v $
+ Revision 2.103  2008/05/26 17:07:27  abigail
+ use warnings
+
  Revision 2.102  2003/02/07 15:26:38  abigail
  use vars qw //
 

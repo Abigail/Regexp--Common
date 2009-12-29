@@ -8,9 +8,9 @@ use Regexp::Common qw /pattern RE_comment_ALL/;
 use t::Common qw /run_new_tests cross ww/;
 
 
-$^W = 1;
+use warnings;
 
-($VERSION) = q $Revision: 2.100 $ =~ /[\d.]+/;
+($VERSION) = q $Revision: 2.101 $ =~ /[\d.]+/;
 
 pattern name   => [qw /comment fairy-language-1/],
         create => 
@@ -29,47 +29,46 @@ pattern name   => [qw /comment fairy-language-2/],
 ;
                  
 
+my @data = do {
+    no warnings;
+    (
+        {
+            nested_tokens  =>  [["(*" => "*)"]],
+            languages      =>  [qw /Caml Modula-2 Modula-3/],
+        },
+        {
+            start_tokens   =>  ["//"],
+            nested_tokens  =>  [["/*" => "*/"]],
+            languages      =>  [qw /Dylan/],
+        },
+        {
+            start_tokens   =>  ["--", "---", "-----"],
+            nested_tokens  =>  [["{-", "-}"]],
+            languages      =>  [qw /Haskell/],
+        },
+        {
+            start_tokens   =>  ["!"],    # Should not be followed by \
+            nested_tokens  =>  [["!\\", "\\!"]],
+            languages      =>  [qw /Hugo/],
+        },
+        {
+            start_tokens   =>  ["#"],
+            nested_tokens  =>  [["(*" => "*)"]],
+            languages      =>  [qw /SLIDE/],
+        },
+        {
+            nested_tokens  =>  [["-(-" => "-)-"]],
+            languages      =>  [qw /fairy-language-1/],
+        },
+        {
+            nested_tokens  =>  [["(" => ")"]],
+            languages      =>  [qw /fairy-language-2/],
+        },
+    );
+};
 
-BEGIN {$^W = 0}
-
-my @data = (
-    {
-        nested_tokens  =>  [["(*" => "*)"]],
-        languages      =>  [qw /Caml/],
-    },
-    {
-        start_tokens   =>  ["//"],
-        nested_tokens  =>  [["/*" => "*/"]],
-        languages      =>  [qw /Dylan/],
-    },
-    {
-        start_tokens   =>  ["--", "---", "-----"],
-        nested_tokens  =>  [["{-", "-}"]],
-        languages      =>  [qw /Haskell/],
-    },
-    {
-        start_tokens   =>  ["!"],    # Should not be followed by \
-        nested_tokens  =>  [["!\\", "\\!"]],
-        languages      =>  [qw /Hugo/],
-    },
-    {
-        start_tokens   =>  ["#"],
-        nested_tokens  =>  [["(*" => "*)"]],
-        languages      =>  [qw /SLIDE/],
-    },
-    {
-        nested_tokens  =>  [["-(-" => "-)-"]],
-        languages      =>  [qw /fairy-language-1/],
-    },
-    {
-        nested_tokens  =>  [["(" => ")"]],
-        languages      =>  [qw /fairy-language-2/],
-    },
-);
 $$_ {start_tokens}  ||= [] for @data;
 $$_ {nested_tokens} ||= [] for @data;
-
-BEGIN {$^W = 1}
 
 my @s_tokens = do {
     my %h;
@@ -240,6 +239,9 @@ run_new_tests tests        => \@tests,
 __END__
 
  $Log: nested.t,v $
+ Revision 2.101  2008/05/26 17:05:17  abigail
+ use warnings
+
  Revision 2.100  2005/01/04 00:40:19  abigail
  Moved code out from t/test_comment.t
 

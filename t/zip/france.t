@@ -6,9 +6,9 @@ use vars qw /$VERSION/;
 
 use Regexp::Common;
 
-$^W = 1;
+use warnings;
 
-($VERSION) = q $Revision: 2.105 $ =~ /[\d.]+/;
+($VERSION) = q $Revision: 2.107 $ =~ /[\d.]+/;
 
 sub passes;
 sub failures;
@@ -36,7 +36,7 @@ my @tests = (
     ['cept prefix' => $cept_prefix =>  [qw /0 1 0 0/]],
 );
 
-my @depts = ('01' .. '98');
+my @depts = ('00' .. '98');
 
 my @failures = failures;
 
@@ -178,8 +178,8 @@ sub failures {
     # Wrong departments.
     for (1 .. FAIL) {
         my $x = _ 3;
-        redo if $cache {"00$x"} ++;
-        push @failures => "00$x", "99$x";
+    #   redo if $cache {"00$x"} ++;
+        push @failures => "99$x";
     }
 
     # Same failures, with country in front of it as well.
@@ -216,6 +216,12 @@ __END__
 =pod
 
  $Log: france.t,v $
+ Revision 2.107  2008/05/26 19:31:19  abigail
+ Changed tests
+
+ Revision 2.106  2008/05/26 17:05:47  abigail
+ use warnings
+
  Revision 2.105  2003/02/09 13:31:12  abigail
  Moved to france.t
 

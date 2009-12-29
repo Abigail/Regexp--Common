@@ -89,8 +89,8 @@ push @tests => {
     fail    =>  [__ grep {$_ >  10} map {$$_ [0]} @data],
 };
 
-foreach my $base (@data) {
-    my $base = $$base [0];
+foreach my $data (@data) {
+    my $base     = $$data [0];
     my @passes   = __ grep {$_ <= $base} map {$$_ [0]} @data;
     my @failures = __ grep {$_ >  $base} map {$$_ [0]} @data;
 
@@ -123,6 +123,9 @@ run_new_tests  targets      => \%targets,
 __END__
 
   $Log: decimal.t,v $
+  Revision 2.102  2008/05/26 17:06:05  abigail
+  use warnings
+
   Revision 2.101  2005/03/15 23:54:45  abigail
   New form of testing
 

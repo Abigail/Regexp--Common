@@ -5,8 +5,9 @@ use lib  qw {blib/lib};
 use vars qw /$VERSION/;
 
 use Regexp::Common;
+use warnings;
 
-($VERSION) = q $Revision: 2.100 $ =~ /[\d.]+/;
+($VERSION) = q $Revision: 2.101 $ =~ /[\d.]+/;
 
 my @tests__ = ("", "\n", "hello, world");
 
@@ -93,6 +94,9 @@ __END__
 =pod
 
  $Log: zip.t,v $
+ Revision 2.101  2008/05/26 17:05:47  abigail
+ use warnings
+
  Revision 2.100  2005/01/04 21:28:39  abigail
  Tests for Regexp::Common::zip helper subs
 

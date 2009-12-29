@@ -9,7 +9,7 @@ use t::Common;
 
 $^W = 1;
 
-($VERSION) = q $Revision: 2.100 $ =~ /[\d.]+/;
+($VERSION) = q $Revision: 2.101 $ =~ /[\d.]+/;
 
 sub create_parts;
 
@@ -54,8 +54,8 @@ sub create_parts {
 
     my @good_arts  = qw {fnord banzai123 4567 000 (!!make-$$$-fast**)
                          %00%FF%12''' really? ?/?/?/&=:;};
-    my @good_hosts = qw /www.abigail.nl www.PERL.com a.b.c.d.e.f.g.h.i.j.k.x
-                         127.0.0.1 w--w--w.abigail.nl w3.abigail.nl/;
+    my @good_hosts = qw /www.abigail.be www.PERL.com a.b.c.d.e.f.g.h.i.j.k.x
+                         127.0.0.1 w--w--w.abigail.be w3.abigail.be/;
 
     my @bad_arts   = ("", qw /%GG %F %7- %% {} <> ~abigail []/);
     my @bad_hosts  = ("", qw /www.example..com w+w.example.com
@@ -81,6 +81,9 @@ sub create_parts {
 __END__
 
  $Log: news.t,v $
+ Revision 2.101  2008/05/23 21:32:07  abigail
+ Changed domain name
+
  Revision 2.100  2003/02/11 13:00:25  abigail
  Tests for news URIs
 

@@ -6,9 +6,9 @@ use vars qw /$VERSION/;
 
 use Regexp::Common;
 
-$^W = 1;
+use warnings;
 
-($VERSION) = q $Revision: 2.102 $ =~ /[\d.]+/;
+($VERSION) = q $Revision: 2.103 $ =~ /[\d.]+/;
 
 BEGIN {
     if ($] < 5.006) {
@@ -101,6 +101,9 @@ foreach my $entry (@entries) {
 =pod
 
  $Log: test_lingua_palindrome.t,v $
+ Revision 2.103  2008/05/26 17:07:26  abigail
+ use warnings
+
  Revision 2.102  2004/06/09 21:41:04  abigail
  test_comments.t
 

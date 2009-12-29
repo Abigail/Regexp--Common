@@ -1,6 +1,11 @@
 ==============================================================================
-                  Release of version 2.120 of Regexp::Common
+                  Release of version 2.122 of Regexp::Common
 ==============================================================================
+
+The main reason for version 2.122 is a change in the license. You now
+have the option to use this software under either the original Artistic
+License, the Artistic License 2.0, the MIT license, or the BSD license.
+
 
 WARNINGS:
        INCOMPATIBLE CHANGE in version 2.119:
@@ -89,28 +94,38 @@ INSTALLATION
 AUTHORS
 
     Damian Conway (damian@cs.monash.edu.au) and Abigail
-    (regexp-common@abigail.nl)
+    (regexp-common@abigail.be)
 
 
 MAINTAINER
 
-    Abigail (regexp-common@abigail.nl)
+    Abigail (regexp-common@abigail.be)
 
 
-COPYRIGHT
+COPYRIGHT and LICENSE
 
-=head1 COPYRIGHT
+    This software is Copyright (c) 2001 - 2008, Damian Conway and Abigail.
 
-   Copyright (c) 1997 - 2005, Damian Conway and Abigail. All Rights
- Reserved. This module is free software. It may be used, redistributed
-     and/or modified under the terms of the Perl Artistic License
-           (see http://www.perl.com/perl/misc/Artistic.html)
+    This module is free software, and maybe used under any of the following
+    licences:
+
+     1) The Perl Artistic License.     See the file COPYRIGHT.AL.
+     2) The Perl Artistic License 2.0. See the file COPYRIGHT.AL2.
+     3) The BSD Licence.               See the file COPYRIGHT.BSD.
+     4) The MIT Licence.               See the file COPYRIGHT.MIT.
 
 ==============================================================================
 
-CHANGES IN VERSION 2.120
+CHANGES IN VERSION 2.122
 
 Revision history for Perl extension Regexp::Common.
+
+2.122 Mon May 26 18:59:20 CEST 2008
+
+2.121
+        - Removed spurious '=head1' from README. (Smylers)
+        - Comments for 'm4', 'Modula-2', 'Modula-3', 'Ubercode', and 'ZZT-OOP'.
+        - Fix for French zip codes; addes Swiss zip codes (Rafael)
 
 2.120 Wed Mar 16 01:39:57 CET 2005
         - '-base', and '-places' options for $RE {num} {int}. '-group' can

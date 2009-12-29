@@ -3,11 +3,22 @@ package Regexp::Common;
 use 5.00473;
 use strict;
 
-local $^W = 1;
+BEGIN {
+    # This makes sure 'use warnings' doesn't bomb out on 5.005_*;
+    # warnings won't be enabled on those old versions though.
+    # Since all other files use this file, we can use 'use warnings'
+    # elsewhere as well, but *AFTER* 'use Regexp::Common'.
+    if ($] < 5.006) {
+        $INC {"warnings.pm"} = 1;
+        no strict 'refs';
+        *{"warnings::unimport"} = sub {0};
+    }
+}
 
+use warnings;
 use vars qw /$VERSION %RE %sub_interface $AUTOLOAD/;
 
-($VERSION) = q $Revision: 2.120 $ =~ /([\d.]+)/;
+($VERSION) = q $Revision: 2.122 $ =~ /([\d.]+)/;
 
 
 sub _croak {
@@ -241,8 +252,6 @@ sub subs {
 
 package Regexp::Common::Entry;
 # use Carp;
-
-local $^W = 1;
 
 use overload
     q{""} => sub {
@@ -814,6 +823,12 @@ project, especially: Elijah, Jarkko, Tom, Nat, Ed, and Vivek.
 =head1 HISTORY
 
   $Log: Common.pm,v $
+  Revision 2.122  2008/05/23 21:30:09  abigail
+  Changed email address
+
+  Revision 2.121  2008/05/23 21:28:01  abigail
+  Changed license
+
   Revision 2.120  2005/03/16 00:24:45  abigail
   Load Carp only on demand
 
@@ -999,18 +1014,23 @@ Damian Conway (damian@conway.org)
 
 =head1 MAINTAINANCE
 
-This package is maintained by Abigail S<(I<regexp-common@abigail.nl>)>.
+This package is maintained by Abigail S<(I<regexp-common@abigail.be>)>.
 
 =head1 BUGS AND IRRITATIONS
 
 Bound to be plenty.
 
 For a start, there are many common regexes missing.
-Send them in to I<regexp-common@abigail.nl>.
+Send them in to I<regexp-common@abigail.be>.
 
 =head1 COPYRIGHT
 
-   Copyright (c) 2001 - 2005, Damian Conway and Abigail. All Rights
- Reserved. This module is free software. It may be used, redistributed
-     and/or modified under the terms of the Perl Artistic License
-           (see http://www.perl.com/perl/misc/Artistic.html)
+This software is Copyright (c) 2001 - 2008, Damian Conway and Abigail.
+
+This module is free software, and maybe used under any of the following
+licenses:
+
+ 1) The Perl Artistic License.     See the file COPYRIGHT.AL.
+ 2) The Perl Artistic License 2.0. See the file COPYRIGHT.AL2.
+ 3) The BSD Licence.               See the file COPYRIGHT.BSD.
+ 4) The MIT Licence.               See the file COPYRIGHT.MIT.

@@ -1,4 +1,4 @@
-# $Id: tel.pm,v 2.100 2003/02/10 21:06:42 abigail Exp $
+# $Id: tel.pm,v 2.102 2008/05/23 21:30:10 abigail Exp $
 
 package Regexp::Common::URI::tel;
 
@@ -12,7 +12,7 @@ use Regexp::Common::URI::RFC2806 qw /$telephone_subscriber
 
 use vars qw /$VERSION/;
 
-($VERSION) = q $Revision: 2.100 $ =~ /[\d.]+/g;
+($VERSION) = q $Revision: 2.102 $ =~ /[\d.]+/g;
 
 my $tel_scheme  = 'tel';
 my $tel_uri     = "(?k:(?k:$tel_scheme):(?k:$telephone_subscriber))";
@@ -102,6 +102,12 @@ Vaha-Sipila, A.: I<URLs for Telephone Calls>. April 2000.
 =head1 HISTORY
 
  $Log: tel.pm,v $
+ Revision 2.102  2008/05/23 21:30:10  abigail
+ Changed email address
+
+ Revision 2.101  2008/05/23 21:28:02  abigail
+ Changed license
+
  Revision 2.100  2003/02/10 21:06:42  abigail
  tel URI
 
@@ -116,7 +122,7 @@ Damian Conway (damian@conway.org)
 
 =head1 MAINTAINANCE
 
-This package is maintained by Abigail S<(I<regexp-common@abigail.nl>)>.
+This package is maintained by Abigail S<(I<regexp-common@abigail.be>)>.
 
 =head1 BUGS AND IRRITATIONS
 
@@ -124,9 +130,14 @@ Bound to be plenty.
 
 =head1 COPYRIGHT
 
-     Copyright (c) 2001 - 2003, Damian Conway. All Rights Reserved.
-       This module is free software. It may be used, redistributed
-      and/or modified under the terms of the Perl Artistic License
-            (see http://www.perl.com/perl/misc/Artistic.html)
+This software is Copyright (c) 2001 - 2008, Damian Conway and Abigail.
+
+This module is free software, and maybe used under any of the following
+licenses:
+
+ 1) The Perl Artistic License.     See the file COPYRIGHT.AL.
+ 2) The Perl Artistic License 2.0. See the file COPYRIGHT.AL2.
+ 3) The BSD Licence.               See the file COPYRIGHT.BSD.
+ 4) The MIT Licence.               See the file COPYRIGHT.MIT.
 
 =cut

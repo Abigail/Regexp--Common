@@ -7,7 +7,7 @@ use Regexp::Common qw /pattern clean no_defaults/;
 
 use vars qw /$VERSION/;
 
-($VERSION) = q $Revision: 2.112 $ =~ /[\d.]+/g;
+($VERSION) = q $Revision: 2.116 $ =~ /[\d.]+/g;
 
 #
 # Prefer '[0-9]' over \d, because the latter may include more
@@ -76,10 +76,10 @@ my %zip = (
                     # codes do not start with a zero. Postal codes 
                     # starting with '39' are in Greenland.
 
-    France      =>  "(?k:(?k:0[1-9]|[1-8][0-9]|9[0-8])(?k:[0-9]{3}))",
+    France      =>  "(?k:(?k:[0-8][0-9]|9[0-8])(?k:[0-9]{3}))",
                     # Postal codes of the form: 'DDDDD'. All digits are used.
                     # First two digits indicate the department, and range
-                    # from 01 to 98.
+                    # from 01 to 98, or 00 for army.
 
     Germany     =>  "(?k:(?k:[0-9])(?k:[0-9])(?k:[0-9]{3}))",
                     # Postal codes of the form: 'DDDDD'. All digits are used.
@@ -101,11 +101,15 @@ my %zip = (
     Norway      =>  "(?k:[0-9]{4})",
                     # Four digits, no significance (??).
 
-    Spain       =>  "(?k:(?k:0[1-9]|[1-4][0-9]|5[0-2])(?k:[0-9])(?k:[0-9]{2}))"
+    Spain       =>  "(?k:(?k:0[1-9]|[1-4][0-9]|5[0-2])(?k:[0-9])(?k:[0-9]{2}))",
                     # Five digits, first two indicate the province.
                     # Third digit: large town, main delivery rounds.
                     # Last 2 digits: delivery area, secondary delivery route
                     #                or link to rural areas.
+
+    Switzerland =>  "(?k:[1-9][0-9]{3})",
+                    # Four digits, first is district, second is area,
+                    # third is route, fourth is post office number.
 );
 
 my %alternatives = (
@@ -672,6 +676,13 @@ or a link to rural areas.
 
 =back
 
+=head2 C<< $RE{zip}{Switzerland} >>
+
+Returns a pattern that recognizes Swiss postal codes. Swiss postal
+codes consist of 4 digits. The first indicates the district, starting
+with 1. The second indicates the area, the third, the route, and the
+fourth the post office number.
+
 =head2 C<< $RE{zip}{US}{-extended => [yes|no|allow]} >>
 
 Returns a pattern that recognizes US zip codes. US zip codes consist
@@ -767,6 +778,18 @@ Can the 4 digit part of the zip code (in theory) end with 00?
 =head1 HISTORY
 
  $Log: zip.pm,v $
+ Revision 2.116  2008/05/26 19:31:05  abigail
+ Fix syntax error
+
+ Revision 2.115  2008/05/26 17:10:32  abigail
+ French & Swiss zip codes
+
+ Revision 2.114  2008/05/23 21:30:10  abigail
+ Changed email address
+
+ Revision 2.113  2008/05/23 21:28:02  abigail
+ Changed license
+
  Revision 2.112  2005/01/01 16:34:04  abigail
  - Modified the -keep captures for US zip codes. Both the 5 and 4 digit parts
    of the zip codes can be dissected into 2 parts.
@@ -873,22 +896,27 @@ Information about US postal codes.
 =head1 AUTHORS
 
 Damian Conway S<(I<damian@conway.org>)> and
-Abigail S<(I<regexp-common@abigail.nl>)>.
+Abigail S<(I<regexp-common@abigail.be>)>.
 
 =head1 MAINTAINANCE
 
-This package is maintained by Abigail S<(I<regexp-common@abigail.nl>)>.
+This package is maintained by Abigail S<(I<regexp-common@abigail.be>)>.
 
 =head1 BUGS AND IRRITATIONS
 
 Zip codes for most countries are missing.
-Send them in to I<regexp-common@abigail.nl>.
+Send them in to I<regexp-common@abigail.be>.
 
 =head1 COPYRIGHT
 
-   Copyright (c) 2001 - 2005, Damian Conway and Abigail. All Rights
- Reserved. This module is free software. It may be used, redistributed
-     and/or modified under the terms of the Perl Artistic License
-           (see http://www.perl.com/perl/misc/Artistic.html)
+This software is Copyright (c) 2001 - 2008, Damian Conway and Abigail.
+
+This module is free software, and maybe used under any of the following
+licenses:
+
+ 1) The Perl Artistic License.     See the file COPYRIGHT.AL.
+ 2) The Perl Artistic License 2.0. See the file COPYRIGHT.AL2.
+ 3) The BSD Licence.               See the file COPYRIGHT.BSD.
+ 4) The MIT Licence.               See the file COPYRIGHT.MIT.
 
 =cut

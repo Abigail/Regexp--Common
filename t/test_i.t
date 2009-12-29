@@ -8,9 +8,9 @@ use vars qw /$VERSION/;
 
 use Regexp::Common qw /RE_ALL/;
 
-$^W = 1;
+use warnings;
 
-($VERSION) = q $Revision: 2.100 $ =~ /[\d.]+/;
+($VERSION) = q $Revision: 2.101 $ =~ /[\d.]+/;
 
 my @data = (
     [[qw /num hex/]             => ["abcdef", "123.456", "1a2B.3c"]],
@@ -77,6 +77,9 @@ foreach my $data (@data) {
 __END__
 
 $Log: test_i.t,v $
+Revision 2.101  2008/05/26 17:07:26  abigail
+use warnings
+
 Revision 2.100  2003/03/12 22:27:28  abigail
 Tests for the -i switch
 

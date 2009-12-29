@@ -252,7 +252,8 @@ foreach my $i (1 .. $#bases) {
         # Fail if the base is upped.
         next if $i == $#bases;
         my $next_base = $bases [$i + 1];
-        push @{$tests [-1] {fail}} => "sep-$next_base-$group";
+        push @{$tests [-1] {fail}} => "sep-$next_base-$group" 
+               unless $[ < 5.00503;
     }
 
     push @tests  => {
@@ -326,6 +327,9 @@ run_new_tests  targets      => \%targets,
 __END__
 
   $Log: integer.t,v $
+  Revision 2.102  2008/05/26 17:06:05  abigail
+  use warnings
+
   Revision 2.101  2005/03/15 23:54:11  abigail
   New file
 

@@ -7,77 +7,83 @@ use lib "blib/lib";
 use Regexp::Common qw /RE_comment_ALL/;
 use t::Common qw /run_new_tests ww/;
 
+BEGIN {$^W = 0 if $[ < 5.006};
 
-$^W = 1;
+use warnings;
 
-($VERSION) = q $Revision: 2.103 $ =~ /[\d.]+/;
-
-BEGIN {$^W = 0}
+($VERSION) = q $Revision: 2.104 $ =~ /[\d.]+/;
 
 # 1. List of tokens.
 # 2. List of languages.
-my @data   =   (
-   {start_tokens =>  ["\\"],  # Don't use qw here, 5.6.0 parses it incorrectly.
-    languages    =>  [qw {ABC Forth}],
-   },
-   {start_tokens =>  [qw {# //}],
-    languages    =>  [qw {Advisor}],
-   },
-   {start_tokens =>  [qw {--}],
-    languages    =>  [qw {Ada Alan Eiffel lua}],
-   },
-   {start_tokens =>  [qw {;}],
-    languages    =>  [qw {Advsys CQL Lisp LOGO M MUMPS REBOL Scheme
-                                 SMITH zonefile}],
-   },
-   {start_tokens =>  [qw {#}],
-    languages    =>  [qw {awk fvwm2 Icon mutt Perl Python QML R Ruby
-                          shell Tcl}],
-   },
-   {start_tokens =>  [qw {* ! REM}],
-    languages    =>  [[BASIC => 'mvEnterprise']],
-   },
-   {start_tokens =>  [qw {//}],
-    languages    =>  [qw {beta-Juliet Portia}, q {Crystal Report}],
-   },
-   {start_tokens =>  [qw {%}],
-    languages    =>  [qw {CLU LaTeX TeX slrn}],
-   },
-   {start_tokens =>  [qw {!}],
-    languages    =>  [qw {Fortran}],
-   },
-   {start_tokens =>  [qw {NB}],
-    languages    =>  [qw {ILLGOL}],
-   },
-   {start_tokens =>  ["PLEASE NOT", "PLEASE   NOT", "PLEASE N'T", 
-                      "DO NOT", "DO     N'T", "DO    NOT",
-                      "PLEASE DO NOT", "PLEASE   DO    NOT", "PLEASE  DO  N'T"],
-    languages    =>  [qw {INTERCAL}]},
-   {start_tokens =>  [qw {NB.}],
-    languages    =>  [qw {J}],
-   },
-   {start_tokens =>  [qw !{!],
-    languages    =>  [[qw {Pascal Alice}]],
-    end_tokens   =>  [qw !}!],
-   },
-   {start_tokens =>  [qw {. ;}],
-    languages    =>  [qw {PL/B}],
-   },
-   {start_tokens =>  [qw {`}],
-    languages    =>  [qw {Q-BAL}],
-   },
-   {start_tokens =>  [qw {-- --- -----}],
-    languages    =>  [qw {SQL}],   # SQL comments start with /-{2,}/
-   },
-   {start_tokens =>  ['\\"'], # Don't use qw here, 5.6.0 parses it incorrectly.
-    languages    =>  [qw {troff}],
-   },
-   {start_tokens =>  [qw {"}],
-    languages    =>  [qw {vi}],
-   },
-);
+my @data   = do {
+    no warnings;
+    (
+        {start_tokens =>  ["\\"],  # No qw here, 5.6.0 parses it incorrectly.
+         languages    =>  [qw {ABC Forth}],
+        },
+        {start_tokens =>  [qw {# //}],
+         languages    =>  [qw {Advisor}],
+        },
+        {start_tokens =>  [qw {--}],
+         languages    =>  [qw {Ada Alan Eiffel lua}],
+        },
+        {start_tokens =>  [qw {;}],
+         languages    =>  [qw {Advsys CQL Lisp LOGO M MUMPS REBOL Scheme
+                                      SMITH zonefile}],
+        },
+        {start_tokens =>  [qw {#}],
+         languages    =>  [qw {awk fvwm2 Icon m4 mutt Perl Python QML R Ruby
+                               shell Tcl}],
+        },
+        {start_tokens =>  [qw {* ! REM}],
+         languages    =>  [[BASIC => 'mvEnterprise']],
+        },
+        {start_tokens =>  [qw {//}],
+         languages    =>  [qw {beta-Juliet Portia Ubercode},
+                           q  {Crystal Report}],
+        },
+        {start_tokens =>  [qw {%}],
+         languages    =>  [qw {CLU LaTeX TeX slrn}],
+        },
+        {start_tokens =>  [qw {!}],
+         languages    =>  [qw {Fortran}],
+        },
+        {start_tokens =>  [qw {NB}],
+         languages    =>  [qw {ILLGOL}],
+        },
+        {start_tokens =>  ["PLEASE NOT", "PLEASE   NOT", "PLEASE N'T", 
+                           "DO NOT", "DO     N'T", "DO    NOT",
+                           "PLEASE DO NOT", "PLEASE   DO    NOT",
+                           "PLEASE  DO  N'T"],
+         languages    =>  [qw {INTERCAL}]},
+        {start_tokens =>  [qw {NB.}],
+         languages    =>  [qw {J}],
+        },
+        {start_tokens =>  [qw !{!],
+         languages    =>  [[qw {Pascal Alice}]],
+         end_tokens   =>  [qw !}!],
+        },
+        {start_tokens =>  [qw {. ;}],
+         languages    =>  [qw {PL/B}],
+        },
+        {start_tokens =>  [qw {`}],
+         languages    =>  [qw {Q-BAL}],
+        },
+        {start_tokens =>  [qw {-- --- -----}],
+         languages    =>  [qw {SQL}],   # SQL comments start with /-{2,}/
+        },
+        {start_tokens =>  ['\\"'], # No qw here, 5.6.0 parses it incorrectly.
+         languages    =>  [qw {troff}],
+        },
+        {start_tokens =>  [qw {"}],
+         languages    =>  [qw {vi}],
+        },
+        {start_tokens =>  [qw {'}],
+         languages    =>  [qw {ZZT-OOP}],
+        },
+    );
+};
 
-BEGIN {$^W = 1}
 
 #
 # Extract the markers.
@@ -215,6 +221,9 @@ run_new_tests tests        => \@tests,
 __END__
 
  $Log: single_line.t,v $
+ Revision 2.104  2008/05/26 17:05:17  abigail
+ use warnings
+
  Revision 2.103  2005/03/16 00:00:02  abigail
  CQL, INTERCAL, R
 

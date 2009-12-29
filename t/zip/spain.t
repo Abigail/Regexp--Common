@@ -6,9 +6,9 @@ use vars qw /$VERSION/;
 
 use Regexp::Common;
 
-$^W = 1;
+use warnings;
 
-($VERSION) = q $Revision: 2.101 $ =~ /[\d.]+/;
+($VERSION) = q $Revision: 2.102 $ =~ /[\d.]+/;
 
 sub passes;
 sub failures;
@@ -217,6 +217,9 @@ __END__
 =pod
 
  $Log: spain.t,v $
+ Revision 2.102  2008/05/26 17:05:47  abigail
+ use warnings
+
  Revision 2.101  2004/06/30 09:26:20  abigail
  Fixed off-by-one error
 

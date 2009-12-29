@@ -8,9 +8,9 @@ use Regexp::Common qw /RE_comment_HTML/;
 use t::Common qw /run_new_tests cross/;
 
 
-$^W = 1;
+use warnings;
 
-($VERSION) = q $Revision: 2.101 $ =~ /[\d.]+/;
+($VERSION) = q $Revision: 2.102 $ =~ /[\d.]+/;
 
 my @good = ("", "This is a comment", "This is - a comment",
                 "This is - - comment", ">This is a comment", 
@@ -91,6 +91,9 @@ run_new_tests tests        => \@tests,
 __END__
 
  $Log: html.t,v $
+ Revision 2.102  2008/05/26 17:05:17  abigail
+ use warnings
+
  Revision 2.101  2005/01/01 16:41:10  abigail
  Renamed 'version' argument of 'run_new_tests' to 'version_from'
 

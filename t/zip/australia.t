@@ -5,10 +5,9 @@ use lib  qw {blib/lib};
 use vars qw /$VERSION/;
 
 use Regexp::Common;
+use warnings;
 
-$^W = 1;
-
-($VERSION) = q $Revision: 2.105 $ =~ /[\d.]+/;
+($VERSION) = q $Revision: 2.106 $ =~ /[\d.]+/;
 
 sub passes;
 sub failures;
@@ -225,6 +224,9 @@ __END__
 =pod
 
  $Log: australia.t,v $
+ Revision 2.106  2008/05/26 17:05:47  abigail
+ use warnings
+
  Revision 2.105  2004/06/09 21:34:18  abigail
  Prevent test from hanging
 

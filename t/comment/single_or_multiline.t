@@ -7,42 +7,45 @@ use lib "blib/lib";
 use Regexp::Common qw /RE_comment_ALL/;
 use t::Common qw /run_new_tests ww/;
 
+use warnings;
 
-$^W = 1;
+BEGIN {$^W = 0 if $[ < 5.006;}
 
-($VERSION) = q $Revision: 2.101 $ =~ /[\d.]+/;
+($VERSION) = q $Revision: 2.102 $ =~ /[\d.]+/;
 
-BEGIN {$^W = 0}
 
 # 1. tokens for single line comments.
 # 2. start/end tokens for multi-line comments.
 # 3. list of languages this applies to.
-my @data = (
-    [[qw {//}]                  =>
-     [[qw {/* */}]]             =>
-     [qw {C++ C# Cg ECMAScript FPL Java JavaScript}],
-    ],
-    [[qw {#}]                   =>
-     [[qw {/* */}]]             =>
-     [qw {Nickle}],
-    ],
-    [[qw {//}]                  =>
-     [[qw !{ }!], [qw !(* *)!]] =>
-     [[qw /Pascal Delphi/], [qw /Pascal Free/], [qw /Pascal GPC/]],
-    ],
-    [[qw {!}]                   =>
-     [[qw {/* */}]]             =>
-     [qw {PEARL}]
-    ],
-    [[qw {# //}]                =>
-     [[qw {/* */}]]             =>
-     [qw {PHP}]
-    ],
-    [[qw {--}]                  =>
-     [[qw {/* */}]]             =>
-     [qw {PL/SQL}]
-    ]
-);
+my @data = do {
+    no warnings;
+    (
+        [[qw {//}]                  =>
+         [[qw {/* */}]]             =>
+         [qw {C++ C# Cg ECMAScript FPL Java JavaScript}],
+        ],
+        [[qw {#}]                   =>
+         [[qw {/* */}]]             =>
+         [qw {Nickle}],
+        ],
+        [[qw {//}]                  =>
+         [[qw !{ }!], [qw !(* *)!]] =>
+         [[qw /Pascal Delphi/], [qw /Pascal Free/], [qw /Pascal GPC/]],
+        ],
+        [[qw {!}]                   =>
+         [[qw {/* */}]]             =>
+         [qw {PEARL}]
+        ],
+        [[qw {# //}]                =>
+         [[qw {/* */}]]             =>
+         [qw {PHP}]
+        ],
+        [[qw {--}]                  =>
+         [[qw {/* */}]]             =>
+         [qw {PL/SQL}]
+        ]
+    );
+};
 
 # Grab the single line tokens.
 my @s_tokens = do {my %h; grep {!$h {$_} ++} map {@{$$_ [0]}} @data};
@@ -187,6 +190,9 @@ run_new_tests tests        => \@tests,
 __END__
 
  $Log: single_or_multiline.t,v $
+ Revision 2.102  2008/05/26 17:05:17  abigail
+ use warnings
+
  Revision 2.101  2005/01/01 16:41:10  abigail
  Renamed 'version' argument of 'run_new_tests' to 'version_from'
 

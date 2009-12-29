@@ -7,9 +7,9 @@ use vars qw /$VERSION/;
 use Regexp::Common;
 use t::Common;
 
-$^W = 1;
+use warnings;
 
-($VERSION) = q $Revision: 2.101 $ =~ /[\d.]+/;
+($VERSION) = q $Revision: 2.102 $ =~ /[\d.]+/;
 
 sub create_parts;
 
@@ -129,6 +129,9 @@ __END__
 =pod
 
  $Log: greenland.t,v $
+ Revision 2.102  2008/05/26 17:05:47  abigail
+ use warnings
+
  Revision 2.101  2003/08/13 10:05:35  abigail
  Fixed case where valid zip codes were generated in the failure case
 

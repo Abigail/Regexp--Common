@@ -9,7 +9,7 @@ use t::Common;
 
 $^W = 1;
 
-($VERSION) = q $Revision: 2.100 $ =~ /[\d.]+/;
+($VERSION) = q $Revision: 2.101 $ =~ /[\d.]+/;
 
 sub create_parts;
 
@@ -63,8 +63,8 @@ sub create_parts {
     my (@good, @bad);
 
     # Hosts.
-    $good [0] = [qw /www.abigail.nl www.PERL.com a.b.c.d.e.f.g.h.i.j.k.x
-                     127.0.0.1 w--w--w.abigail.nl w3.abigail.nl/];
+    $good [0] = [qw /www.abigail.be www.PERL.com a.b.c.d.e.f.g.h.i.j.k.x
+                     127.0.0.1 w--w--w.abigail.be w3.abigail.be/];
     $bad  [0] = [qw /www.example..com w+w.example.com w--.example.com
                      127.0.0.0.1 -w.example.com www.example.1com/];
 
@@ -89,6 +89,9 @@ sub create_parts {
 __END__
 
  $Log: nntp.t,v $
+ Revision 2.101  2008/05/23 21:32:07  abigail
+ Changed domain name
+
  Revision 2.100  2003/02/11 14:13:14  abigail
  Tests for NNTP URIs
 
