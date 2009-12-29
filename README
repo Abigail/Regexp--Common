@@ -1,5 +1,5 @@
 ==============================================================================
-                  Release of version 2.103 of Regexp::Common
+                  Release of version 2.104 of Regexp::Common
 ==============================================================================
 
 NOTE:  The jump to version 2.100 is there for no other reason than that
@@ -97,9 +97,13 @@ COPYRIGHT
 
 ==============================================================================
 
-CHANGES IN VERSION 2.103
+CHANGES IN VERSION 2.104
 
 Revision history for Perl extension Regexp::Common.
+
+2.104 Fri Jan 24 16:44:19 2003
+        - Forgot to add t/test_zip_german.t and t/test_zip_french.t
+          to the MANIFEST file.
 
 2.103 Thu Jan 23 03:21:17 2003
         - Added German and French postal codes.

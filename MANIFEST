@@ -41,4 +41,6 @@ t/test_uri_tv.t
 t/test_uris.t
 t/test_ws.t
 t/test_zip_dutch.t
+t/test_zip_german.t
+t/test_zip_french.t
 t/test_zip_us.t
