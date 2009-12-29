@@ -1,5 +1,3 @@
-# $Id: tv.pm,v 2.102 2008/05/23 21:30:10 abigail Exp $
-
 # TV URLs. 
 # Internet draft: draft-zigmond-tv-url-03.txt
 
@@ -83,19 +81,6 @@ Berners-Lee, Tim, Fielding, R., and Masinter, L.: I<Uniform Resource
 Identifiers (URI): Generic Syntax>. August 1998.
 
 =back
-
-=head1 HISTORY
-
- $Log: tv.pm,v $
- Revision 2.102  2008/05/23 21:30:10  abigail
- Changed email address
-
- Revision 2.101  2008/05/23 21:28:02  abigail
- Changed license
-
- Revision 2.100  2003/02/10 21:06:44  abigail
- tv URI
-
 
 =head1 SEE ALSO
 

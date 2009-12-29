@@ -75,11 +75,3 @@ foreach my $data (@data) {
 
 
 __END__
-
-$Log: test_i.t,v $
-Revision 2.101  2008/05/26 17:07:26  abigail
-use warnings
-
-Revision 2.100  2003/03/12 22:27:28  abigail
-Tests for the -i switch
-

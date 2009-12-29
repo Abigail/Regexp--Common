@@ -1,5 +1,3 @@
-# $Id: profanity.pm,v 2.106 2008/05/23 21:30:09 abigail Exp $
-
 package Regexp::Common::profanity;
 
 use strict;
@@ -82,41 +80,6 @@ Under C<-keep> (see L<Regexp::Common>):
 captures the entire word
 
 =back
-
-=head1 HISTORY
-
- $Log: profanity.pm,v $
- Revision 2.106  2008/05/23 21:30:09  abigail
- Changed email address
-
- Revision 2.105  2008/05/23 21:28:01  abigail
- Changed license
-
- Revision 2.104  2003/07/04 13:34:05  abigail
- Fixed assignment to
-
- Revision 2.103  2003/02/11 10:23:07  abigail
- Small fix
-
- Revision 2.102  2003/02/11 09:45:09  abigail
- Added
-
- Revision 2.101  2003/02/01 22:55:31  abigail
- Changed Copyright years
-
- Revision 2.100  2003/01/21 23:19:40  abigail
- The whole world understands RCS/CVS version numbers, that 1.9 is an
- older version than 1.10. Except CPAN. Curse the idiot(s) who think
- that version numbers are floats (in which universe do floats have
- more than one decimal dot?).
- Everything is bumped to version 2.100 because CPAN couldn't deal
- with the fact one file had version 1.10.
-
- Revision 1.2  2002/08/05 12:16:59  abigail
- Fixed 'Regex::' and 'Rexexp::' typos to 'Regexp::' (Found my Mike Castle).
-
- Revision 1.1  2002/07/28 21:41:07  abigail
- Split off from Regexp::Common.
 
 =head1 SEE ALSO
 

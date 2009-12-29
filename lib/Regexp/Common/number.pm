@@ -1,5 +1,3 @@
-# $Id: number.pm,v 2.110 2008/05/23 21:30:09 abigail Exp $
-
 package Regexp::Common::number;
 
 use strict;
@@ -396,70 +394,6 @@ using ASCII characters. A future version will be able to deal with
 the Unicode symbols to match larger Roman numbers.
 
 Under C<-keep>, the number will be captured in $1.
-
-=head1 HISTORY
-
- $Log: number.pm,v $
- Revision 2.110  2008/05/23 21:30:09  abigail
- Changed email address
-
- Revision 2.109  2008/05/23 21:28:01  abigail
- Changed license
-
- Revision 2.108  2005/03/16 00:25:58  abigail
- Added -base, -places for  {num} {int}. Changed -group
-
- Revision 2.107  2004/12/28 23:45:51  abigail
- Perl 5.6.2 parses qq lib/Regexp/Common/number.pm{sep}[0-9]! incorrectly
-
- Revision 2.106  2004/12/28 23:27:58  abigail
- Replaced C<\d> with [0-9] (Unicode reasons)
-
- Revision 2.105  2004/07/01 10:11:27  abigail
- Fixed problems with 32bit integer Perls
-
- Revision 2.104  2004/06/30 09:14:54  abigail
- Restricted recognition of square numbers to numbers less than
- 9000000000000000 to avoid round-off errors.
-
- Revision 2.103  2003/03/12 22:24:25  abigail
- Decimal numbers
-
- Revision 2.102  2003/02/10 21:34:24  abigail
- Added VERSION
-
- Revision 2.101  2003/02/01 22:55:31  abigail
- Changed Copyright years
-
- Revision 2.100  2003/01/21 23:19:40  abigail
- The whole world understands RCS/CVS version numbers, that 1.9 is an
- older version than 1.10. Except CPAN. Curse the idiot(s) who think
- that version numbers are floats (in which universe do floats have
- more than one decimal dot?).
- Everything is bumped to version 2.100 because CPAN couldn't deal
- with the fact one file had version 1.10.
-
- Revision 1.6  2002/12/27 23:33:15  abigail
- Roman numbers.
-
- Revision 1.5  2002/08/23 13:09:13  abigail
- Cosmetic POD changes.
-
- Revision 1.4  2002/08/23 12:51:26  abigail
- + Several occurances of 'numbers' changed to 'number'.
- + Fixed bugs in documentation.
- + Made example use anchors to make it more clear.
-  (All due to Christopher Baker)
-
- Revision 1.3  2002/08/05 12:16:59  abigail
- Fixed 'Regex::' and 'Rexexp::' typos to 'Regexp::'
- (Found by Mike Castle).
-
- Revision 1.2  2002/07/30 16:37:59  abigail
- Removed outcommented code.
-
- Revision 1.1  2002/07/28 21:41:07  abigail
- Split off from Regexp::Common.
 
 =head1 SEE ALSO
 

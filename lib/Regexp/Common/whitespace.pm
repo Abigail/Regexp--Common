@@ -1,5 +1,3 @@
-# $Id: whitespace.pm,v 2.105 2008/05/23 21:30:09 abigail Exp $
-
 package Regexp::Common::whitespace;
 
 use strict;
@@ -59,39 +57,6 @@ The call:
 is optimized (but probably still slower than doing the s///g explicitly).
 
 This pattern does not capture under C<-keep>.
-
-=head1 HISTORY
-
- $Log: whitespace.pm,v $
- Revision 2.105  2008/05/23 21:30:09  abigail
- Changed email address
-
- Revision 2.104  2008/05/23 21:28:01  abigail
- Changed license
-
- Revision 2.103  2003/07/04 13:34:05  abigail
- Fixed assignment to
-
- Revision 2.102  2003/02/11 09:48:54  abigail
- Added
-
- Revision 2.101  2003/02/01 22:55:31  abigail
- Changed Copyright years
-
- Revision 2.100  2003/01/21 23:19:40  abigail
- The whole world understands RCS/CVS version numbers, that 1.9 is an
- older version than 1.10. Except CPAN. Curse the idiot(s) who think
- that version numbers are floats (in which universe do floats have
- more than one decimal dot?).
- Everything is bumped to version 2.100 because CPAN couldn't deal
- with the fact one file had version 1.10.
-
- Revision 1.2  2002/08/27 16:59:39  abigail
- Fix POD
-
- Revision 1.1  2002/08/27 16:58:59  abigail
- Initial checkin.
-
 
 =head1 SEE ALSO
 

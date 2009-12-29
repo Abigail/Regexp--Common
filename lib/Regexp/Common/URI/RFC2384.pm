@@ -1,5 +1,3 @@
-# $Id: RFC2384.pm,v 2.104 2008/05/23 21:30:10 abigail Exp $
-
 package Regexp::Common::URI::RFC2384;
 
 use strict;
@@ -76,25 +74,6 @@ might change without notice.
 Gellens, R.: I<POP URL scheme> August 1998.
 
 =back
-
-=head1 HISTORY
-
- $Log: RFC2384.pm,v $
- Revision 2.104  2008/05/23 21:30:10  abigail
- Changed email address
-
- Revision 2.103  2008/05/23 21:28:02  abigail
- Changed license
-
- Revision 2.102  2004/12/15 08:15:35  abigail
- Fixed Revision extraction for $VERSION
-
- Revision 2.101  2004/06/30 14:38:59  abigail
- $VERSION issue (reported by Mike Arms)
-
- Revision 2.100  2003/03/25 23:10:23  abigail
- POP URIs
-
 
 =head1 AUTHOR
 

@@ -219,20 +219,3 @@ run_new_tests tests        => \@tests,
 
 
 __END__
-
- $Log: single_line.t,v $
- Revision 2.104  2008/05/26 17:05:17  abigail
- use warnings
-
- Revision 2.103  2005/03/16 00:00:02  abigail
- CQL, INTERCAL, R
-
- Revision 2.102  2005/01/01 16:41:10  abigail
- Renamed 'version' argument of 'run_new_tests' to 'version_from'
-
- Revision 2.101  2004/12/29 00:07:15  abigail
- Work around a parsing bug in 5.6.0
-
- Revision 2.100  2004/12/28 23:01:05  abigail
- Moved tests out of t/test_comment.t
-

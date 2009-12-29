@@ -1,5 +1,3 @@
-# $Id: http.pm,v 2.103 2008/05/23 21:30:10 abigail Exp $
-
 package Regexp::Common::URI::http;
 
 use strict;
@@ -114,22 +112,6 @@ Leach, P. and Berners-Lee, Tim: I<Hypertext Transfer Protocol -- HTTP/1.1>.
 June 1999.
 
 =back
-
-=head1 HISTORY
-
- $Log: http.pm,v $
- Revision 2.103  2008/05/23 21:30:10  abigail
- Changed email address
-
- Revision 2.102  2008/05/23 21:28:02  abigail
- Changed license
-
- Revision 2.101  2004/06/09 21:42:48  abigail
- POD nits
-
- Revision 2.100  2003/02/10 21:06:41  abigail
- http URI
-
 
 =head1 SEE ALSO
 

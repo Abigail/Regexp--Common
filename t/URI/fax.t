@@ -1,22 +1,3 @@
-# $Id: fax.t,v 2.101 2003/02/02 03:09:30 abigail Exp $
-#
-# $Log: fax.t,v $
-# Revision 2.101  2003/02/02 03:09:30  abigail
-# File moved to t/URI
-#
-# Revision 2.100  2003/01/21 23:19:13  abigail
-# The whole world understands RCS/CVS version numbers, that 1.9 is an
-# older version than 1.10. Except CPAN. Curse the idiot(s) who think
-# that version numbers are floats (in which universe do floats have
-# more than one decimal dot?).
-# Everything is bumped to version 2.100 because CPAN couldn't deal
-# with the fact one file had version 1.10.
-#
-# Revision 1.1  2002/11/06 13:51:50  abigail
-# Tests for fax URIs.
-#
-#
-
 # VOODOO LINE-NOISE
 my($C,$M,$P,$N,$S);END{print"1..$C\n$M";print"\nfailed: $N\n"if$N}
 sub ok{$C++; $M.= ($_[0]||!@_)?"ok $C\n":($N++,"not ok $C (".

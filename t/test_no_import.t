@@ -12,8 +12,3 @@ print $; eq "\034" ? "ok 3" : "not ok 3";
 print ' # $; eq "\034"', "\n";
 
 __END__
- 
- $Log: test_no_import.t,v $
- Revision 2.101  2003/04/02 20:56:50  abigail
- Test for $;
-

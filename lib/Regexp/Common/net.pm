@@ -290,67 +290,6 @@ November 1987.
 
 L<Regexp::Common> for a general description of how to use this interface.
 
-=head1 HISTORY
-
- $Log: net.pm,v $
- Revision 2.108  2008/05/26 17:08:11  abigail
- ipv6 not ready yet
-
- Revision 2.107  2008/05/23 21:30:09  abigail
- Changed email address
-
- Revision 2.106  2008/05/23 21:28:01  abigail
- Changed license
-
- Revision 2.105  2004/12/28 23:31:54  abigail
- Replaced C<\d> with [0-9] (Unicode reasons)
-
- Revision 2.104  2004/06/30 15:11:29  abigail
- Discuss unwanted matching
-
- Revision 2.103  2004/06/09 21:47:01  abigail
- dec/oct greediness
-
- Revision 2.102  2003/03/12 22:26:35  abigail
- -nospace switch for domain names
-
- Revision 2.101  2003/02/01 22:55:31  abigail
- Changed Copyright years
-
- Revision 2.100  2003/01/21 23:19:40  abigail
- The whole world understands RCS/CVS version numbers, that 1.9 is an
- older version than 1.10. Except CPAN. Curse the idiot(s) who think
- that version numbers are floats (in which universe do floats have
- more than one decimal dot?).
- Everything is bumped to version 2.100 because CPAN couldn't deal
- with the fact one file had version 1.10.
-
- Revision 1.8  2003/01/10 11:03:28  abigail
- Added complete CVS history.
-
- Revision 1.7  2002/08/05 22:02:06  abigail
- Typo fix.
-
- Revision 1.6  2002/08/05 20:36:10  abigail
- Added $RE{net}{domain}
-
- Revision 1.5  2002/08/05 12:16:59  abigail
- Fixed 'Regex::' and 'Rexexp::' typos to 'Regexp::' (Found my Mike Castle).
-
- Revision 1.4  2002/08/01 10:00:01  abigail
- Got rid of the split // in the "subs" method of MAC addresses with
- configurable seperator, as this may lead to incorrect results (for
- instance, if the separator is the empty string).
-
- Revision 1.3  2002/07/31 23:27:57  abigail
- Added regexes for MAC addresses.
-
- Revision 1.2  2002/07/28 22:57:59  abigail
- Tests to pinpoint a bug in Regexp::Common's _decache.
-
- Revision 1.1  2002/07/25 23:53:38  abigail
- Factored out of Regexp::Common.
-
 =head1 AUTHOR
 
 Damian Conway I<damian@conway.org>.

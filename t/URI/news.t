@@ -79,11 +79,3 @@ sub create_parts {
 
 
 __END__
-
- $Log: news.t,v $
- Revision 2.101  2008/05/23 21:32:07  abigail
- Changed domain name
-
- Revision 2.100  2003/02/11 13:00:25  abigail
- Tests for news URIs
-

@@ -1,5 +1,3 @@
-# $Id: ftp.pm,v 2.103 2008/05/23 21:30:10 abigail Exp $
-
 package Regexp::Common::URI::ftp;
 
 use strict;
@@ -176,22 +174,6 @@ Berners-Lee, Tim, Fielding, R., and Masinter, L.: I<Uniform Resource
 Identifiers (URI): Generic Syntax>. August 1998.
 
 =back
-
-=head1 HISTORY
-
- $Log: ftp.pm,v $
- Revision 2.103  2008/05/23 21:30:10  abigail
- Changed email address
-
- Revision 2.102  2008/05/23 21:28:02  abigail
- Changed license
-
- Revision 2.101  2004/06/09 21:42:48  abigail
- POD nits
-
- Revision 2.100  2003/02/10 21:06:40  abigail
- ftp URI
-
 
 =head1 SEE ALSO
 

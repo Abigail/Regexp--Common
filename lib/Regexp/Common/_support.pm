@@ -1,5 +1,3 @@
-# $Id: _support.pm,v 2.103 2008/05/23 21:30:09 abigail Exp $
-
 package Regexp::Common::_support;
 
 use strict;
@@ -74,25 +72,6 @@ This subroutine returns true if its argument passes the luhn checksum test.
 =head1 SEE ALSO
 
 L<http://www.webopedia.com/TERM/L/Luhn_formula.html>.
-
-=head1 HISTORY
-
- $Log: _support.pm,v $
- Revision 2.103  2008/05/23 21:30:09  abigail
- Changed email address
-
- Revision 2.102  2008/05/23 21:28:01  abigail
- Changed license
-
- Revision 2.101  2004/12/18 11:28:25  abigail
- POD nit (Mike Castle)
-
- Revision 2.100  2004/07/01 14:47:00  abigail
- Force version
-
- Revision 2.1  2004/07/01 14:46:35  abigail
- Initial checkin
-
 
 =head1 AUTHOR
 

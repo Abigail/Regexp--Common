@@ -121,14 +121,3 @@ run_new_tests  targets      => \%targets,
 ;
 
 __END__
-
-  $Log: decimal.t,v $
-  Revision 2.102  2008/05/26 17:06:05  abigail
-  use warnings
-
-  Revision 2.101  2005/03/15 23:54:45  abigail
-  New form of testing
-
-  Revision 2.100  2003/03/12 22:23:54  abigail
-  Tests for decimal numbers
-

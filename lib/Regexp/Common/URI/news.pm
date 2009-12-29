@@ -1,5 +1,3 @@
-# $Id: news.pm,v 2.102 2008/05/23 21:30:10 abigail Exp $
-
 package Regexp::Common::URI::news;
 
 use strict;
@@ -133,19 +131,6 @@ Berners-Lee, Tim, Masinter, L., McCahill, M.: I<Uniform Resource
 Locators (URL)>. December 1994.
 
 =back
-
-=head1 HISTORY
-
- $Log: news.pm,v $
- Revision 2.102  2008/05/23 21:30:10  abigail
- Changed email address
-
- Revision 2.101  2008/05/23 21:28:02  abigail
- Changed license
-
- Revision 2.100  2003/02/11 14:11:29  abigail
- NNTP and news URIs
-
 
 =head1 SEE ALSO
 

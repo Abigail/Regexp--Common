@@ -212,17 +212,3 @@ sub failures {
 }
 
 __END__
-
-
-=pod
-
- $Log: spain.t,v $
- Revision 2.102  2008/05/26 17:05:47  abigail
- use warnings
-
- Revision 2.101  2004/06/30 09:26:20  abigail
- Fixed off-by-one error
-
- Revision 2.100  2004/06/09 21:32:28  abigail
- Initial checkin
-

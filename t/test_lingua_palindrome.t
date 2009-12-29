@@ -100,36 +100,6 @@ foreach my $entry (@entries) {
 
 =pod
 
- $Log: test_lingua_palindrome.t,v $
- Revision 2.103  2008/05/26 17:07:26  abigail
- use warnings
-
- Revision 2.102  2004/06/09 21:41:04  abigail
- test_comments.t
-
- Revision 2.101  2003/02/05 09:53:17  abigail
- Removed 'use Config'
-
- Revision 2.100  2003/01/21 23:19:13  abigail
- The whole world understands RCS/CVS version numbers, that 1.9 is an
- older version than 1.10. Except CPAN. Curse the idiot(s) who think
- that version numbers are floats (in which universe do floats have
- more than one decimal dot?).
- Everything is bumped to version 2.100 because CPAN couldn't deal
- with the fact one file had version 1.10.
-
- Revision 1.3  2003/01/16 11:03:10  abigail
- Added version checks.
-
- Revision 1.2  2003/01/01 19:05:37  abigail
- More and better tests
-
- Revision 1.1  2003/01/01 17:05:26  abigail
- Tests for palindromes
-
-
-=cut
-
 __DATA__
 aha
 ara

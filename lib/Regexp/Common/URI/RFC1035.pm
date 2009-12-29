@@ -1,5 +1,3 @@
-# $Id: RFC1035.pm,v 2.102 2008/05/23 21:30:10 abigail Exp $
-
 package Regexp::Common::URI::RFC1035;
 
 use strict;
@@ -69,19 +67,6 @@ Mockapetris, P.: I<DOMAIN NAMES - IMPLEMENTATION AND SPECIFICATION>.
 November 1987.
 
 =back
-
-=head1 HISTORY
-
- $Log: RFC1035.pm,v $
- Revision 2.102  2008/05/23 21:30:10  abigail
- Changed email address
-
- Revision 2.101  2008/05/23 21:28:02  abigail
- Changed license
-
- Revision 2.100  2003/02/10 21:03:25  abigail
- Definitions of RFC 1035
-
 
 =head1 AUTHOR
 

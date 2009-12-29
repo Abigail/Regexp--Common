@@ -1,5 +1,3 @@
-# $Id: SEN.pm,v 2.104 2008/05/23 21:30:09 abigail Exp $
-
 package Regexp::Common::SEN;
 
 use strict;
@@ -111,26 +109,6 @@ captures the second group of digits (the group number).
 captures the third group of digits (the serial number).
 
 =back
-
-=head1 HISTORY
-
- $Log: SEN.pm,v $
- Revision 2.104  2008/05/23 21:30:09  abigail
- Changed email address
-
- Revision 2.103  2008/05/23 21:28:01  abigail
- Changed license
-
- Revision 2.102  2005/01/02 01:17:48  abigail
- - Removed 'use Carp', as we aren't using it.
- - Outcommented unused 'par11' function. Ought to be in _support.pm anyway.
-
- Revision 2.101  2004/06/09 21:52:14  abigail
- Force 2.101 version
-
- Revision 2.1  2004/06/09 21:50:14  abigail
- Initial checkin
-
 
 =head1 SEE ALSO
 

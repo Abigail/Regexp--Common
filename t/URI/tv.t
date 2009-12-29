@@ -57,29 +57,6 @@ foreach (@failures) {
 }
 
 
-=pod
-
- $Log: tv.t,v $
- Revision 2.102  2003/02/05 16:21:42  abigail
- Removed 'use Config' statement
-
- Revision 2.101  2003/02/02 03:09:30  abigail
- File moved to t/URI
-
- Revision 2.100  2003/01/21 23:19:13  abigail
- The whole world understands RCS/CVS version numbers, that 1.9 is an
- older version than 1.10. Except CPAN. Curse the idiot(s) who think
- that version numbers are floats (in which universe do floats have
- more than one decimal dot?).
- Everything is bumped to version 2.100 because CPAN couldn't deal
- with the fact one file had version 1.10.
-
- Revision 1.1  2003/01/01 23:00:33  abigail
- Tests for TV URIs
-
-
-=cut
-
 __DATA__
 wqed.com
 nbc.com

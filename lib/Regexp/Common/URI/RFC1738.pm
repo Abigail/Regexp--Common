@@ -1,5 +1,3 @@
-# $Id: RFC1738.pm,v 2.106 2008/05/23 21:30:10 abigail Exp $
-
 package Regexp::Common::URI::RFC1738;
 
 use strict;
@@ -130,31 +128,6 @@ Berners-Lee, Tim, Masinter, L., McCahill, M.: I<Uniform Resource
 Locators (URL)>. December 1994.
 
 =back
-
-=head1 HISTORY
-
- $Log: RFC1738.pm,v $
- Revision 2.106  2008/05/23 21:30:10  abigail
- Changed email address
-
- Revision 2.105  2008/05/23 21:28:02  abigail
- Changed license
-
- Revision 2.104  2003/03/25 23:09:59  abigail
- Prospero definitions
-
- Revision 2.103  2003/03/12 22:29:21  abigail
- Small fixes
-
- Revision 2.102  2003/02/21 14:47:48  abigail
- Added  and WAIS related variables
-
- Revision 2.101  2003/02/11 11:14:50  abigail
- Fixed $grouppart
-
- Revision 2.100  2003/02/10 21:03:54  abigail
- Definitions of RFC 1738
-
 
 =head1 AUTHOR
 

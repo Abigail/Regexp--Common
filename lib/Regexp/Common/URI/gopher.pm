@@ -1,5 +1,3 @@
-# $Id: gopher.pm,v 2.102 2008/05/23 21:30:10 abigail Exp $
-
 package Regexp::Common::URI::gopher;
 
 use strict;
@@ -148,19 +146,6 @@ Krishnan, Murali R., Casey, James: "A Gopher URL Format". Expired
 Internet draft I<draft-murali-url-gopher>. December 1996.
 
 =back
-
-=head1 HISTORY
-
- $Log: gopher.pm,v $
- Revision 2.102  2008/05/23 21:30:10  abigail
- Changed email address
-
- Revision 2.101  2008/05/23 21:28:02  abigail
- Changed license
-
- Revision 2.100  2003/02/21 14:40:59  abigail
- Gopher URLs
-
 
 =head1 SEE ALSO
 

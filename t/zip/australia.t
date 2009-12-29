@@ -219,26 +219,3 @@ sub failures {
 }
 
 __END__
-
-
-=pod
-
- $Log: australia.t,v $
- Revision 2.106  2008/05/26 17:05:47  abigail
- use warnings
-
- Revision 2.105  2004/06/09 21:34:18  abigail
- Prevent test from hanging
-
- Revision 2.104  2003/08/01 11:31:58  abigail
- Added Australian postal code '0909'
-
- Revision 2.103  2003/02/09 13:30:36  abigail
- Moved to australia.t
-
- Revision 2.102  2003/02/05 09:54:15  abigail
- Removed 'use Config'
-
- Revision 2.101  2003/02/01 22:11:15  abigail
- Initial checkin
-

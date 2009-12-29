@@ -1,5 +1,3 @@
-# $Id: fax.pm,v 2.102 2008/05/23 21:30:10 abigail Exp $
-
 package Regexp::Common::URI::fax;
 
 use strict;
@@ -98,19 +96,6 @@ Identifiers (URI): Generic Syntax>. August 1998.
 =item B<[RFC 2806]>
 
 Vaha-Sipila, A.: I<URLs for Telephone Calls>. April 2000.
-
-=head1 HISTORY
-
- $Log: fax.pm,v $
- Revision 2.102  2008/05/23 21:30:10  abigail
- Changed email address
-
- Revision 2.101  2008/05/23 21:28:02  abigail
- Changed license
-
- Revision 2.100  2003/02/10 21:06:38  abigail
- fax URI
-
 
 =head1 SEE ALSO
 

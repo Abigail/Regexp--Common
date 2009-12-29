@@ -107,20 +107,3 @@ sub filter {
 }
 
 __END__
-
-$Log: telnet.t,v $
-Revision 2.104  2008/05/23 21:32:07  abigail
-Changed domain name
-
-Revision 2.103  2004/06/09 21:35:31  abigail
-Reducing the number of tests for pre-5.6 perls (for speed)
-
-Revision 2.102  2003/02/10 21:19:13  abigail
-telnet URI was wrong, adjusted tests
-
-Revision 2.101  2003/02/07 22:19:52  abigail
-Added general filters
-
-Revision 2.100  2003/02/07 14:58:07  abigail
-Tests for telnet URIs
-

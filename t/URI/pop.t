@@ -98,14 +98,3 @@ sub filter {
 
 
 __END__
-
- $Log: pop.t,v $
- Revision 2.102  2008/05/23 21:32:07  abigail
- Changed domain name
-
- Revision 2.101  2004/06/09 21:35:31  abigail
- Reducing the number of tests for pre-5.6 perls (for speed)
-
- Revision 2.100  2003/03/25 13:02:07  abigail
- Tests for POP URIs.
-

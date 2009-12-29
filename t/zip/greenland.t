@@ -125,16 +125,3 @@ sub create_parts {
 
 
 __END__
-
-=pod
-
- $Log: greenland.t,v $
- Revision 2.102  2008/05/26 17:05:47  abigail
- use warnings
-
- Revision 2.101  2003/08/13 10:05:35  abigail
- Fixed case where valid zip codes were generated in the failure case
-
- Revision 2.100  2003/02/09 21:50:05  abigail
- Tests for postal codes of Greenland
-

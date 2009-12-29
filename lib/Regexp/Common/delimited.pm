@@ -1,5 +1,3 @@
-# $Id: delimited.pm,v 2.106 2008/05/23 21:30:09 abigail Exp $
-
 package Regexp::Common::delimited;
 
 use strict;

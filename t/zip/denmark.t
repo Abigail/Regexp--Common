@@ -135,19 +135,3 @@ sub create_parts {
 
 
 __END__
-
-=pod
-
- $Log: denmark.t,v $
- Revision 2.103  2008/05/26 17:05:47  abigail
- use warnings
-
- Revision 2.102  2004/12/14 23:11:38  abigail
- Don't run all tests for pre-5.00503 perls
-
- Revision 2.101  2003/02/09 16:40:26  abigail
- Removed redundant tests
-
- Revision 2.100  2003/02/09 16:34:19  abigail
- Tests for Danish postal codes
-

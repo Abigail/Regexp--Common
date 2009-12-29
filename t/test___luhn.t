@@ -63,13 +63,3 @@ foreach my $b (@bad) {
 
 
 __END__
-
-=pod
-
- $Log: test___luhn.t,v $
- Revision 2.101  2008/05/26 17:07:26  abigail
- use warnings
-
- Revision 2.100  2004/07/01 14:48:08  abigail
- Initial version
-

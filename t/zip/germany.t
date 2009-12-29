@@ -202,29 +202,3 @@ sub failures {
 }
 
 __END__
-
-
-=pod
-
- $Log: germany.t,v $
- Revision 2.106  2008/05/26 17:05:47  abigail
- use warnings
-
- Revision 2.105  2003/02/09 13:31:24  abigail
- Moved to germany.t
-
- Revision 2.104  2003/02/08 14:58:57  abigail
- Doc patch
-
- Revision 2.103  2003/02/05 09:54:15  abigail
- Removed 'use Config'
-
- Revision 2.102  2003/02/02 03:11:20  abigail
- File moved to t/zip
-
- Revision 2.101  2003/02/01 22:35:39  abigail
- Added some tests
-
- Revision 2.100  2003/01/22 17:25:39  abigail
- Initial checkin. Tests for German zip codes.
-

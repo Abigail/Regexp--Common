@@ -99,17 +99,3 @@ run_new_tests tests        => \@tests,
 
 
 __END__
-
- $Log: delimited.t,v $
- Revision 2.103  2008/05/26 17:05:17  abigail
- use warnings
-
- Revision 2.102  2005/01/09 23:12:27  abigail
- BML comments
-
- Revision 2.101  2005/01/01 16:41:10  abigail
- Renamed 'version' argument of 'run_new_tests' to 'version_from'
-
- Revision 2.100  2004/12/28 23:01:05  abigail
- Moved tests out of t/test_comment.t
-

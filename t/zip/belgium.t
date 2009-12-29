@@ -122,19 +122,3 @@ sub create_parts {
 }
 
 __END__
-
-=pod
-
- $Log: belgium.t,v $
- Revision 2.103  2008/05/26 17:05:47  abigail
- use warnings
-
- Revision 2.102  2003/02/09 13:30:57  abigail
- Moved to belgium.t
-
- Revision 2.101  2003/02/08 17:03:27  abigail
- Cosmetic changes
-
- Revision 2.100  2003/02/08 17:02:07  abigail
- Tests for Belgian postal codes
-

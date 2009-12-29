@@ -1,5 +1,3 @@
-# $Id: pop.pm,v 2.102 2008/05/23 21:30:10 abigail Exp $
-
 package Regexp::Common::URI::pop;
 
 use strict;
@@ -92,19 +90,6 @@ The I<port>, if given.
 Gellens, R.: I<POP URL Scheme>. August 1998.
 
 =back
-
-=head1 HISTORY
-
- $Log: pop.pm,v $
- Revision 2.102  2008/05/23 21:30:10  abigail
- Changed email address
-
- Revision 2.101  2008/05/23 21:28:02  abigail
- Changed license
-
- Revision 2.100  2003/03/25 23:10:23  abigail
- POP URIs
-
 
 =head1 SEE ALSO
 

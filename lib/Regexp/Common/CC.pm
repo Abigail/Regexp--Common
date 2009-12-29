@@ -74,10 +74,6 @@ This module offers patterns for credit card numbers of several major
 credit card types.
 
 
-=head1 HISTORY
-
- $Log: $
-
 =head1 SEE ALSO
 
 L<Regexp::Common> for a general description of how to use this interface.

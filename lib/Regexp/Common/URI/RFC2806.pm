@@ -1,5 +1,3 @@
-# $Id: RFC2806.pm,v 2.102 2008/05/23 21:30:10 abigail Exp $
-
 package Regexp::Common::URI::RFC2806;
 
 use strict;
@@ -167,19 +165,6 @@ Leach, P. and Berners-Lee, Tim: I<Hypertext Transfer Protocol -- HTTP/1.1>.
 June 1999.
 
 =back
-
-=head1 HISTORY
-
- $Log: RFC2806.pm,v $
- Revision 2.102  2008/05/23 21:30:10  abigail
- Changed email address
-
- Revision 2.101  2008/05/23 21:28:02  abigail
- Changed license
-
- Revision 2.100  2003/02/10 21:04:34  abigail
- Definitions of RFC 2806
-
 
 =head1 AUTHOR
 
