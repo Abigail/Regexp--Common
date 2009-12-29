@@ -1,4 +1,4 @@
-# $Id: URI.pm,v 1.9 2003/01/01 23:00:54 abigail Exp $
+# $Id: URI.pm,v 1.10 2003/01/17 13:17:15 abigail Exp $
 
 package Regexp::Common::URI; {
 
@@ -9,7 +9,7 @@ use Regexp::Common qw /pattern clean no_defaults/;
 
 use vars qw /$VERSION/;
 
-($VERSION) = q $Revision: 1.9 $ =~ /[\d.]+/g;
+($VERSION) = q $Revision: 1.10 $ =~ /[\d.]+/g;
 
 # RFC 2396, base definitions.
 my $digit             =  '[0-9]';
@@ -46,8 +46,8 @@ my $path              =  "(?:(?:$abs_path|$rel_path)?)";
 
 my $port              =  "(?:$digit*)";
 my $IPv4address       =  "(?:$digit+[.]$digit+[.]$digit+[.]$digit+)";
-my $toplabel          =  "(?:$alpha|$alphanum"."[-a-zA-Z0-9]*$alphanum)";
-my $domainlabel       =  "(?:$alphanum|$alphanum"."[-a-zA-Z0-9]*$alphanum)";
+my $toplabel          =  "(?:$alphanum"."[-a-zA-Z0-9]*$alphanum|$alpha)";
+my $domainlabel       =  "(?:(?:$alphanum"."[-a-zA-Z0-9]*)$alphanum)";
 my $hostname          =  "(?:(?:$domainlabel\[.])*$toplabel\[.]?)";
 my $host              =  "(?:$hostname|$IPv4address)";
 my $hostport          =  "(?:$host(?::$port))";
@@ -516,6 +516,11 @@ Vaha-Sipila, A.: I<URLs for Telephone Calls>. April 2000.
 =head1 HISTORY
 
  $Log: URI.pm,v $
+ Revision 1.10  2003/01/17 13:17:15  abigail
+ Fixed '$toplabel' and '$domainlabel'; they were both subexpressions
+ of the form: A|AB. Which passed the tests because most tests anchor
+ the regex at the beginning and end.
+
  Revision 1.9  2003/01/01 23:00:54  abigail
  TV URIs
 
