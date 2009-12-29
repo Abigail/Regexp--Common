@@ -18,7 +18,7 @@ BEGIN {
 use warnings;
 use vars qw /$VERSION %RE %sub_interface $AUTOLOAD/;
 
-($VERSION) = q $Revision: 2.122 $ =~ /([\d.]+)/;
+$VERSION = '2.122';
 
 
 sub _croak {
