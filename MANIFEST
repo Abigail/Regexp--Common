@@ -14,6 +14,7 @@ MANIFEST
 Makefile.PL
 README
 TODO
+t/Common.pm
 t/test_balanced.t
 t/test_bases.t
 t/test_bases_sep.t
@@ -38,6 +39,7 @@ t/URI/fax.t
 t/URI/ftp.t
 t/URI/http.t
 t/URI/tel.t
+t/URI/telnet.t
 t/URI/tv.t
 t/URI/any.t
 t/zip/australian.t

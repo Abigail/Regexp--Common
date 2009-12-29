@@ -1,7 +1,7 @@
-$Id: TODO,v 2.102 2003/02/02 17:42:42 abigail Exp $
+$Id: TODO,v 2.103 2003/02/07 15:27:09 abigail Exp $
 
 - URIs:
-    + telnet, mail, rsync, news/nntp, file.
+    + mail, rsync, news/nntp, file.
     + And more.
 - Dates:
     + localtime dates.
@@ -13,3 +13,5 @@ $Id: TODO,v 2.102 2003/02/02 17:42:42 abigail Exp $
     + Ranges of numbers.
 - postal codes.
     + Lots more, especially British and Canadians.
+- Email addresses.
+    + RFC 822/2822.

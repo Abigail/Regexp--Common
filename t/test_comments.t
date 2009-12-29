@@ -1,6 +1,9 @@
-# $Id: test_comments.t,v 2.100 2003/01/21 23:19:13 abigail Exp $
+# $Id: test_comments.t,v 2.101 2003/02/07 15:26:16 abigail Exp $
 #
 # $Log: test_comments.t,v $
+# Revision 2.101  2003/02/07 15:26:16  abigail
+# Lua and FPL
+#
 # Revision 2.100  2003/01/21 23:19:13  abigail
 # The whole world understands RCS/CVS version numbers, that 1.9 is an
 # older version than 1.10. Except CPAN. Curse the idiot(s) who think
@@ -71,7 +74,7 @@ use Regexp::Common;
 ok;
 
 my @markers  =   (
-   ['--'     =>  [qw /Ada Eiffel/]],
+   ['--'     =>  [qw /Ada Eiffel lua/]],
    ['#'      =>  [qw /awk Perl Python Ruby shell Tcl/]],
    ['//'     =>  [qw /beta-Juliet Portia/]],
    ['NB'     =>  [qw /ILLGOL/]],
@@ -221,7 +224,7 @@ foreach my $info (@from_to) {
 }
     
 
-foreach my $language (qw /C++ Java/) {
+foreach my $language (qw /C++ FPL Java/) {
     try $RE{comment}{$language};
 
     pass "//\n";

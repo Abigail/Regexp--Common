@@ -5,11 +5,10 @@ use lib  qw {blib/lib};
 use vars qw /$VERSION/;
 
 use Regexp::Common;
-use Config;
 
 $^W = 1;
 
-($VERSION) = q $Revision: 2.101 $ =~ /[\d.]+/;
+($VERSION) = q $Revision: 2.102 $ =~ /[\d.]+/;
 
 sub passes;
 sub failures;
@@ -218,6 +217,9 @@ __END__
 =pod
 
  $Log: australian.t,v $
+ Revision 2.102  2003/02/05 09:54:15  abigail
+ Removed 'use Config'
+
  Revision 2.101  2003/02/01 22:11:15  abigail
  Initial checkin
 

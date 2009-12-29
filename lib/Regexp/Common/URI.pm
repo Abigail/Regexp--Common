@@ -1,4 +1,4 @@
-# $Id: URI.pm,v 2.101 2003/02/01 22:55:31 abigail Exp $
+# $Id: URI.pm,v 2.102 2003/02/07 15:24:17 abigail Exp $
 
 package Regexp::Common::URI; {
 
@@ -9,7 +9,7 @@ use Regexp::Common qw /pattern clean no_defaults/;
 
 use vars qw /$VERSION/;
 
-($VERSION) = q $Revision: 2.101 $ =~ /[\d.]+/g;
+($VERSION) = q $Revision: 2.102 $ =~ /[\d.]+/g;
 
 # RFC 2396, base definitions.
 my $digit             =  '[0-9]';
@@ -70,6 +70,21 @@ my $relativeURI       =  "(?:(?:$net_path|$abs_path|$rel_path)(?:[?]$query)?";
 my $absoluteURI       =  "(?:$scheme:(?:$hier_part|$opaque_part))";
 my $URI_reference     =  "(?:(?:$absoluteURI|$relativeURI)?(?:#$fragment)?)";
 
+# Base definitions from 1738 which are not defined above.
+# Definitions from 1738 who have been redefined differently in 
+# RFC 2396 will have _1738 tagged to the name.
+my $safe_1738         =  "(?:[-\$_.+])";
+my $extra_1738        =  "(?:[!*'(),])";
+my $unreserved_1738   =  "(?:[a-zA-Z0-9\\-\$_.+!*'(),])";  # alpha | digit |
+                                                           # safe | extra
+my $uchar_1738        =  "(?:$unreserved|$escaped)";
+my $uchars_1738       =  "(?:(?:$unreserved+|$escaped)*)";
+
+                         # *[ uchar | ";" | "?" | "&" | "=" ]
+my $user              =  "(?:(?:[;?&=a-zA-Z0-9\\-\$_.+!*'(),]+|$escaped)*)";
+my $password          =  "(?:(?:[;?&=a-zA-Z0-9\\-\$_.+!*'(),]+|$escaped)*)";
+my $login             =  "(?:(?:$user(?::$password)\@)?$hostport)";
+
 
 # The defined schemes, collect them in a hash.
 my %uri;
@@ -118,6 +133,15 @@ pattern name    => [qw (URI FTP), "-type=[AIai]", "-password="],
             $uri       =~ s/\[AIai\]/$type/;
             $uri;
         }
+        ;
+
+# Telnet URIs are defined in RFC 1738.
+$uri {telnet}         =   "(?k:(?k:telnet)://"                            .
+                          "(?:(?k:(?k:$user)(?::(?k:$password))?)\@)?"     .
+                          "(?k:(?k:$host)(?::(?k:$port))?)(?k:/)?)";
+
+pattern name    => [qw (URI telnet)],
+        create  => $uri {telnet}
         ;
 
 # From RFC 1035, domain names.
@@ -431,6 +455,55 @@ The value of the type specification.
 
 =back
 
+=head2 $RE{URI}{telnet}
+
+Returns a pattern that matches I<telnet> URIs, as defined by RFC 1738.
+Telnet URIs have the form:
+
+    "telnet:" "//" [ user [ ":" password ] "@" ] host [ ":" port ] [ "/" ]
+
+Under C<{-keep}>, the following are returned:
+
+=over 4
+
+=item $1
+
+The complete URI.
+
+=item $2
+
+The scheme.
+
+=item $3
+
+The username:password combo, or just the username if there is no password.
+
+=item $4
+
+The username, if given.
+
+=item $5
+
+The password, if given.
+
+=item $6
+
+The host:port combo, or just the host if there's no port.
+
+=item $7
+
+The host.
+
+=item $8
+
+The port, if given.
+
+=item $9
+
+The trailing slash, if any.
+
+=back
+
 =head2 $RE{URI}{tel}
 
 Returns a pattern that matches I<tel> URIs, as defined by RFC 2806.
@@ -516,6 +589,9 @@ Vaha-Sipila, A.: I<URLs for Telephone Calls>. April 2000.
 =head1 HISTORY
 
  $Log: URI.pm,v $
+ Revision 2.102  2003/02/07 15:24:17  abigail
+ telnet URIs
+
  Revision 2.101  2003/02/01 22:55:31  abigail
  Changed Copyright years
 

@@ -10,7 +10,8 @@ use Regexp::Common qw /pattern clean no_defaults/;
 #
 
 my @markers  =   (
-   ['--'     =>  [qw /Ada Eiffel/]],
+                 # http://www.lua.org/manual/manual.html
+   ['--'     =>  [qw /Ada Eiffel lua/]],
    ['#'      =>  [qw /awk Perl Python Ruby shell Tcl/]],
                  # http://www.catseye.mb.ca/esoteric/b-juliet/index.html
    ['//'     =>  ['beta-Juliet', 'Portia']],
@@ -147,7 +148,7 @@ foreach my $info (@plain_or_nested) {
 # Other languages.
 #
 
-foreach my $language (qw /C++ Java/) {
+foreach my $language (qw /C++ FPL Java/) {
     pattern name    => [qw (comment), $language],
             create  => combine to_eol "//", from_to "/*", "*/";
     ;
@@ -258,6 +259,7 @@ Available languages are:
         $RE{comment}{'C++'}
         $RE{comment}{Dylan}          # Require at least Perl 5.6.0.
         $RE{comment}{Eiffel}
+        $RE{comment}{FPL}
         $RE{comment}{'Funge-98'}
         $RE{comment}{Haifu}
         $RE{comment}{Haskell}        # Require at least Perl 5.6.0.
@@ -268,6 +270,7 @@ Available languages are:
         $RE{comment}{LaTeX}
         $RE{comment}{LOGO}
         $RE{comment}{LPC}
+        $RE{comment}{lua}
         $RE{comment}{Perl}
         $RE{comment}{PHP}
         $RE{comment}{Portia}
@@ -305,7 +308,7 @@ If we are using C{-keep} (See L<Regexp::Common>):
 =over 4
 
 =item For Ada, ALPACA, awk, beta-Juliet, Befunge-98, C, Eiffel, Funge-98,
-          Haifu, ILLGOL, LaTeX, LOGO, LPC, Perl, Portia, Python, Q-BAL,
+          Haifu, ILLGOL, LaTeX, LOGO, LPC, lua, Perl, Portia, Python, Q-BAL,
           REBOL, Ruby, shell, Shelta, Smalltalk, SMITH, SQL, TeX, Tcl,
           troff, vi, *W, and zonefile:
 
@@ -329,7 +332,7 @@ captures the closing comment marker
 
 =back
 
-=item For Beatnik, Brainfuck, C++, Dylan, Haskell, Hugo, Java, PHP,
+=item For Beatnik, Brainfuck, C++, Dylan, FPL, Haskell, Hugo, Java, PHP,
       and SQL_MySQL:
 
 =over 4
@@ -382,6 +385,9 @@ Press. B<1990>. ISBN 0-19-853737-9. Ch. 10.3, pp 390-391.
 =head1 HISTORY
 
  $Log: comment.pm,v $
+ Revision 2.102  2003/02/07 15:23:54  abigail
+ Lua and FPL
+
  Revision 2.101  2003/02/01 22:55:31  abigail
  Changed Copyright years
 

@@ -5,11 +5,10 @@ use lib  qw {blib/lib};
 use vars qw /$VERSION/;
 
 use Regexp::Common;
-use Config;
 
 $^W = 1;
 
-($VERSION) = q $Revision: 2.101 $ =~ /[\d.]+/;
+($VERSION) = q $Revision: 2.102 $ =~ /[\d.]+/;
 
 my $count;
 
@@ -61,6 +60,9 @@ foreach (@failures) {
 =pod
 
  $Log: tv.t,v $
+ Revision 2.102  2003/02/05 16:21:42  abigail
+ Removed 'use Config' statement
+
  Revision 2.101  2003/02/02 03:09:30  abigail
  File moved to t/URI
 

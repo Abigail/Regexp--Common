@@ -5,11 +5,10 @@ use lib  qw {blib/lib};
 use vars qw /$VERSION/;
 
 use Regexp::Common;
-use Config;
 
 $^W = 1;
 
-($VERSION) = q $Revision: 2.100 $ =~ /[\d.]+/;
+($VERSION) = q $Revision: 2.101 $ =~ /[\d.]+/;
 
 BEGIN {
     if ($] < 5.006) {
@@ -102,6 +101,9 @@ foreach my $entry (@entries) {
 =pod
 
  $Log: test_lingua_palindrome.t,v $
+ Revision 2.101  2003/02/05 09:53:17  abigail
+ Removed 'use Config'
+
  Revision 2.100  2003/01/21 23:19:13  abigail
  The whole world understands RCS/CVS version numbers, that 1.9 is an
  older version than 1.10. Except CPAN. Curse the idiot(s) who think

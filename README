@@ -1,5 +1,5 @@
 ==============================================================================
-                  Release of version 2.106 of Regexp::Common
+                  Release of version 2.107 of Regexp::Common
 ==============================================================================
 
 NOTE:  The jump to version 2.100 is there for no other reason than that
@@ -51,11 +51,12 @@ DESCRIPTION
 	* balanced parentheses and brackets
 	* delimited text (with escapes)
 	* integers and floating-point numbers in any base (up to 36)
-	* comments in 39 languages
+	* comments in 44 languages
     	* offensive language
 	* lists of any pattern
 	* IPv4 addresses
         * URIs.
+        * Zip codes.
 
     Future releases of the module will also provide patterns for the
     following:
@@ -75,6 +76,12 @@ INSTALLATION
     It's all pure Perl, so just put the .pm files in their appropriate
     local Perl subdirectory.
 
+    Alternatively, use the common approach:
+        - untar the archive
+        - run: perl Makefile.PL
+        - run: make
+        - run: make test
+        - run: make install
 
 AUTHOR
 
@@ -97,9 +104,15 @@ COPYRIGHT
 
 ==============================================================================
 
-CHANGES IN VERSION 2.106
+CHANGES IN VERSION 2.107
 
 Revision history for Perl extension Regexp::Common.
+
+2.107 Fri Feb  7 23:20:35 2003
+        - telnet URIs; Lua and FPL comments.
+        - common code factored out - created t/Common.pm
+        - 175984 tests in 32 files.
+        - 91 patterns in 11 classes.
 
 2.106 Sun Feb  2 18:42:08 2003
         - Makefile.PL fixes for Windows.
