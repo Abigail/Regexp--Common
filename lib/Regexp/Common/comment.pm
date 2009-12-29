@@ -11,35 +11,35 @@ my @markers  =   (
     '--'     =>  [qw /Ada Eiffel/],
     '#'      =>  [qw /awk Perl Python Ruby shell Tcl/],
     '%'      =>  [qw /TeX LaTeX/],
-    ';'      =>  [qw /REBOL zonefile/],
+    ';'      =>  [qw /LOGO REBOL zonefile/],
     '-{2,}'  =>  [qw /SQL/],
     '"'      =>  [qw /vi/],
     '\\\"'   =>  [qw /troff/],
 );
 
 foreach my $language (qw /C LPC/) {
-    pattern name   => [qw (comment), $language],
-            create => q {(?k:(?k:\/\*)(?k:(?:(?!\*\/)[\s\S])*)(?k:\*\/))},
+    pattern name    => [qw (comment), $language],
+            create  => q {(?k:(?k:\/\*)(?k:(?:(?!\*\/)[\s\S])*)(?k:\*\/))},
 }
 
 foreach my $language (qw /C++ Java/) {
-    pattern name   => [qw (comment), $language],
-            create => q {(?k:\/\*(?:(?!\*\/)[\s\S])*\*\/|\/\/[^\n]*\n)},
+    pattern name    => [qw (comment), $language],
+            create  => q {(?k:\/\*(?:(?!\*\/)[\s\S])*\*\/|\/\/[^\n]*\n)},
 }
 
-pattern name   => [qw (comment PHP)],
-        create => q {(?k:\/\*(?:(?!\*\/)[\s\S])*\*\/|\/\/[^\n]*\n|#[^\n]*\n)},
+pattern name    => [qw (comment PHP)],
+        create  => q {(?k:\/\*(?:(?!\*\/)[\s\S])*\*\/|\/\/[^\n]*\n|#[^\n]*\n)},
         ;
 
-pattern name   => [qw (comment Smalltalk)],
-        create => q {(?k:(?k:")(?k:[^"]*)(?k:"))},
+pattern name    => [qw (comment Smalltalk)],
+        create  => q {(?k:(?k:")(?k:[^"]*)(?k:"))},
         ;
 
 while (@markers) {
     my ($marker, $languages) = splice @markers => 0, 2;
     foreach my $language (@$languages) {
-        pattern name   => [qw (comment), $language],
-                create => to_eol $marker,
+        pattern name    => [qw (comment), $language],
+                create  => to_eol $marker,
     }
 }
 
@@ -47,39 +47,41 @@ while (@markers) {
 # Charles F. Goldfarb: "The SGML Handbook".
 # Oxford: Oxford University Press. 1990. ISBN 0-19-853737-9.
 # Ch. 10.3, pp 390.
-pattern name   => [qw (comment HTML)],
-        create => q {(?k:(?k:<!)(?k:(?:--(?k:[^-]*(?:-[^-]+)*)--\s*)*)(?k:>))},
+pattern name    => [qw (comment HTML)],
+        create  => q {(?k:(?k:<!)(?k:(?:--(?k:[^-]*(?:-[^-]+)*)--\s*)*)(?k:>))},
         ;
 
 };
 
 
-pattern name   => [qw /comment Haskell/],
-        create =>
+pattern name    => [qw /comment Haskell/],
+        create  =>
             sub {use re 'eval';
                  use vars qw /$Haskell/;
                  my $r = '(??{$Regexp::Common::comment::Haskell})';
                  $Haskell =
                  qr /-{2,}[^\n]*\n|\{-(?:(?>[^-{]+)|\{(?!-)|-(?!\})|$r)*-\}/;
                  exists $_ [1] -> {-keep} ? qr /($Haskell)/ : $Haskell;
-            }
+            },
+        version => 5.006,
         ;
 
-pattern name   => [qw /comment Dylan/],
-        create =>
+pattern name    => [qw /comment Dylan/],
+        create  =>
             sub {use re 'eval';
                  use vars qw /$Dylan/;
                  my $r = '(??{$Regexp::Common::comment::Dylan})';
                  $Dylan =
                  qr "//[^\n]*\n|/\*(?:(?>[^*/]+)|/(?!\*)|\*(?!/)|$r)*\*/";
                  exists $_ [1] -> {-keep} ? qr /($Dylan)/ : $Dylan;
-            }
+            },
+        version => 5.006,
         ;
 
 
-pattern name   => [qw /comment SQL MySQL/],
-        create => q {(?k:(?:#|-- )[^\n]*\n|} .
-                  q {/\*(?:(?>[^*;"']+)|"[^"]*"|'[^']*'|\*(?!/))*(?:;|\*/))},
+pattern name    => [qw /comment SQL MySQL/],
+        create  => q {(?k:(?:#|-- )[^\n]*\n|} .
+                   q {/\*(?:(?>[^*;"']+)|"[^"]*"|'[^']*'|\*(?!/))*(?:;|\*/))},
         ;
 
 
@@ -135,12 +137,13 @@ Available languages are:
         $RE{comment}{awk}
         $RE{comment}{C}
         $RE{comment}{C++}
-        $RE{comment}{Dylan}
+        $RE{comment}{Dylan}        # Require at least Perl 5.6.0.
         $RE{comment}{Eiffel}
-        $RE{comment}{Haskell}
+        $RE{comment}{Haskell}      # Require at least Perl 5.6.0.
         $RE{comment}{HTML}
         $RE{comment}{Java}
         $RE{comment}{LaTeX}
+        $RE{comment}{LOGO}
         $RE{comment}{LPC}
         $RE{comment}{Perl}
         $RE{comment}{PHP}
@@ -170,7 +173,7 @@ If we are using C{-keep} (See L<Regexp::Common>):
 
 =over 4
 
-=item For Ada, awk, C, Eiffel, LaTeX, LPC, Perl, Python,
+=item For Ada, awk, C, Eiffel, LaTeX, LOGO, LPC, Perl, Python,
           REBOL, Ruby, shell, Smalltalk, SQL, TeX, Tcl, troff, vi
           and zonefile:
 

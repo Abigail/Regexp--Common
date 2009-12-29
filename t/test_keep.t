@@ -61,13 +61,15 @@ pass "<!-- A -- -- B -- >", "<!", "-- A -- -- B -- ", " B ", ">";
 try $RE{comment}{Smalltalk}{-keep};
 pass '"A comment"', '"', 'A comment', '"';
 
-try $RE{comment}{Dylan}{-keep};
-pass "// Comment\n";
-pass "/* Nested /* Comment */ */";
+unless ($] < 5.006) {
+    try $RE{comment}{Dylan}{-keep};
+    pass "// Comment\n";
+    pass "/* Nested /* Comment */ */";
 
-try $RE{comment}{Haskell}{-keep};
-pass "--- Comment\n";
-pass "{- Nested {- Comment -} -}";
+    try $RE{comment}{Haskell}{-keep};
+    pass "--- Comment\n";
+    pass "{- Nested {- Comment -} -}";
+}
 
 try $RE{delimited}{q{-delim=/}}{-keep};
 pass '/a\/b/', qw( / a\/b / );
@@ -77,6 +79,9 @@ pass '/a//b/', qw( / a//b / );
 
 try $RE{net}{IPv4}{-keep};
 pass '123.234.1.0', qw( 123 234 1 0 );
+
+try $RE{net}{MAC}{-keep};
+pass '12:34:56:78:9a:bc', qw /12 34 56 78 9a bc/;
 
 try $RE{list}{conj}{-word=>'(?:and|or)'}{-keep};
 pass 'a, b, and c', ', and ';

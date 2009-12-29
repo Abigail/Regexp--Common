@@ -94,7 +94,7 @@ fail "#/*a comment */";
 fail "#/************";
 fail "#/////////////";
 
-foreach my $language (qw /REBOL zonefile/) {
+foreach my $language (qw /LOGO REBOL zonefile/) {
     try $RE{comment}{$language};
 
     pass ";\n";
@@ -322,59 +322,6 @@ fail qq !/*a /*pretend*/ nested comment*/!;
 fail qq !/*a /*pretend*/!;
 fail qq !/***********!;
 
-try $RE{comment}{Haskell};
-
-pass "--\n";
-pass "-- comment\n";
-pass "{- comment -}";
-pass "{- comment {- nested -} comment -}";
-pass "{--}";
-pass "{-{-{-{-{-{--}-}-}-}-}-}";
-pass "{---}";
-pass "{- -- -}";
-pass "{---------------}";
-pass "{-----{-------{-------}---{---}---}---}";
-pass "{- {- -}}-}";
-fail "-- comment";
-fail "--";
-fail "-\n";
-fail "- comment\n";
-fail "{- comment }";
-fail "{- comment -";
-fail "{-}";
-fail "{-{-{--}-}";
-fail "{- -}{- -}";
-fail "-} {-";
-fail "-} {- -}";
-fail "{- {- -}}";
-
-try $RE{comment}{Dylan};
-
-pass "//\n";
-pass "// comment\n";
-pass "/* comment */";
-pass "/* comment /* nested */ comment */";
-pass "/**/";
-pass "/*/*/*/*/*/**/*/*/*/*/*/";
-pass "/***/";
-pass "/* // */";
-pass "/***************/";
-pass "/* /***/ */";
-fail "// comment";
-fail "//";
-fail "*\n";
-fail "* comment\n";
-fail "/* comment /";
-fail "/* comment *";
-fail "/*/";
-fail "/*/*/**/*/";
-fail "/* *//* */";
-fail "*/ /*";
-fail "*/ /* */";
-fail "/* /* *//";
-fail "/* /* *//*/";
-fail "/*****/*******/*******/***/***/***/***/";
-
 try $RE{comment}{Smalltalk};
 
 pass qq !""!;
@@ -452,3 +399,58 @@ pass '/* Comment ";" */';
 pass '/* Comment ";" ;';
 pass "/* Comment '\n;*/' */";
 pass "/* Comment '*/' more comment */";
+
+exit if $] < 5.006;
+
+try $RE{comment}{Haskell};
+
+pass "--\n";
+pass "-- comment\n";
+pass "{- comment -}";
+pass "{- comment {- nested -} comment -}";
+pass "{--}";
+pass "{-{-{-{-{-{--}-}-}-}-}-}";
+pass "{---}";
+pass "{- -- -}";
+pass "{---------------}";
+pass "{-----{-------{-------}---{---}---}---}";
+pass "{- {- -}}-}";
+fail "-- comment";
+fail "--";
+fail "-\n";
+fail "- comment\n";
+fail "{- comment }";
+fail "{- comment -";
+fail "{-}";
+fail "{-{-{--}-}";
+fail "{- -}{- -}";
+fail "-} {-";
+fail "-} {- -}";
+fail "{- {- -}}";
+
+try $RE{comment}{Dylan};
+
+pass "//\n";
+pass "// comment\n";
+pass "/* comment */";
+pass "/* comment /* nested */ comment */";
+pass "/**/";
+pass "/*/*/*/*/*/**/*/*/*/*/*/";
+pass "/***/";
+pass "/* // */";
+pass "/***************/";
+pass "/* /***/ */";
+fail "// comment";
+fail "//";
+fail "*\n";
+fail "* comment\n";
+fail "/* comment /";
+fail "/* comment *";
+fail "/*/";
+fail "/*/*/**/*/";
+fail "/* *//* */";
+fail "*/ /*";
+fail "*/ /* */";
+fail "/* /* *//";
+fail "/* /* *//*/";
+fail "/*****/*******/*******/***/***/***/***/";

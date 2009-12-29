@@ -11,41 +11,53 @@ my %IPunit = (
     hex => q{(?k:[0-9A-F]{1,2})},
     bin => q{(?k:[0-1]{1,8})},
 );
+my %MACunit = (
+    %IPunit,
+    hex => q{(?k:[0-9a-f]{1,2})},
+);
 
-my $defsep = '[.]';
+sub dec {$_};
+sub bin {oct "0b$_"}
+
+my $IPdefsep  = '[.]';
+my $MACdefsep =  ':';
 
 pattern name   => [qw (net IPv4)],
-        create => "(?k:$IPunit{dec}$defsep$IPunit{dec}$defsep" .
-                      "$IPunit{dec}$defsep$IPunit{dec})",
+        create => "(?k:$IPunit{dec}$IPdefsep$IPunit{dec}$IPdefsep" .
+                      "$IPunit{dec}$IPdefsep$IPunit{dec})",
         ;
 
-pattern name   => [qw (net IPv4 dec), "-sep=$defsep"],
-        create => sub {my $sep = $_[1]->{-sep};
-                       "(?k:$IPunit{dec}$sep$IPunit{dec}$sep" .
-                           "$IPunit{dec}$sep$IPunit{dec})",
-                      },
+pattern name   => [qw (net MAC)],
+        create => "(?k:" . join ($MACdefsep => ($MACunit{hex}) x 6) . ")",
+        subs   => sub {
+            $_ [1] = join ":" => map {sprintf "%02x" => hex}
+                                 split /$MACdefsep/ => $_ [1]
+                     if $_ [1] =~ /$_[0]/
+        },
         ;
 
-pattern name   => [qw (net IPv4 oct), "-sep=$defsep"],
-        create => sub {my $sep = $_[1]->{-sep};
-                       "(?k:$IPunit{oct}$sep$IPunit{oct}$sep" .
-                           "$IPunit{oct}$sep$IPunit{oct})",
+foreach my $type (qw /dec oct hex bin/) {
+    pattern name   => [qw (net IPv4), $type, "-sep=$IPdefsep"],
+            create => sub {my $sep = $_ [1] -> {-sep};
+                           "(?k:$IPunit{$type}$sep$IPunit{$type}$sep" .
+                               "$IPunit{$type}$sep$IPunit{$type})"
                       },
-        ;
-use Carp;
-pattern name   => [qw (net IPv4 hex), "-sep=$defsep"],
-        create => sub {my $sep = $_[1]->{-sep};
-                       confess unless defined $sep;
-                       "(?k:$IPunit{hex}$sep$IPunit{hex}$sep" .
-                           "$IPunit{hex}$sep$IPunit{hex})",
+            ;
+
+    pattern name   => [qw (net MAC), $type, "-sep=$MACdefsep"],
+            create => sub {my $sep = $_ [1] -> {-sep};
+                           "(?k:" . join ($sep => ($MACunit{$type}) x 6) . ")",
                       },
-        ;
-pattern name   => [qw (net IPv4 bin), "-sep=$defsep"],
-        create => sub {my $sep = $_[1]->{-sep};
-                       "(?k:$IPunit{bin}$sep$IPunit{bin}$sep" .
-                           "$IPunit{bin}$sep$IPunit{bin})",
-                      },
-        ;
+            subs   => sub {
+                return if $] < 5.006 and $type eq 'bin';
+                $_ [1] = join ":" => map {sprintf "%02x" => eval $type}
+                                     $2, $3, $4, $5, $6, $7
+                         if $_ [1] =~ $RE {net} {MAC} {$type}
+                                          {-sep => $_ [0] -> {flags} {-sep}}
+                                          {-keep};
+            },
+            ;
+}
 
 }
 
@@ -67,6 +79,9 @@ Regexp::Common::net -- provide regexes for IPv4 addresses.
         /$RE{net}{IPv4}{oct}{-sep => ':'}/ and
                                print "Colon separated octal IP address";
         /$RE{net}{IPv4}{bin}/  and print "Dotted binary IP address";
+        /$RE{net}{MAC}/        and print "MAC address";
+        /$RE{net}{MAC}{oct}{-sep => " "}/ and
+                               print "Space separated octal MAC address";
     }
 
 =head1 DESCRIPTION
@@ -76,7 +91,8 @@ of the works of this interface.
 
 Do not use this module directly, but load it via I<Regex::Common>.
 
-This modules gives you regular expressions for various style IPv4 addresses.
+This modules gives you regular expressions for various style IPv4 
+and MAC (or ethernet) addresses.
 
 =over 4
 
@@ -114,30 +130,112 @@ captures the final component of the address
 
 Returns a pattern that matches a valid IP address in "dotted decimal"
 
-If C<< -sep=>I<P> >> is specified the pattern I<P> is used as the separator.
+If C<< -sep=I<P> >> is specified the pattern I<P> is used as the separator.
 By default I<P> is C<qr/[.]/>. 
 
 =item C<$RE{net}{IPv4}{hex}{-sep}>
 
-Returns a pattern that matches a valid IP address in "dotted hexadecimal"
+Returns a pattern that matches a valid IP address in "dotted hexadecimal",
+with the letters C<A> to C<F> capitalized.
 
-If C<< -sep=>I<P> >> is specified the pattern I<P> is used as the separator.
-By default I<P> is C<qr/[.]/>. C<< -sep=>"" >> and
-C<< -sep=>" " >> are useful alternatives.
+If C<< -sep=I<P> >> is specified the pattern I<P> is used as the separator.
+By default I<P> is C<qr/[.]/>. C<< -sep="" >> and
+C<< -sep=" " >> are useful alternatives.
 
 =item C<$RE{net}{IPv4}{oct}{-sep}>
 
 Returns a pattern that matches a valid IP address in "dotted octal"
 
-If C<< -sep=>I<P> >> is specified the pattern I<P> is used as the separator.
+If C<< -sep=I<P> >> is specified the pattern I<P> is used as the separator.
 By default I<P> is C<qr/[.]/>.
 
 =item C<$RE{net}{IPv4}{bin}{-sep}>
 
 Returns a pattern that matches a valid IP address in "dotted binary"
 
-If C<< -sep=>I<P> >> is specified the pattern I<P> is used as the separator.
+If C<< -sep=I<P> >> is specified the pattern I<P> is used as the separator.
 By default I<P> is C<qr/[.]/>.
+
+=item C<$RE{net}{MAC}>
+
+Returns a pattern that matches a valid MAC or ethernet address as
+colon separated hexadecimals.
+
+For this pattern, and the next four, under C<-keep> (See L<Regexp::Common>):
+
+=over 4
+
+=item $1
+
+captures the entire match
+
+=item $2
+
+captures the first component of the address
+
+=item $3
+
+captures the second component of the address
+
+=item $4
+
+captures the third component of the address
+
+=item $5
+
+captures the fourth component of the address
+
+=item $6
+
+captures the fifth component of the address
+
+=item $7
+
+captures the sixth and final component of the address
+
+=back
+
+This pattern, and the next four, have a C<subs> method as well, which
+will transform a matching MAC address into so called canonical format.
+Canonical format means that every component of the address will be
+exactly two hexadecimals (with a leading zero if necessary), and the
+components will be separated by a colon.
+
+The C<subs> method will not work for binary MAC addresses if the
+Perl version predates 5.6.0.
+
+=item C<$RE{net}{MAC}{dec}{-sep}>
+
+Returns a pattern that matches a valid MAC address as colon separated
+decimals.
+
+If C<< -sep=I<P> >> is specified the pattern I<P> is used as the separator.
+By default I<P> is C<qr/:/>. 
+
+=item C<$RE{net}{MAC}{hex}{-sep}>
+
+Returns a pattern that matches a valid MAC address as colon separated
+hexadecimals, with the letters C<a> to C<f> in lower case.
+
+If C<< -sep=I<P> >> is specified the pattern I<P> is used as the separator.
+By default I<P> is C<qr/:/>.
+
+=item C<$RE{net}{MAC}{oct}{-sep}>
+
+Returns a pattern that matches a valid MAC address as colon separated
+octals.
+
+If C<< -sep=I<P> >> is specified the pattern I<P> is used as the separator.
+By default I<P> is C<qr/:/>.
+
+=item C<$RE{net}{MAC}{bin}{-sep}>
+
+Returns a pattern that matches a valid MAC address as colon separated
+binary numbers.
+
+If C<< -sep=I<P> >> is specified the pattern I<P> is used as the separator.
+By default I<P> is C<qr/:/>.
+
 
 =back
 

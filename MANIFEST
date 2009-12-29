@@ -21,6 +21,7 @@ t/test_int.t
 t/test_ip.t
 t/test_keep.t
 t/test_list.t
+t/test_mac.t
 t/test_no_import.t
 t/test_profanity.t
 t/test_sub.t

@@ -6,7 +6,7 @@ use strict;
 local $^W = 1;
 
 use vars qw /$VERSION %RE %sub_interface/;
-$VERSION = '0.03';
+$VERSION = '0.05';
 
 use Carp;
 
@@ -697,7 +697,7 @@ Provides regexes for strings with balanced parenthesized delimiters.
 
 =item Regexp::Common::comment
 
-Provides regexes for comments of various languages (25 languages
+Provides regexes for comments of various languages (26 languages
 currently).
 
 =item Regexp::Common::delimited
