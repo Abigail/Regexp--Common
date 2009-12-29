@@ -1,4 +1,4 @@
-# $Id: number.pm,v 2.102 2003/02/10 21:34:24 abigail Exp $
+# $Id: number.pm,v 2.103 2003/03/12 22:24:25 abigail Exp $
 
 package Regexp::Common::number;
 
@@ -10,7 +10,7 @@ use Carp;
 
 use vars qw /$VERSION @EXPORT_OK @ISA/;
 
-($VERSION) = q $Revision: 2.102 $ =~ /[\d.]+/g;
+($VERSION) = q $Revision: 2.103 $ =~ /[\d.]+/g;
 
 pattern name   => [qw (num int -sep=  -group=3)],
         create => sub {my $flag = $_[1];
@@ -43,11 +43,31 @@ sub real_creator {
              qq {(?k:[$digits]*)(?:(?k:$radix)(?k:[$digits]{$places}))?)} .
              qq {(?:(?k:$expon)(?k:(?k:[+-]?)(?k:[$digits]+))|))};
 }
+sub decimal_creator { 
+    my ($base, $places, $radix, $sep, $group) =
+            @{$_[1]}{-base, -places, -radix, -sep, -group};
+    croak "Base must be between 1 and 36"
+           unless $base >= 1 && $base <= 36;
+    $sep = ',' if exists $_[1]->{-sep}
+               && !defined $_[1]->{-sep};
+    foreach ($radix, $sep) {$_ = "[$_]" if 1 == length}
+    my $digits = substr (join ("", 0..9, "A".."Z"), 0, $base);
+    return $sep
+           ? qq {(?k:(?i)(?k:[+-]?)(?k:(?=[$digits]|$radix)}               .
+             qq {(?k:[$digits]{1,$group}(?:(?:$sep)[$digits]{$group})*)}   .
+             qq {(?:(?k:$radix)(?k:[$digits]{$places}))?))}
+           : qq {(?k:(?i)(?k:[+-]?)(?k:(?=[$digits]|$radix)}               .
+             qq {(?k:[$digits]*)(?:(?k:$radix)(?k:[$digits]{$places}))?))}
+}
 
 
 pattern name   => [qw (num real -base=10), '-places=0,',
                    qw (-radix=[.] -sep= -group=3 -expon=E)],
         create => \&real_creator,
+        ;
+pattern name   => [qw (num decimal -base=10), '-places=0,',
+                   qw (-radix=[.] -sep= -group=3)],
+        create => \&decimal_creator,
         ;
 
 sub real_synonym {
@@ -243,6 +263,69 @@ A synonym for C<< $RE{num}{real}{-base=>2}{...} >>
 
 A synonym for C<< $RE{num}{real}{-base=>16}{...} >>
 
+=head2 C<$RE{num}{decimal}{-base}{-radix}{-places}{-sep}{-group}>
+
+The same as C<$RE{num}{real}>, except that an exponent isn't allowed.
+Hence, this returns a pattern matching I<decimal> numbers.
+
+If C<-base=I<N>> is specified, the number is assumed to be in that base
+(with A..Z representing the digits for 11..36). By default, the base is 10.
+
+If C<-radix=I<P>> is specified, the pattern I<P> is used as the radix point for
+the number (i.e. the "decimal point" in base 10). The default is C<qr/[.]/>.
+
+If C<-places=I<N>> is specified, the number is assumed to have exactly
+I<N> places after the radix point.
+If C<-places=I<M,N>> is specified, the number is assumed to have between
+I<M> and I<N> places after the radix point.
+By default, the number of places is unrestricted.
+
+If C<-sep=I<P>> specified, the pattern I<P> is required as a grouping marker
+within the pre-radix section of the number. By default, no separator is
+allowed.
+
+If C<-group=I<N>> is specified, digits between grouping separators
+must be grouped in sequences of exactly I<N> characters. The default value of
+I<N> is 3.
+
+For example:
+
+ $RE{num}{decimal}                  # matches 123.456 or -0.1234567
+ $RE{num}{decimal}{-places=>2}      # matches 123.45 or -0.12
+ $RE{num}{decimal}{-places=>'0,3'}  # matches 123.456 or 0 or 9.8
+ $RE{num}{decimal}{-sep=>'[,.]?'}   # matches 123,456 or 123.456
+ $RE{num}{decimal}{-base=>3'}       # matches 121.102
+
+Under C<-keep>:
+
+=over 4
+
+=item $1
+
+captures the entire match
+
+=item $2
+
+captures the optional sign of the number
+
+=item $3
+
+captures the complete mantissa
+
+=item $4
+
+captures the whole number portion of the mantissa
+
+=item $5
+
+captures the radix point
+
+=item $6
+
+captures the fractional portion of the mantissa
+
+=back
+
 =head2 C<$RE{num}{square}>
 
 Returns a pattern that matches a (decimal) square. Regardless whether
@@ -264,6 +347,9 @@ Under C<-keep>, the number will be captured in $1.
 =head1 HISTORY
 
  $Log: number.pm,v $
+ Revision 2.103  2003/03/12 22:24:25  abigail
+ Decimal numbers
+
  Revision 2.102  2003/02/10 21:34:24  abigail
  Added VERSION
 

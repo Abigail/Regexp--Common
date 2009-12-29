@@ -1,4 +1,4 @@
-# $Id: comment.pm,v 2.104 2003/02/21 14:48:06 abigail Exp $
+# $Id: comment.pm,v 2.106 2003/03/12 22:25:42 abigail Exp $
 
 package Regexp::Common::comment;
 
@@ -8,48 +8,102 @@ local $^W = 1;
 use Regexp::Common qw /pattern clean no_defaults/;
 use vars qw /$VERSION/;
 
-($VERSION) = q $Revision: 2.104 $ =~ /[\d.]+/g;
+($VERSION) = q $Revision: 2.106 $ =~ /[\d.]+/g;
 
-#
-# Data.
-#
+my @generic = (
+    {languages => [qw /Ada Alan Eiffel lua/],
+     to_eol    => ['--']},
 
-my @markers  =   (
-                 # http://www.lua.org/manual/manual.html
-   ['--'     =>  [qw /Ada Eiffel lua/]],
-   ['#'      =>  [qw /awk Perl Python Ruby shell Tcl/]],
-                 # http://www.catseye.mb.ca/esoteric/b-juliet/index.html
-   ['//'     =>  ['beta-Juliet', 'Crystal Report', 'Portia']],
-                 # http://www.catseye.mb.ca/esoteric/illgol/index.html
-   ['NB'     =>  [qw /ILLGOL/]],
-                 # http://www.catseye.mb.ca/esoteric/smith/index.html
-   [';'      =>  [qw /LOGO REBOL SMITH zonefile/]],
-   ['`'      =>  [qw /Q-BAL/]],
-   ['-{2,}'  =>  [qw /SQL/]],
-   ['%'      =>  [qw /TeX LaTeX/]],
-   ['\\\"'   =>  [qw /troff/]],
-   ['"'      =>  [qw /vi/]],
-);
+    {languages => [qw /Advisor/],
+     to_eol    => ['#|//']},
 
-my @ids = (
-                 # http://www.catseye.mb.ca/esoteric/befunge/98/spec98.html
-                 # http://www.catseye.mb.ca/esoteric/shelta/index.html
-   [';'      =>  [qw /Befunge-98 Funge-98 Shelta/]],
-                 # http://www.dangermouse.net/esoteric/haifu.html
-   [","      =>  [qw /Haifu/]],
-   ['"'      =>  [qw /Smalltalk/]],
-);
+    {languages => [qw /Advsys LOGO REBOL Scheme SMITH zonefile/],
+     to_eol    => [';']},
 
-my @from_to = (
-   [[qw /ALPACA C LPC/]   =>  "/*", "*/"],
-   # http://wouter.fov120.com/false/false.txt
-   [[qw /False/]          =>  "{",  "}"],
-   [[qw /*W/]             =>  "||", "!!"],
+    {languages => ['Algol 60'],
+     from_to   => [[qw /comment ;/]]},
+
+    {languages => [qw {ALPACA B C LPC PL/I}],
+     from_to   => [[qw {/* */}]]},
+
+    {languages => [qw /awk fvwm2 mutt Perl Python Ruby shell Tcl/],
+     to_eol    => ['#']},
+
+    {languages => [[BASIC => 'mvEnterprise']],
+     to_eol    => ['[*!]|REM']},
+
+    {languages => [qw /Befunge-98 Funge-98 Shelta/],
+     id        => [';']},
+
+    {languages => ['beta-Juliet', 'Crystal Report', 'Portia'],
+     to_eol    => ['//']},
+
+    {languages => [qw /C++ FPL Java/],
+     to_eol    => ['//'],
+     from_to   => [[qw {/* */}]]},
+
+    {languages => [qw /False/],
+     from_to   => [[qw !{ }!]]},
+
+    {languages => [qw /Forth/],
+     to_eol    => ['\\\\']},
+
+    {languages => [qw /Fortran/],
+     to_eol    => ['!']},
+
+    {languages => [qw /Haifu/],
+     id        => [',']},
+
+    {languages => [qw /ILLGOL/],
+     to_eol    => ['NB']},
+
+    {languages => [qw /LaTeX slrn TeX/],
+     to_eol    => ['%']},
+
+    {languages => [qw /Oberon/],
+     from_to   => [[qw /(* *)/]]},
+     
+    {languages => [[qw /Pascal Delphi/], [qw /Pascal Free/], [qw /Pascal GPC/]],
+     to_eol    => ['//'],
+     from_to   => [[qw !{ }!], [qw !(* *)!]]},
+
+    {languages => [[qw /Pascal Workshop/]],
+     id        => [qw /"/],
+     from_to   => [[qw !{ }!], [qw !(* *)!], [qw !/* */!]]},
+
+    {languages => [qw /PEARL/],
+     to_eol    => ['!'],
+     from_to   => [[qw {/* */}]]},
+
+    {languages => [qw /PHP/],
+     to_eol    => ['#', '//'],
+     from_to   => [[qw {/* */}]]},
+
+    {languages => [qw !PL/B!],
+     to_eol    => ['[.;]']},
+
+    {languages => [qw /Q-BAL/],
+     to_eol    => ['`']},
+
+    {languages => [qw /Smalltalk/],
+     id        => ['"']},
+
+    {languages => [qw /SQL/],
+     to_eol    => ['-{2,}']},
+
+    {languages => [qw /troff/],
+     to_eol    => ['\\\"']},
+
+    {languages => [qw /vi/],
+     to_eol    => ['"']},
+
+    {languages => [qw /*W/],
+     from_to   => [[qw {|| !!}]]},
 );
 
 my @plain_or_nested = (
-   [Haskell      =>  "-{2,}",     "{-"  => "-}"],
    [Dylan        =>  "//",        "/*"  => "*/"],
+   [Haskell      =>  "-{2,}",     "{-"  => "-}"],
    [Hugo         =>  "!(?!\\\\)", "!\\" => "\\!"],
 );
 
@@ -57,11 +111,18 @@ my @plain_or_nested = (
 # Helper subs.
 #
 
-sub combine      {local $_ = join "|" => @_; s/\(\?k:/(?:/g; "(?k:$_)"}
+sub combine      {
+    local $_ = join "|", @_;
+    if (@_ > 1) {
+        s/\(\?k:/(?:/g if @_ > 1;
+        $_ = "(?k:$_)";
+    }
+    $_
+}
 
 sub to_eol  ($)  {"(?k:(?k:$_[0])(?k:[^\\n]*)(?k:\\n))"}
 sub id      ($)  {"(?k:(?k:$_[0])(?k:[^$_[0]]*)(?k:$_[0]))"}  # One char only!
-sub from_to ($$) {
+sub from_to      {
     local $^W = 1;
     my ($begin, $end) = @_;
 
@@ -112,31 +173,6 @@ sub nested ($$) {
 # Process data.
 #
 
-foreach my $info (@markers) {
-    my ($marker, $languages) = @$info;
-    foreach my $language (@$languages) {
-        pattern name    => [qw (comment), $language],
-                create  => to_eol $marker,
-    }
-}
-
-foreach my $info (@ids) {
-    my ($marker, $languages) = @$info;
-    foreach my $language (@$languages) {
-        pattern name    => [qw (comment), $language],
-                create  => id $marker,
-    }
-}
-
-foreach my $info (@from_to) {
-    my ($languages, $from, $to) = @$info;
-    foreach my $language (@$languages) {
-        pattern name    => [qw (comment), $language],
-                create  => from_to $from, $to,
-        ;
-    }
-}
-
 foreach my $info (@plain_or_nested) {
     my ($language, $mark, $begin, $end) = @$info;
     pattern name    => [comment => $language],
@@ -148,19 +184,45 @@ foreach my $info (@plain_or_nested) {
             version => 5.006,
             ;
 }
+
+
+foreach my $group (@generic) {
+    my $pattern = combine +(map {to_eol   $_} @{$group -> {to_eol}}),
+                           (map {from_to @$_} @{$group -> {from_to}}),
+                           (map {id       $_} @{$group -> {id}}),
+                  ;
+    foreach my $language (@{$group -> {languages}}) {
+        pattern name   => [comment => ref $language ? @$language : $language],
+                create => $pattern
+                ;
+    }
+}
+                
+
     
 #
 # Other languages.
 #
 
-foreach my $language (qw /C++ FPL Java/) {
-    pattern name    => [qw (comment), $language],
-            create  => combine to_eol "//", from_to "/*", "*/";
-    ;
-}
+# http://www.pascal-central.com/docs/iso10206.txt
+pattern name    => [qw /comment Pascal/],
+        create  => '(?k:' . '(?k:[{]|[(][*])'
+                          . '(?k:[^}*]*(?:[*][^)][^}*]*)*)'
+                          . '(?k:[}]|[*][)])'
+                          . ')'
+        ;
 
-pattern name    => [qw (comment PHP)],
-        create  => combine to_eol "#", to_eol "//", from_to "/*", "*/";
+# http://www.templetons.com/brad/alice/language/
+pattern name    =>  [qw /comment Pascal Alice/],
+        create  =>  '(?k:(?k:[{])(?k:[^}\n]*)(?k:[}]))'
+        ;
+
+
+# http://westein.arb-phys.uni-dortmund.de/~wb/a68s.txt
+pattern name    => [qw (comment), 'Algol 68'],
+        create  => q {(?k:(?:#[^#]*#)|}                           .
+                   q {(?:\bco\b(?:[^c]+|\Bc|\bc(?!o\b))*\bco\b)|} .
+                   q {(?:\bcomment\b(?:[^c]+|\Bc|\bc(?!omment\b))*\bcomment\b))}
         ;
 
 
@@ -184,6 +246,12 @@ pattern name    => [qw /comment Brainfuck/],
         create  => '(?k:[^<>\[\]+\-.,]+)'
         ;
 
+# Squeak is a variant of Smalltalk-80.
+# http://www.squeak.
+# http://mucow.com/squeak-qref.html
+pattern name    => [qw /comment Squeak/],
+        create  => '(?k:(?k:")(?k:[^"]*(?:""[^"]*)*)(?k:"))'
+        ;
 
 #
 # Scores of less than 5 or above 17....
@@ -206,11 +274,19 @@ pattern name    =>  [qw /comment Beatnik/],
         ;
 
 
+# http://www.cray.com/craydoc/manuals/007-3692-005/html-007-3692-005/
+#  (Goto table of contents/3.3 Source Form)
+# Fortran, in fixed format. Comments start with a C, c or * in the first
+# column, or a ! anywhere, but the sixth column. Then end with a newline.
+pattern name    =>  [qw /comment Fortran fixed/],
+        create  =>  '(?k:(?k:(?:^[Cc*]|(?<!^.....)!))(?k:[^\n]*)(?k:\n))'
+        ;
+
 1;
 
 # Todo:
-#   Pascal:   (* ... *), and { ... }.  Can they be nested?
-#   Modula/Oberon
+#   Modula
+#
 
 __END__
 
@@ -250,115 +326,207 @@ Do not use this module directly, but load it via I<Regexp::Common>.
 This modules gives you regular expressions for comments in various
 languages.
 
-Available languages are:
+=head2 THE LANGUAGES
 
-        $RE{comment}{Ada}
-        $RE{comment}{ALPACA}
-        $RE{comment}{awk}
-        $RE{comment}{'beta-Juliet'}
-        $RE{comment}{Beatnik}        # Require at least Perl 5.8.0
-        $RE{comment}{'Befunge-98'}
-        $RE{comment}{Brainfuck}
-        $RE{comment}{C}
-        $RE{comment}{'C++'}
-        $RE{comment}{'Crystal Report'}
-        $RE{comment}{Dylan}          # Require at least Perl 5.6.0.
-        $RE{comment}{Eiffel}
-        $RE{comment}{FPL}
-        $RE{comment}{'Funge-98'}
-        $RE{comment}{Haifu}
-        $RE{comment}{Haskell}        # Require at least Perl 5.6.0.
-        $RE{comment}{HTML}
-        $RE{comment}{Hugo}           # Require at least Perl 5.6.0.
-        $RE{comment}{ILLGOL}
-        $RE{comment}{Java}
-        $RE{comment}{LaTeX}
-        $RE{comment}{LOGO}
-        $RE{comment}{LPC}
-        $RE{comment}{lua}
-        $RE{comment}{Perl}
-        $RE{comment}{PHP}
-        $RE{comment}{Portia}
-        $RE{comment}{Python}
-        $RE{comment}{'Q-BAL'}
-        $RE{comment}{REBOL}
-        $RE{comment}{Ruby}
-        $RE{comment}{shell}
-        $RE{comment}{Shelta}
-        $RE{comment}{Smalltalk}
-        $RE{comment}{SMITH}
-        $RE{comment}{SQL}
-        $RE{comment}{SQL}{MySQL}
-        $RE{comment}{Tcl}
-        $RE{comment}{TeX}
-        $RE{comment}{troff}
-        $RE{comment}{vi}
-        $RE{comment}{'*W'}
-        $RE{comment}{zonefile}
-
-C<$RE{comment}{vi}> is a regular expression matching comments used in
-vi's startup file F<.exrc>, while C<$RE{comment}{zonefile}> is a regular
-expression matching comments in zonefiles for I<bind>.
-
-For HTML, the regular expression captures what's known in SGML as a
-I<comment declaration>. It starts with a C<< <! >>, ends with a C<< > >>
-and contains zero or more comments. Each comment starts and end with
-C<< -- >>. See also S<B<[Go 90]>>.
-
-Note that Beatnik uses capturing parenthesis, even if C<{-keep}> is
-not used.
-
-If we are using C{-keep} (See L<Regexp::Common>):
+Below, the comments of each of the languages are described.
+The patterns are available as C<$RE{comment}{I<LANG>}>, foreach
+language I<LANG>. Some languages have variants; it's described
+at the individual languages how to get the patterns for the variants.
+Unless mentioned otherwise,
+C<{-keep}> sets C<$1>, C<$2>, C<$3> and C<$4> to the entire comment,
+the opening marker, the content of the comment, and the closing marker
+(for many languages, the latter is a newline) respectively.
 
 =over 4
 
-=item For Ada, ALPACA, awk, beta-Juliet, Befunge-98, C, Crystal Report,
-          Eiffel, Funge-98, Haifu, ILLGOL, LaTeX, LOGO, LPC, lua, Perl,
-          Portia, Python, Q-BAL, REBOL, Ruby, shell, Shelta, Smalltalk,
-          SMITH, SQL, TeX, Tcl, troff, vi, *W, and zonefile:
+=item Ada
+
+Comments in I<Ada> start with C<-->, and last till the end of the line.
+
+=item Advisor
+
+I<Advisor> is a language used by the HP product I<glance>. Comments for
+this language start with either C<#> or C<//>, and last till the
+end of the line.
+
+=item Advsys
+
+Comments for the I<Advsys> language start with C<;> and last till
+the end of the line. See also L<http://www.wurb.com/if/devsys/12>.
+
+=item Alan
+
+I<Alan> comments start with C<-->, and last till the end of the line.
+See also L<http://w1.132.telia.com/~u13207378/alan/manual/alanTOC.html>.
+
+=item Algol 60
+
+Comments in the I<Algol 60> language start with the keyword C<comment>,
+and end with a C<;>. See L<http://www.masswerk.at/algol60/report.htm>.
+
+=item Algol 68
+
+In I<Algol 68>, comments are either delimited by C<#>, or by one of the
+keywords C<co> or C<comment>. The keywords should not be part of another
+word. See L<http://westein.arb-phys.uni-dortmund.de/~wb/a68s.txt>.
+With C<{-keep}>, only C<$1> will be set, returning the entire comment.
+
+=item ALPACA
+
+The I<ALPACA> language has comments starting with C</*> and ending with C<*/>.
+
+=item awk
+
+The I<awk> programming language uses comments that start with C<#>
+and end at the end of the line.
+
+=item B
+
+The I<B> language has comments starting with C</*> and ending with C<*/>.
+
+=item BASIC
+
+There are various forms of BASIC around. Currently, we only support the
+variant supported by I<mvEnterprise>, whose pattern is available as
+C<$RE{comment}{BASIC}{mvEnterprise}>. Comments in this language start with a
+C<!>, a C<*> or the keyword C<REM>, and end till the end of the line. See
+L<http://www.rainingdata.com/products/beta/docs/mve/50/ReferenceManual/Basic.pdf>.
+
+=item Beatnik
+
+The estoric language I<Beatnik> only uses words consisting of letters.
+Words are scored according to the rules of Scrabble. Words scoring less
+than 5 points, or 18 points or more are considered comments (although
+the compiler might mock at you if you score less than 5 points).
+Regardless whether C<{-keep}>, C<$1> will be set, and set to the
+entire comment. This pattern requires I<perl 5.8.0> or newer.
+
+=item beta-Juliet
+
+The I<beta-Juliet> programming language has comments that start with
+C<//> and that continue till the end of the line. See also
+L<http://www.catseye.mb.ca/esoteric/b-juliet/index.html>.
+
+=item Befunge-98
+
+The estoric language I<Befunge-98> uses comments that start and end
+with a C<;>. See L<http://www.catseye.mb.ca/esoteric/befunge/98/spec98.html>.
+
+=item Brainfuck
+
+The minimal language I<Brainfuck> uses only eight characters, 
+C<E<lt>>, C<E<gt>>, C<[>, C<]>, C<+>, C<->, C<.> and C<,>.
+Any other characters are considered comments. With C<{-keep}>,
+C<$1> is set to the entire comment.
+
+=item C
+
+The I<C> language has comments starting with C</*> and ending with C<*/>.
+
+=item C++
+
+The I<C++> language has two forms of comments. Comments that start with
+C<//> and last till the end of the line, and comments that start with
+C</*>, and end with C<*/>. If C<{-keep}> is used, only C<$1> will be
+set, and set to the entire comment.
+
+=item Crystal Report
+
+The formula editor in I<Crystal Reports> uses comments that start
+with C<//>, and end with the end of the line.
+
+=item Dylan
+
+There are two types of comments in I<Dylan>. They either start with
+C<//>, or are nested comments, delimited with C</*> and C<*/>.
+Under C<{-keep}>, only C<$1> will be set, returning the entire comment.
+This pattern requires I<perl 5.6.0> or newer.
+
+=item Eiffel
+
+I<Eiffel> comments start with C<-->, and last till the end of the line.
+
+=item False
+
+In I<False>, comments start with C<{> and end with C<}>.
+See L<http://wouter.fov120.com/false/false.txt>
+
+=item FPL
+
+The I<FPL> language has two forms of comments. Comments that start with
+C<//> and last till the end of the line, and comments that start with
+C</*>, and end with C<*/>. If C<{-keep}> is used, only C<$1> will be
+set, and set to the entire comment.
+
+=item Forth
+
+Comments in Forth start with C<\>, and end with the end of the line.
+See also L<http://docs.sun.com/sb/doc/806-1377-10>.
+
+=item Fortran
+
+There are two forms of I<Fortran>. There's free form I<Fortran>, which
+has comments that start with C<!>, and end at the end of the line.
+The pattern for this is given by C<$RE{Fortran}>. Fixed form I<Fortran>,
+which has been obsoleted, has comments that start with C<C>, C<c> or
+C<*> in the first column, or with C<!> anywhere, but the sixth column.
+The pattern for this are given by C<$RE{Fortran}{fixed}>.
+
+See also L<http://www.cray.com/craydoc/manuals/007-3692-005/html-007-3692-005/>.
+
+=item Funge-98
+
+The estoric language I<Funge-98> uses comments that start and end with
+a C<;>.
+
+=item fvwm2
+
+Configuration files for I<fvwm2> have comments starting with a
+C<#> and lasting the rest of the line.
+
+=item Haifu
+
+I<Haifu>, an estoric language using haikus, has comments starting and
+ending with a C<,>.
+See L<http://www.dangermouse.net/esoteric/haifu.html>.
+
+=item Haskell
+
+There are two types of comments in I<Haskell>. They either start with
+at least two dashes, or are nested comments, delimited with C<{-> and C<-}>.
+Under C<{-keep}>, only C<$1> will be set, returning the entire comment.
+This pattern requires I<perl 5.6.0> or newer.
+
+=item HTML
+
+In I<HTML>, comments only appear inside a I<comment declaration>.
+A comment declaration starts with a C<E<lt>!>, and ends with a
+C<E<gt>>. Inside this declaration, we have zero or more comments.
+Comments starts with C<--> and end with C<-->, and are optionally
+followed by whitespace. The pattern C<$RE{comment}{HTML}> recognizes
+those comment declarations (and hence more than a comment).
+Note that this is not the same as something that starts with
+C<E<lt>!--> and ends with C<--E<gt>>, because the following will
+be matched completely:
+
+    <!--  First  Comment   --
+      --> Second Comment <!--
+      --  Third  Comment   -->
+
+Do not be fooled by what your favourite browser thinks is an HTML
+comment.
+
+If C<{-keep}> is used, the following are returned:
 
 =over 4
 
 =item $1
 
-captures the entire match
+captures the entire comment declaration.
 
 =item $2
 
-captures the opening comment marker
-
-=item $3
-
-captures the contents of the comment
-
-=item $4
-
-captures the closing comment marker
-
-=back
-
-=item For Beatnik, Brainfuck, C++, Dylan, FPL, Haskell, Hugo, Java, PHP,
-      and SQL_MySQL:
-
-=over 4
-
-=item $1
-
-captures the entire match
-
-=back
-
-=item For HTML
-
-=over 4
-
-=item $1
-
-captures the entire match
-
-=item $2
-
-captures the MDO (C<< <! >>).
+captures the MDO (markup declaration open), C<E<lt>!>.
 
 =item $3
 
@@ -366,13 +534,236 @@ captures the content between the MDO and the MDC.
 
 =item $4
 
-captures the (last) comment, without the COMs (C<< -- >>).
+captures the (last) comment, without the surrounding dashes.
 
 =item $5
 
-captures the MDC (C<< > >>).
+captures the MDC (markup declaration close), C<E<lt>>.
 
 =back
+
+=item Hugo
+
+There are two types of comments in I<Hugo>. They either start with
+C<!> (which cannot be followed by a C<\>), or are nested comments,
+delimited with C<!\> and C<\!>.
+Under C<{-keep}>, only C<$1> will be set, returning the entire comment.
+This pattern requires I<perl 5.6.0> or newer.
+
+=item ILLGOL
+
+The estoric language I<ILLGOL> uses comments starting with I<NB> and lasting
+till the end of the line.
+See L<http://www.catseye.mb.ca/esoteric/illgol/index.html>.
+
+=item Java
+
+The I<Java> language has two forms of comments. Comments that start with
+C<//> and last till the end of the line, and comments that start with
+C</*>, and end with C<*/>. If C<{-keep}> is used, only C<$1> will be
+set, and set to the entire comment.
+=item LaTeX
+
+The documentation language I<LaTeX> uses comments starting with C<%>
+and ending at the end of the line.
+
+=item LPC
+
+The I<LPC> language has comments starting with C</*> and ending with C<*/>.
+
+=item LOGO
+
+Comments for the language I<LOGO> start with C<;>, and last till the end
+of the line.
+
+=item lua
+
+Comments for the I<lua> language start with C<-->, and last till the end
+of the line. See also L<http://www.lua.org/manual/manual.html>.
+
+=item mutt
+
+Configuration files for I<mutt> have comments starting with a
+C<#> and lasting the rest of the line.
+
+=item Oberon
+
+Comments in I<Oberon> start with C<(*> and end with C<*)>.
+See L<http://www.oberon.ethz.ch/oreport.html>.
+
+=item Pascal
+
+There are many implementations of Pascal. Some of them are implemented
+by this module.
+
+=over 4
+
+=item C<$RE{comment}{Pascal}>
+
+This is the pattern that recognizes comments according to the Pascal ISO 
+standard. This standard says that comments start with either C<{>, or
+C<(*>, and end with C<}> or C<*)>. This means that C<{*)> and C<(*}>
+are considered to be comments. Many Pascal applications don't allow this.
+See L<http://www.pascal-central.com/docs/iso10206.txt>
+
+=item C<$RE{comment}{Alice}>
+
+The I<Alice Pascal> compiler accepts comments that start with C<{>
+and end with C<}>. Comments are not allowed to contain newlines.
+See L<http://www.templetons.com/brad/alice/language/>.
+
+=item C<$RE{comment}{Pascal}{Delphi}>, C<$RE{comment}{Pascal}{Free}>
+and C<$RE{comment}{Pascal}{GPC}>
+
+The I<Delphi Pascal>, I<Free Pascal> and the I<Gnu Pascal Compiler>
+implementations of Pascal all have comments that either start with
+C<//> and last till the end of the line, are delimited with C<{>
+and C<}> or are delimited with C<(*> and C<*)>. Patterns for those
+comments are given by C<$RE{comment}{Pascal}{Delphi}>, 
+C<$RE{comment}{Pascal}{Free}> and C<$RE{comment}{Pascal}{GPC}>
+respectively. These patterns only set C<$1> when C<{-keep}> is used,
+which will then include the entire comment.
+
+See L<http://info.borland.com/techpubs/delphi5/oplg/>, 
+L<http://www.freepascal.org/docs-html/ref/ref.html> and
+L<http://www.gnu-pascal.de/gpc/>.
+
+=item C<$RE{comment}{Pascal}{Workshop}>
+
+The I<Workshop Pascal> compiler, from SUN Microsystems, allows comments
+that are delimited with either C<{> and C<}>, delimited with
+C<(*)> and C<*>), delimited with C</*>, and C<*/>, or starting
+and ending with a double quote (C<">). When C<{-keep}> is used,
+only C<$1> is set, and returns the entire comment.
+
+See L<http://docs.sun.com/db/doc/802-5762>.
+
+=back
+
+=item PEARL
+
+Comments in I<PEARL> start with a C<!> and last till the end of the
+line, or start with C</*> and end with C<*/>. With C<{-keep}>, 
+C<$1> will be set to the entire comment.
+
+=item PHP
+
+Comments in I<PHP> start with either C<#> or C<//> and last till the
+end of the line, or are delimited by C</*> and C<*/>. With C<{-keep}>,
+C<$1> will be set to the entire comment.
+
+=item PL/B
+
+In I<PL/B>, comments start with either C<.> or C<;>, and end with the 
+next newline. See L<http://www.mmcctech.com/pl-b/plb-0010.htm>.
+
+=item PL/I
+
+The I<PL/I> language has comments starting with C</*> and ending with C<*/>.
+
+=item Perl
+
+I<Perl> uses comments that start with a C<#>, and continue till the end
+of the line.
+
+=item Portia
+
+The I<Portia> programming language has comments that start with C<//>,
+and last till the end of the line.
+
+=item Python
+
+I<Python> uses comments that start with a C<#>, and continue till the end
+of the line.
+
+=item Q-BAL
+
+Comments in the I<Q-BAL> language start with C<`> (a backtick), and
+contine till the end of the line.
+
+=item REBOL
+
+Comments for the I<REBOL> language start with C<;> and last till the
+end of the line.
+
+=item Ruby
+
+Comments in I<Ruby> start with C<#> and last till the end of the time.
+
+=item Scheme
+
+I<Scheme> comments start with C<;>, and last till the end of the line.
+See L<http://schemers.org/>.
+
+=item shell
+
+Comments in various I<shell>s start with a C<#> and end at the end of
+the line.
+
+=item Shelta
+
+The estoric language I<Shelta> uses comments that start and end with
+a C<;>. See L<http://www.catseye.mb.ca/esoteric/shelta/index.html>.
+
+=item slrn
+
+Configuration files for I<slrn> have comments starting with a
+C<%> and lasting the rest of the line.
+
+=item Smalltalk
+
+I<Smalltalk> uses comments that start and end with a double quote, C<">.
+
+=item SMITH
+
+Comments in the I<SMITH> language start with C<;>, and last till the
+end of the line.
+
+=item Squeak
+
+In the Smalltalk variant I<Squeak>, comments start and end with
+C<">. Double quotes can appear inside comments by doubling them.
+
+=item SQL
+
+Standard I<SQL> uses comments starting with two or more dashes, and
+ending at the end of the line. 
+
+I<MySQL> does not follow the standard. Instead, it allows comments
+that start with a C<#> or C<-- > (that's two dashes and a space)
+ending with the following newline, and comments starting with 
+C</*>, and ending with the next C<;> or C<*/> that isn't inside
+single or double quotes. A pattern for this is returned by
+C<$RE{comment}{SQL}{MySQL}>. With C<{-keep}>, only C<$1> will
+be set, and it returns the entire comment.
+
+=item Tcl
+
+In I<Tcl>, comments start with C<#> and continue till the end of the line.
+
+=item TeX
+
+The documentation language I<TeX> uses comments starting with C<%>
+and ending at the end of the line.
+
+=item troff
+
+The document formatting language I<troff> uses comments starting
+with C<\">, and continuing till the end of the line.
+
+=item vi
+
+In configuration files for the editor I<vi>, one can use comments
+starting with C<">, and ending at the end of the line.
+
+=item *W
+
+In the language I<*W>, comments start with C<||>, and end with C<!!>.
+
+=item zonefile
+
+Comments in DNS I<zonefile>s start with C<;>, and continue till the
+end of the line.
 
 =back
 
@@ -390,6 +781,24 @@ Press. B<1990>. ISBN 0-19-853737-9. Ch. 10.3, pp 390-391.
 =head1 HISTORY
 
  $Log: comment.pm,v $
+ Revision 2.106  2003/03/12 22:25:42  abigail
+ - More generic setup to define comments for various languages.
+ - Expanded and redid the documentation for comment.pm.
+ - Comments for Advisor, Advsys, Alan, Algol 60, Algol 68, B,
+   BASIC (mvEnterprise), Forth, Fortran (both fixed and free form),
+   fvwm2, mutt, Oberon, 6 versions of Pascal,
+   PEARL (one of the at least four...), PL/B, PL/I, slrn, Squeak.
+
+ Revision 2.105  2003/03/09 19:04:42  abigail
+ - More generic setup to define comments for various languages.
+ - Expanded and redid the documentation for comment.pm.
+   Now every language has its own paragraph, describing its comment,
+   and pointers to webpages.
+ - Comments for Advisor, Advsys, Alan, Algol 60, Algol 68, B, BASIC
+   (mvEnterprise), Forth, Fortran (both fixed and free form), fvwm2, mutt,
+   Oberon, 6 versions of Pascal, PEARL (one of the at least four...), PL/B,
+   PL/I, slrn, Squeak.
+
  Revision 2.104  2003/02/21 14:48:06  abigail
  Crystal Reports
 

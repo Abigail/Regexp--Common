@@ -1,5 +1,5 @@
 ==============================================================================
-                  Release of version 2.110 of Regexp::Common
+                  Release of version 2.111 of Regexp::Common
 ==============================================================================
 
 NOTE:  The jump to version 2.100 is there for no other reason than that
@@ -109,9 +109,26 @@ COPYRIGHT
 
 ==============================================================================
 
-CHANGES IN VERSION 2.110
+CHANGES IN VERSION 2.111
 
 Revision history for Perl extension Regexp::Common.
+
+2.111 Wed Mar 12 23:30:03 2003
+        - Introduced the -i switch. Important if you are using the functional
+          interface and want to be able to match case insensitive.
+          (Request from Tim Maher).
+        - Introduced the -nospace switch for $RE{net}{domain}
+          (Request from Juerd).
+        - Decimal numbers.
+        - WAIS URIs.
+        - More generic setup to define comments for various languages.
+        - Expanded and redid the documentation for comment.pm.
+        - Comments for Advisor, Advsys, Alan, Algol 60, Algol 68, B,
+          BASIC (mvEnterprise), Forth, Fortran (both fixed and free form),
+          fvwm2, mutt, Oberon, 6 versions of Pascal,
+          PEARL (one of the at least four...), PL/B, PL/I, slrn, Squeak.
+        - 151114 tests in 42 files.
+        - 125 patterns in 11 classes and 10 subclasses.
 
 2.110 Fri Feb 21 15:58:14 2003
         - Fixed t/test_squares.t. '0x7FFFFFFFFFFFFFFF' cannot be used

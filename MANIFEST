@@ -22,12 +22,14 @@ lib/Regexp/Common/URI/news.pm
 lib/Regexp/Common/URI/tel.pm
 lib/Regexp/Common/URI/telnet.pm
 lib/Regexp/Common/URI/tv.pm
+lib/Regexp/Common/URI/wais.pm
 lib/Regexp/Common/whitespace.pm
 lib/Regexp/Common/zip.pm
 MANIFEST
 Makefile.PL
 README
 TODO
+t/number/decimal.t
 t/Common.pm
 t/test_balanced.t
 t/test_bases.t
@@ -36,6 +38,7 @@ t/test_comments.t
 t/test_curry.t
 t/test_delimited.t
 t/test_domain.t
+t/test_i.t
 t/test_int.t
 t/test_ip.t
 t/test_keep.t
@@ -59,6 +62,7 @@ t/URI/nntp.t
 t/URI/tel.t
 t/URI/telnet.t
 t/URI/tv.t
+t/URI/wais.t
 t/URI/any.t
 t/zip/australia.t
 t/zip/belgium.t

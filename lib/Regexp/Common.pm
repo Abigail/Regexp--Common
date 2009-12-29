@@ -8,7 +8,7 @@ local $^W = 1;
 use vars qw /$VERSION %RE %sub_interface/;
 
 
-($VERSION) = q $Revision: 2.110 $ =~ /([\d.]+)/;
+($VERSION) = q $Revision: 2.111 $ =~ /([\d.]+)/;
 
 use Carp;
 
@@ -209,7 +209,7 @@ sub pattern {
                                {%default, %flags}, \@nonflags);
                 if (exists $flags{-keep}) { $pat =~ s/\Q(?k:/(/g; }
                 else { $pat =~ s/\Q(?k:/(?:/g; }
-                return qr/$pat/;
+                return exists $flags {-i} ? qr /(?i:$pat)/ : qr/$pat/;
         };
 
         return 1;
@@ -248,6 +248,7 @@ use overload
         else {
             $pat =~ s/\Q(?k:/(?:/g;
         }
+        if (exists $self->{flags}{-i})   { $pat = "(?i)$pat" }
         return $pat;
     };
 
@@ -417,7 +418,11 @@ program, this behaviour can be disabled by importing the module as:
 =head2 Universal flags
 
 Normally, flags are specific to a single pattern.
-However, there is one flag that all patterns may specify.
+However, there is two flags that all patterns may specify.
+
+=over 4
+
+=item C<-keep>
 
 By default, the patterns provided by C<%RE> contain no capturing
 parentheses. However, if the C<-keep> flag is specified (it requires
@@ -438,6 +443,14 @@ substrings are saved.
 See also L<"Adding new regular expressions">, which describes how to create
 new patterns with "optional" capturing brackets that respond to C<-keep>.
 
+=item C<-i>
+
+Some patterns or subpatterns only match lowercase or uppercase letters.
+If one wants the do case insensitive matching, one option is to use
+the C</i> regexp modifier, or the special sequence C<(?i)>. But if the
+functional interface is used, one does not have this option. The 
+C<-i> switch solves this problem; by using it, the pattern will do
+case insensitive matching.
 
 =head2 OO interface and inline matching/substitution
 
@@ -810,6 +823,10 @@ project, especially: Elijah, Jarkko, Tom, Nat, Ed, and Vivek.
 =head1 HISTORY
 
   $Log: Common.pm,v $
+  Revision 2.111  2003/03/12 22:37:13  abigail
+  +  The -i switch.
+  +  New release.
+
   Revision 2.110  2003/02/21 14:55:31  abigail
   New release
 

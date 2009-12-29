@@ -1,4 +1,4 @@
-# $Id: URI.pm,v 2.105 2003/02/21 14:49:41 abigail Exp $
+# $Id: URI.pm,v 2.106 2003/03/12 22:28:57 abigail Exp $
 
 package Regexp::Common::URI;
 
@@ -14,17 +14,15 @@ use vars qw /$VERSION @EXPORT_OK @ISA/;
 use Regexp::Common qw /pattern clean no_defaults/;
 
 # Use 'require' here, not 'use', so we delay running them after we are compiled.
-require Regexp::Common::URI::fax;
-require Regexp::Common::URI::file;
-require Regexp::Common::URI::ftp;
-require Regexp::Common::URI::gopher;
-require Regexp::Common::URI::http;
-require Regexp::Common::URI::news;
-require Regexp::Common::URI::tel;
-require Regexp::Common::URI::telnet;
-require Regexp::Common::URI::tv;
+# We also do it using an 'eval'; this saves us from have repeated similar
+# lines. The eval is further explained in 'perldoc -f require'.
+my @uris = qw /fax file ftp gopher http news tel telnet tv wais/;
+foreach my $uri (@uris) {
+    eval "require Regexp::Common::URI::$uri";
+    die $@ if $@;
+}
 
-($VERSION) = q $Revision: 2.105 $ =~ /[\d.]+/g;
+($VERSION) = q $Revision: 2.106 $ =~ /[\d.]+/g;
 
 my %uris;
 
@@ -61,7 +59,7 @@ Regexp::Common::URI -- provide patterns for URIs.
 =head1 DESCRIPTION
 
 Patterns for the following URIs are supported: fax, file, FTP, gopher,
-HTTP, news, NTTP, tel, telnet, and tv.
+HTTP, news, NTTP, tel, telnet, tv and WAIS.
 Each is documented in the I<Regexp::Common::URI::B<scheme>>,
 manual page, for the appropriate scheme (in lowercase), except for
 I<NNTP> URIs which are found in I<Regexp::Common::URI::news>.
@@ -114,6 +112,9 @@ Vaha-Sipila, A.: I<URLs for Telephone Calls>. April 2000.
 =head1 HISTORY
 
  $Log: URI.pm,v $
+ Revision 2.106  2003/03/12 22:28:57  abigail
+ WAIS URIs
+
  Revision 2.105  2003/02/21 14:49:41  abigail
  Gopher added
 

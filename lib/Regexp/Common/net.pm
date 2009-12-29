@@ -7,7 +7,7 @@ use Regexp::Common qw /pattern clean no_defaults/;
 
 use vars qw /$VERSION/;
 
-($VERSION) = q $Revision: 2.101 $ =~ /[\d.]+/g;
+($VERSION) = q $Revision: 2.102 $ =~ /[\d.]+/g;
 
 my %IPunit = (
     dec => q{(?k:25[0-5]|2[0-4]\d|[0-1]??\d{1,2})},
@@ -69,9 +69,17 @@ my $let_dig     =  "[A-Za-z0-9]";
 my $let_dig_hyp = "[-A-Za-z0-9]";
 
 # Domain names, from RFC 1035.
-pattern name   => [qw (net domain)],
-        create => "(?k: |(?:$letter(?:(?:$let_dig_hyp){0,61}$let_dig)?" .
-                     "(?:\\.$letter(?:(?:$let_dig_hyp){0,61}$let_dig)?)*))",
+pattern name   => [qw (net domain -nospace=)],
+        create => sub {
+            if (exists $_ [1] {-nospace} && !defined $_ [1] {-nospace}) {
+                return "(?k:$letter(?:(?:$let_dig_hyp){0,61}$let_dig)?" .
+                       "(?:\\.$letter(?:(?:$let_dig_hyp){0,61}$let_dig)?)*)"
+            }
+            else {
+                return "(?k: |(?:$letter(?:(?:$let_dig_hyp){0,61}$let_dig)?" .
+                       "(?:\\.$letter(?:(?:$let_dig_hyp){0,61}$let_dig)?)*))"
+            }
+        },
         ;
 
 
@@ -255,6 +263,15 @@ By default I<P> is C<qr/:/>.
 Returns a pattern to match domains (and hosts) as defined in RFC 1035.
 Under I{-keep} only the entire domain name is returned.
 
+RFC 1035 says that a single space can be a domainname too. So, the
+pattern returned by C<$RE{net}{domain}> recognizes a single space
+as well. This is not always what people want. If you want to recognize
+domainnames, but not a space, you can do one of two things, either use
+
+    /(?! )$RE{net}{domain}/
+
+or use the C<{-nospace}> option (without an argument).
+
 =head1 REFERENCES
 
 =over 4
@@ -273,6 +290,9 @@ L<Regexp::Common> for a general description of how to use this interface.
 =head1 HISTORY
 
  $Log: net.pm,v $
+ Revision 2.102  2003/03/12 22:26:35  abigail
+ -nospace switch for domain names
+
  Revision 2.101  2003/02/01 22:55:31  abigail
  Changed Copyright years
 

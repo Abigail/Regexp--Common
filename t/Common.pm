@@ -22,7 +22,7 @@ sub run_fail;
 
 local $^W = 1;
 
-($VERSION) = q $Revision: 2.106 $ =~ /[\d.]+/;
+($VERSION) = q $Revision: 2.107 $ =~ /[\d.]+/;
 
 my $count;
 
@@ -56,19 +56,16 @@ sub count_test_runs {
     my $keep     = 0;
     my $normal   = 0;
     my $fail     = 0;
+
     foreach my $test (@$tests) {
-        $normal   ++ foreach grep {$_ & NORMAL}      values %{$test -> [2]};
-        $keep     ++ foreach grep {$_ & NORMAL_PASS} values %{$test -> [2]};
-        $fail     ++ foreach grep {$_ & FAIL}        values %{$test -> [2]};
+        while (my ($name, $mask) = each %{$test -> [2]}) {
+            $normal += @{$passes   -> {$name}} if $mask & NORMAL;
+            $keep   += @{$passes   -> {$name}} if $mask & NORMAL_PASS;
+            $fail   += @{$failures -> {$name}} if $mask & FAIL;
+        }
     }
 
-    my $runs  = 1;
-       $runs += @$passes   * $normal;
-       $runs += @$passes   * $keep;
-
-       $runs += @$failures * $fail;
-
-    $runs;
+    1 + $normal + $keep + $fail;
 }
 
 # Arguments:
@@ -77,11 +74,22 @@ sub count_test_runs {
 #    bad:     ref to array with arrays, parts not making patterns.
 #    query:   code ref, creates query strings.
 #    wanted:  code ref, creates list what keep should return.
+#
+#             Filter arguments are used to filter chunks before trying them.
+#             All of them are code refs.
+#    filter:          filter everything.
+#    filter_passes:   filter passes.
+#    filter_failures: filter failures.
+#    filter_test:     filter called with testname.
 sub run_tests {
     my %args = @_;
 
     my $tests    = $args {tests};
     my @passes   = cross @{$args {good}};
+
+    # Collect the names of all tags.
+    my %tag_names;
+       @tag_names {keys %{$_ -> [2]}} = () foreach @$tests;
 
     my @failures = ();
     foreach my $i (0 .. $#{$args {good}}) {
@@ -90,6 +98,7 @@ sub run_tests {
                                 @{$args {good}} [$i + 1 .. $#{$args {good}}]
     }
 
+    # General filters.
     @passes   = grep {$args {filter_passes} -> ($_)} @passes
                 if defined $args {filter_passes};
     @passes   = grep {$args {filter} -> ($_)} @passes
@@ -100,7 +109,24 @@ sub run_tests {
     @failures = grep {$args {filter} -> ($_)} @failures
                 if defined $args {filter};
 
-    my $runs = count_test_runs $tests, \@passes, \@failures;
+    my (%passes, %failures);
+    # Specific filters.
+    if (defined $args {filter_test}) {
+        foreach my $name (keys %tag_names) {
+            $passes   {$name} = [grep {$args {filter_test} ->
+                                             (pass    => $name, $_)} @passes];
+            $failures {$name} = [grep {$args {filter_test} ->
+                                             (failure => $name, $_)} @failures];
+        }
+    }
+    else {
+        foreach my $name (keys %tag_names) {
+            $passes   {$name} = [@passes];
+            $failures {$name} = [@failures];
+        }
+    }
+
+    my $runs = count_test_runs $tests, \%passes, \%failures;
     print "1..$runs\n";
 
     {
@@ -109,44 +135,36 @@ sub run_tests {
         print "ok ", ++ $count, " - ", $args {version}, "::VERSION\n";
     }
 
-    my (@test_names, @tag_names, %seen);
-    foreach my $test (@$tests) {
-        push @test_names => $test -> [0];
-        push @tag_names  => grep {!$seen {$_} ++} keys %{$test -> [2]};
-    }
+    my @test_names = map {$_ -> [1]} @$tests;
+    my @tag_names  = keys %tag_names;
 
     my $wanted = $args {wanted};
-    foreach my $pass (@passes) {
-        my %tags;
+    foreach my $test (@$tests) {
+        my ($name, $re, $matches) = @$test;
 
-        $tags {$_} = $args {query} -> ($_ => $pass) foreach @tag_names;
+        while (my ($tag, $match) = each %$matches) {
+            if ($match & NORMAL) {
+                foreach my $pass (@{$passes {$tag}}) {
+                    local $_ = $args {query} -> ($tag => $pass);
 
-        foreach my $test (@$tests) {
-            my ($name, $re, $matches) = @$test;
-            while (my ($tag, $match) = each %$matches) {
-                next unless $match & NORMAL;
-                local $_ = $tags {$tag};
-                run_test re     => $re,
-                         name   => $name,
-                         match  => $match & NORMAL_PASS;
+                    run_test re    => $re,
+                             name  => $name,
+                             match => $match & NORMAL_PASS;
 
-                run_keep re     => $re,
-                         name   => $name,
-                         tag    => $tag,
-                         parts  => $pass,
-                         wanted => $wanted if $match & NORMAL_PASS;
+                    run_keep re     => $re,
+                             name   => $name,
+                             tag    => $tag,
+                             parts  => $pass,
+                             wanted => $wanted if $match & NORMAL_PASS;
+                }
             }
-        }
-    }
+            if ($match & FAIL) {
+                foreach my $failure (@{$failures {$tag}}) {
+                    local $_ = $args {query} -> ($tag => $failure);
 
-    foreach my $failure (@failures) {
-        foreach my $test (@$tests) {
-            my ($name, $re, $matches) = @$test;
-            while (my ($tag, $match) = each %$matches) {
-                next unless $match & FAIL;
-                local $_ = $args {query} -> ($tag => $failure);
-                run_fail re    =>  $re,
-                         name  =>  $name;
+                    run_fail re    =>  $re,
+                             name  =>  $name;
+                }
             }
         }
     }
@@ -217,6 +235,9 @@ sub run_fail {
 __END__
 
 $Log: Common.pm,v $
+Revision 2.107  2003/03/12 22:26:54  abigail
+More filter flexibility
+
 Revision 2.106  2003/02/21 14:51:08  abigail
 Support for
 

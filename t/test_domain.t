@@ -1,6 +1,9 @@
-# $Revision: 2.100 $
+# $Revision: 2.101 $
 #
 # $Log: test_domain.t,v $
+# Revision 2.101  2003/03/12 22:26:35  abigail
+# -nospace switch for domain names
+#
 # Revision 2.100  2003/01/21 23:19:13  abigail
 # The whole world understands RCS/CVS version numbers, that 1.9 is an
 # older version than 1.10. Except CPAN. Curse the idiot(s) who think
@@ -38,6 +41,27 @@ pass 'a-----------------1.example.com';
 pass 'a123456a.example.com';
 pass 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-0123456789.com';
 pass ' ';
+fail '123host.example.com';
+fail 'host-.example.com';
+fail 'host.example.com.';
+fail 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-0123456789a.com';
+fail '  ';
+fail 'host. .example.com';
+fail 'host .example.com';
+fail 'ho st.example.com';
+
+try $RE{net}{domain}{-nospace};
+
+pass 'host.example.com';
+pass 'a.b.c.d.e.f.g.h.i.j.k.l.m.n.o.p.q.r.s.t.u.v.w.x.y.z';
+pass 'A.B.C.D.E.F.G.H.I.J.K.L.M.N.O.P.Q.R.S.T.U.V.W.X.Y.Z';
+pass 'host1.example.com';
+pass 'host-1.example.com';
+pass 'host';
+pass 'a-----------------1.example.com';
+pass 'a123456a.example.com';
+pass 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-0123456789.com';
+fail ' ';
 fail '123host.example.com';
 fail 'host-.example.com';
 fail 'host.example.com.';
