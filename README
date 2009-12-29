@@ -1,5 +1,5 @@
 ==============================================================================
-                  Release of version 2.113 of Regexp::Common
+                  Release of version 2.115 of Regexp::Common
 ==============================================================================
 
 WARNING: INCOMPATIBLE CHANGE in version 2.113!
@@ -114,7 +114,7 @@ MAINTAINER
 
 COPYRIGHT
 
-       Copyright (c) 1997-2003, Damian Conway. All Rights Reserved.
+       Copyright (c) 1997-2004, Damian Conway. All Rights Reserved.
      This module is free software. It may be used, redistributed
      and/or modified under the terms of the Perl Artistic License
           (see http://www.perl.com/perl/misc/Artistic.html)
@@ -123,9 +123,32 @@ COPYRIGHT
 
 ==============================================================================
 
-CHANGES IN VERSION 2.113
+CHANGES IN VERSION 2.115
 
 Revision history for Perl extension Regexp::Common.
+
+2.115 Wed Jun  9 23:59:13 2004
+        - Patterns for comments of ABC, Caml, CLU, COBOL, ECMAScript,
+          Icon, J, JavaScript, Lisp, M, MUMPS.
+        - Patterns for postal codes of Norway, Italy and Spain.
+        - Patterns for US SSN.
+        - New way of doing tests using t::Common, giving more control
+          to test program.
+        - Random generators in t::Common.
+        - Cut down on tests in test_lingua_palindrome.t.
+        - Fixed bug in t/zip/australia.t could cause an infinite loop.
+        - 132225 tests in 48 files.
+
+2.114 Sun May 25 21:34:56 2003
+        - Fix to t/zip/greenland.t to avoid generating valid zipcodes
+          when testing for failures.
+        - Fixes to t/URI/gopher.t and t/URI/wais.t to avoid warnings.
+        - Australian postal codes now accept '0909'. (Ron Savage)
+        - Added comments for 'C--', 'C#', 'Cg', 'Nickle', 'PL/SQL', 'QML'
+          and SLIDE.
+        - Fixed the assignment of the version number to $VERSION in 6 classes.
+        - 158287 tests in 44 files.
+        - 134 patterns in 11 classes and 12 subclasses.
 
 2.113 Wed Apr  2 22:58:46 2003
         - INCOMPATIBLE CHANGE!
@@ -141,6 +164,7 @@ Revision history for Perl extension Regexp::Common.
 
           We are very sorry for the inconvenience.
         - 157762 tests in 44 files.
+        - 127 patterns in 11 classes and 12 subclasses.
 
 2.112 Wed Mar 26 00:25:04 2003
         - prospero and pop URIs

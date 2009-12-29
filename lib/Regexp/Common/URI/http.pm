@@ -1,4 +1,4 @@
-# $Id: http.pm,v 2.100 2003/02/10 21:06:41 abigail Exp $
+# $Id: http.pm,v 2.101 2004/06/09 21:42:48 abigail Exp $
 
 package Regexp::Common::URI::http;
 
@@ -11,7 +11,7 @@ use Regexp::Common::URI::RFC2396 qw /$host $port $path_segments $query/;
 
 use vars qw /$VERSION/;
 
-($VERSION) = q $Revision: 2.100 $ =~ /[\d.]+/g;
+($VERSION) = q $Revision: 2.101 $ =~ /[\d.]+/g;
 
 my $http_uri = "(?k:(?k:http)://(?k:$host)(?::(?k:$port))?"           .
                "(?k:/(?k:(?k:$path_segments)(?:[?](?k:$query))?))?)";
@@ -52,7 +52,7 @@ Regexp::Common::URI::http -- Returns a pattern for HTTP URIs.
 Provides a regex for an HTTP URI as defined by RFC 2396 (generic syntax)
 and RFC 2616 (HTTP).
 
-If C<< -scheme=I<P> >> is specified the pattern I<P> is used as the scheme.
+If C<< -scheme => I<P> >> is specified the pattern I<P> is used as the scheme.
 By default I<P> is C<qr/http/>. C<https> and C<https?> are reasonable
 alternatives.
 
@@ -118,6 +118,9 @@ June 1999.
 =head1 HISTORY
 
  $Log: http.pm,v $
+ Revision 2.101  2004/06/09 21:42:48  abigail
+ POD nits
+
  Revision 2.100  2003/02/10 21:06:41  abigail
  http URI
 

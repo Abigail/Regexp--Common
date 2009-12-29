@@ -8,7 +8,7 @@ local $^W = 1;
 use vars qw /$VERSION %RE %sub_interface/;
 
 
-($VERSION) = q $Revision: 2.113 $ =~ /([\d.]+)/;
+($VERSION) = q $Revision: 2.115 $ =~ /([\d.]+)/;
 
 use Carp;
 
@@ -30,8 +30,8 @@ sub FETCH {
 }
 
 my %imports = map {$_ => "Regexp::Common::$_"}
-              qw /balanced  comment delimited  lingua list net number
-                  profanity URI     whitespace zip/;
+              qw /balanced comment   delimited lingua list       net
+                  number   profanity SEN       URI    whitespace zip/;
 
 sub import {
     tie %RE, __PACKAGE__;
@@ -462,7 +462,7 @@ Regexp::Common allows you do write this:
 
         $changed = $RE{some}{pattern}->subs($original=>$replacement);
 
-Apart from reducing precedence-angst, this approach has the daded
+Apart from reducing precedence-angst, this approach has the added
 advantages that the substitution behaviour can be optimized from the 
 regular expression, and the replacement string can be provided by
 default (see L<"Adding new regular expressions">).
@@ -749,7 +749,7 @@ Future releases of the module will also provide patterns for the following:
 If you have other patterns or pattern generators that you think would be
 generally useful, please send them to the maintainer -- preferably as source
 code using the C<pattern> subroutine. Submissions that include a set of
-tests, will be especially welcome.
+tests will be especially welcome.
 
 
 =head1 DIAGNOSTICS
@@ -805,6 +805,13 @@ project, especially: Elijah, Jarkko, Tom, Nat, Ed, and Vivek.
 =head1 HISTORY
 
   $Log: Common.pm,v $
+  Revision 2.115  2004/06/09 21:58:01  abigail
+  - 'SEN'
+  - New release.
+
+  Revision 2.114  2003/05/25 21:34:56  abigail
+  POD nits from Bryan C. Warnock
+
   Revision 2.113  2003/04/02 21:23:48  abigail
   Removed anything related to $; being '='
 

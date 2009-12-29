@@ -1,4 +1,4 @@
-# $Id: URI.pm,v 2.107 2003/03/25 23:20:30 abigail Exp $
+# $Id: URI.pm,v 2.108 2004/06/09 21:45:24 abigail Exp $
 
 package Regexp::Common::URI;
 
@@ -22,7 +22,7 @@ foreach my $uri (@uris) {
     die $@ if $@;
 }
 
-($VERSION) = q $Revision: 2.107 $ =~ /[\d.]+/g;
+($VERSION) = q $Revision: 2.108 $ =~ /[\d.]+/g;
 
 my %uris;
 
@@ -59,7 +59,7 @@ Regexp::Common::URI -- provide patterns for URIs.
 =head1 DESCRIPTION
 
 Patterns for the following URIs are supported: fax, file, FTP, gopher,
-HTTP, news, NTTP, tel, telnet, tv and WAIS.
+HTTP, news, NTTP, pop, prospero, tel, telnet, tv and WAIS.
 Each is documented in the I<Regexp::Common::URI::B<scheme>>,
 manual page, for the appropriate scheme (in lowercase), except for
 I<NNTP> URIs which are found in I<Regexp::Common::URI::news>.
@@ -112,6 +112,9 @@ Vaha-Sipila, A.: I<URLs for Telephone Calls>. April 2000.
 =head1 HISTORY
 
  $Log: URI.pm,v $
+ Revision 2.108  2004/06/09 21:45:24  abigail
+ POD
+
  Revision 2.107  2003/03/25 23:20:30  abigail
  pop and prospero URIs
 

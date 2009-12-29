@@ -9,7 +9,7 @@ use t::Common;
 
 $^W = 1;
 
-($VERSION) = q $Revision: 2.100 $ =~ /[\d.]+/;
+($VERSION) = q $Revision: 2.101 $ =~ /[\d.]+/;
 
 sub create_parts;
 
@@ -110,7 +110,9 @@ sub create_parts {
     # Distribution district.
     my $a = {};
     $good [0] = [39];
+ again:
     $bad  [0] = ['00', "quux", map {_ 2, 2, $a} 1 .. 3];
+    goto again if grep {$_ eq "39"} @{$bad [0]};
 
     # Other numbers.
     my $c = {'00' => 1};
@@ -127,6 +129,9 @@ __END__
 =pod
 
  $Log: greenland.t,v $
+ Revision 2.101  2003/08/13 10:05:35  abigail
+ Fixed case where valid zip codes were generated in the failure case
+
  Revision 2.100  2003/02/09 21:50:05  abigail
  Tests for postal codes of Greenland
 

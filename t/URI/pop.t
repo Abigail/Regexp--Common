@@ -10,7 +10,7 @@ use t::Common;
 $^W    = 1;
 $DEBUG = 1;
 
-($VERSION) = q $Revision: 2.100 $ =~ /[\d.]+/;
+($VERSION) = q $Revision: 2.101 $ =~ /[\d.]+/;
 
 sub create_parts;
 
@@ -67,7 +67,8 @@ sub create_parts {
     my (@good, @bad);
 
     # Users
-    $good [0] = [undef, qw /abigail abigail%20&%20a%20camel=/];
+    $good [0] = [undef, qw /abigail/];
+    push  @{$good [0]} => qw /abigail%20&%20a%20camel=/ unless $] < 5.006;
     $bad  [0] = ["", qw /abigail%GG [abigail]/];
 
     # Auth_type
@@ -75,10 +76,11 @@ sub create_parts {
     $bad  [1] = ["", qw /"password" camel-][/];
 
     # Hosts.
-    $good [2] = [qw /pop3.abigail.nl pop3.PERL.com a.b.c.d.e.f.g.h.i.j.k.x
-                     127.0.0.1 p--p--p.abigail.nl/];
-    $bad  [2] = [qw /www.example..com w+w.example.com w--.example.com
-                     127.0.0.0.1 -w.example.com www.example.1com/];
+    $good [2] = [qw /pop3.abigail.nl pop3.PERL.com 127.0.0.1/];
+    push @{$good [2]} => qw /a.b.c.d.e.f.g.h.i.j.k.x p--p--p.abigail.nl/
+                         unless $] < 5.006;  # Speed.
+    $bad  [2] = [qw /www.example..com w+w.example.com 127.0.0.0.1
+                     w--.example.com -w.example.com www.example.1com/];
 
     # Ports.
     $good [3] = [undef, 110];
@@ -98,6 +100,9 @@ sub filter {
 __END__
 
  $Log: pop.t,v $
+ Revision 2.101  2004/06/09 21:35:31  abigail
+ Reducing the number of tests for pre-5.6 perls (for speed)
+
  Revision 2.100  2003/03/25 13:02:07  abigail
  Tests for POP URIs.
 

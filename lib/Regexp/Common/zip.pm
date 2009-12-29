@@ -8,7 +8,7 @@ use Carp;
 
 use vars qw /$VERSION/;
 
-($VERSION) = q $Revision: 2.107 $ =~ /[\d.]+/;
+($VERSION) = q $Revision: 2.110 $ =~ /[\d.]+/g;
 
 #
 # Prefer '[0-9]' over \d, because the latter may include more
@@ -22,7 +22,10 @@ my %code = (
     France            =>  [qw /FR?  FR F/],
     Germany           =>  [qw /DE?  DE D/],
     Greenland         =>  [qw /DK   DK DK/],
+    Italy             =>  [qw /IT?  IT I/],
     Netherlands       =>  [qw /NL   NL NL/],
+    Norway            =>  [qw /NO?  NO N/],
+    Spain             =>  [qw /ES?  ES E/],
     USA               =>  [qw /USA? US USA/],
 );
 
@@ -55,9 +58,11 @@ sub _c {
 
 
 my %zip = (
-    Australia   =>  "(?k:(?k:[1-8][0-9]|9[0-7]|0?[28])(?k:[0-9]{2}))",
+    Australia   =>  "(?k:(?k:[1-8][0-9]|9[0-7]|0?[28]|0?9(?=09))(?k:[0-9]{2}))",
                     # Postal codes of the form 'DDDD', with the first
                     # two digits 02, 08 or 20-97. Leading 0 may be omitted.
+                    # 909 and 0909 are valid as well - but no other postal
+                    # codes starting with 9 or 09.
 
     Belgium     =>  "(?k:(?k:[1-9])(?k:[0-9]{3}))",
                     # Postal codes of the form: 'DDDD', with the first
@@ -86,6 +91,22 @@ my %zip = (
     Greenland   =>  "(?k:(?k:39)(?k:[0-9]{2}))",
                     # Postal codes of Greenland are part of the Danish
                     # system. Codes in Greenland start with 39.
+
+    Italy       =>  "(?k:(?k:[0-9])(?k:[0-9])(?k:[0-9])(?k:[0-9])(?k:[0-9]))",
+                    # First digit: region.
+                    # Second digit: province.
+                    # Third digit: capital/province (odd for capital).
+                    # Fourth digit: route.
+                    # Fifth digit: place on route (0 for small places)
+
+    Norway      =>  "(?k:[0-9]{4})",
+                    # Four digits, no significance (??).
+
+    Spain       =>  "(?k:(?k:0[1-9]|[1-4][0-9]|5[0-2])(?k:[0-9])(?k:[0-9]{2}))"
+                    # Five digits, first two indicate the province.
+                    # Third digit: large town, main delivery rounds.
+                    # Last 2 digits: delivery area, secondary delivery route
+                    #                or link to rural areas.
 );
 
 my %alternatives = (
@@ -272,7 +293,10 @@ Examples:
 Returns a pattern that recognizes Australian postal codes. Australian
 postal codes consist of four digits; the first two digits, which range
 from '10' to '97', indicate the state. Territories use '02' or '08'
-as starting digits; the leading zero is optional. The (optional) country
+as starting digits; the leading zero is optional. '0909' is the only 
+postal code starting with '09' (the leading zero is optional here as
+well) - this is the postal code for the Nothern Territory University).
+The (optional) country
 prefixes are I<AU> (ISO country code) and I<AUS> (CEPT code).
 Regexp::Common 2.107 and before used C<$RE{zip}{Australia}>. This is
 still supported.
@@ -303,7 +327,7 @@ The last two digits.
 
 =back
 
-=head2 C<$RE{zip}{Belgian}>
+=head2 C<$RE{zip}{Belgium}>
 
 Returns a pattern than recognizes Belgian postal codes. Belgian postal
 codes consist of 4 digits, of which the first indicates the province.
@@ -487,6 +511,56 @@ The last two digits of the postal code.
 
 =back
 
+=head2 C<$RE{zip}{Italy}>
+
+Returns a pattern recognizing Italian postal codes. Italian postal
+codes consist of 5 digits. The first digit indicates the region, the
+second the province. The third digit is odd for province capitals,
+and even for the province itself. The fourth digit indicates the
+route, and the fifth a place on the route (0 for small places, 
+alphabetically for the rest).
+
+The country prefix is either I<IT> (the ISO country code), or
+I<I> (the CEPT code).
+
+If C<{-keep}> is used, the following variables will be set:
+
+=over 4
+
+=item $1
+
+The entire postal code.
+
+=item $2
+
+The country code prefix.
+
+=item $3
+
+The postal code without the country prefix.
+
+=item $4
+
+The region.
+
+=item $5
+
+The province.
+
+=item $6 
+
+Capital or province.
+
+=item $7
+
+The route.
+
+=item $8
+
+The place on the route.
+
+=back
+
 =head2 C<$RE{zip}{Netherlands}>
 
 Returns a pattern that recognizes Dutch postal codes. Dutch postal
@@ -526,6 +600,73 @@ The letters part of the postal code.
 
 =back
 
+=head2 C<< $RE{zip}{Norway} >>
+
+Returns a pattern that recognizes Norwegian postal codes. Norwegian
+postal codes consist of four digits.
+
+The country prefix is either I<NO> (the ISO country code), or
+I<N> (the CEPT code).
+
+If C<{-keep}> is used, the following variables will be set:
+
+=over 4
+
+=item $1
+
+The entire postal code.
+
+=item $2
+
+The country code prefix.
+
+=item $3
+
+The postal code without the country prefix.
+
+=back
+
+=head2 C<< $RE{zip}{Spain} >>
+
+Returns a pattern that recognizes Spanish postal codes. Spanish postal
+codes consist of 5 digits. The first 2 indicate one of Spains fifties
+provinces (in alphabetical order), starting with C<00>. The third digit
+indicates a main city or the main delivery rounds. The last two digits
+are the delivery area, secondary delivery route or a link to rural areas.
+
+The country prefix is either I<ES> (the ISO country code), or
+I<E> (the CEPT code).
+
+If C<{-keep}> is used, the following variables will be set:
+
+=over 4
+
+=item $1
+
+The entire postal code.
+
+=item $2
+
+The country code prefix.
+
+=item $3
+
+The postal code without the country prefix.
+
+=item $4
+
+The two digits indicating the province.
+
+=item $5
+
+The digit indicating the main city or main delivery route.
+
+=item $6
+
+The digits indicating the delivery area, secondary delivery route
+or a link to rural areas.
+
+=back
 
 =head2 C<< $RE{zip}{US}{-extended => [yes|no|allow]} >>
 
@@ -578,6 +719,20 @@ postal codes.
 =head1 HISTORY
 
  $Log: zip.pm,v $
+ Revision 2.110  2004/06/09 21:44:13  abigail
+ - Norway, Italy, Spain.
+ - References.
+ - POD nits.
+
+ Revision 2.109  2003/07/04 13:34:05  abigail
+ Fixed assignment to
+
+ Revision 2.108  2003/06/24 23:23:14  abigail
+ Australia currently has a postal code '0909' (or '909') for the
+ Northern Territory University; this is the only postal code starting
+ with '09'. $RE{zip}{Australia} now accepts '0909', and rejects all
+ other postal codes starting with '09'. (Ron Savage).
+
  Revision 2.107  2003/03/25 23:46:58  abigail
  Added RCS Id: tag
 
@@ -629,9 +784,37 @@ postal codes.
 
 L<Regexp::Common> for a general description of how to use this interface.
 
-=head1 AUTHOR
+=over 4
 
-Damian Conway (damian@conway.org)
+=item L<http://www.columbia.edu/kermit/postal.html>
+
+Frank's compulsive guide to postal addresses.
+
+=item L<http://www.upu.int/post_code/en/addressing_formats_guide.shtml>
+
+Postal addressing systems.
+
+=item L<http://www.uni-koeln.de/~arcd2/33e.htm>
+
+Postal code information.
+
+=item L<http://www.grcdi.nl/linkspc.htm>
+
+Links to Postcode Pages.
+
+=item L<http://www1.auspost.com.au/postcodes/>
+
+Information about Australian postal codes.
+
+=item L<http://en.wikipedia.org/wiki/Postal_code>
+
+=back
+
+
+=head1 AUTHORS
+
+Damian Conway S<(I<damian@conway.org>)> and
+Abigail S<(I<regexp-common@abigail.nl>)>.
 
 =head1 MAINTAINANCE
 
@@ -644,9 +827,9 @@ Send them in to I<regexp-common@abigail.nl>.
 
 =head1 COPYRIGHT
 
-     Copyright (c) 2001 - 2003, Damian Conway. All Rights Reserved.
-       This module is free software. It may be used, redistributed
-      and/or modified under the terms of the Perl Artistic License
-            (see http://www.perl.com/perl/misc/Artistic.html)
+Copyright (c) 2001 - 2003, Damian Conway and Abigail. All Rights
+Reserved. This module is free software. It may be used, redistributed
+and/or modified under the terms of the Perl Artistic License (see
+L<http://www.perl.com/perl/misc/Artistic.html>)
 
 =cut

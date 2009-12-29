@@ -1,4 +1,4 @@
-# $Id: comment.pm,v 2.106 2003/03/12 22:25:42 abigail Exp $
+# $Id: comment.pm,v 2.112 2004/06/09 21:44:48 abigail Exp $
 
 package Regexp::Common::comment;
 
@@ -8,25 +8,28 @@ local $^W = 1;
 use Regexp::Common qw /pattern clean no_defaults/;
 use vars qw /$VERSION/;
 
-($VERSION) = q $Revision: 2.106 $ =~ /[\d.]+/g;
+($VERSION) = q $Revision: 2.112 $ =~ /[\d.]+/g;
 
 my @generic = (
+    {languages => [qw /ABC Forth/],
+     to_eol    => ['\\\\']},   # This is for just a *single* backslash.
+
     {languages => [qw /Ada Alan Eiffel lua/],
      to_eol    => ['--']},
 
     {languages => [qw /Advisor/],
      to_eol    => ['#|//']},
 
-    {languages => [qw /Advsys LOGO REBOL Scheme SMITH zonefile/],
+    {languages => [qw /Advsys Lisp LOGO M MUMPS REBOL Scheme SMITH zonefile/],
      to_eol    => [';']},
 
     {languages => ['Algol 60'],
      from_to   => [[qw /comment ;/]]},
 
-    {languages => [qw {ALPACA B C LPC PL/I}],
+    {languages => [qw {ALPACA B C C-- LPC PL/I}],
      from_to   => [[qw {/* */}]]},
 
-    {languages => [qw /awk fvwm2 mutt Perl Python Ruby shell Tcl/],
+    {languages => [qw /awk fvwm2 Icon mutt Perl Python QML Ruby shell Tcl/],
      to_eol    => ['#']},
 
     {languages => [[BASIC => 'mvEnterprise']],
@@ -38,15 +41,15 @@ my @generic = (
     {languages => ['beta-Juliet', 'Crystal Report', 'Portia'],
      to_eol    => ['//']},
 
-    {languages => [qw /C++ FPL Java/],
+    {languages => [qw /C++/, 'C#', qw /Cg ECMAScript FPL Java JavaScript/],
      to_eol    => ['//'],
      from_to   => [[qw {/* */}]]},
 
+    {languages => [qw /CLU LaTeX slrn TeX/],
+     to_eol    => ['%']},
+
     {languages => [qw /False/],
      from_to   => [[qw !{ }!]]},
-
-    {languages => [qw /Forth/],
-     to_eol    => ['\\\\']},
 
     {languages => [qw /Fortran/],
      to_eol    => ['!']},
@@ -57,8 +60,12 @@ my @generic = (
     {languages => [qw /ILLGOL/],
      to_eol    => ['NB']},
 
-    {languages => [qw /LaTeX slrn TeX/],
-     to_eol    => ['%']},
+    {languages => [qw /J/],
+     to_eol    => ['NB.']},
+
+    {languages => [qw /Nickle/],
+     to_eol    => ['#'],
+     from_to   => [[qw {/* */}]]},
 
     {languages => [qw /Oberon/],
      from_to   => [[qw /(* *)/]]},
@@ -82,6 +89,10 @@ my @generic = (
     {languages => [qw !PL/B!],
      to_eol    => ['[.;]']},
 
+    {languages => [qw !PL/SQL!],
+     to_eol    => ['--'],
+     from_to   => [[qw {/* */}]]},
+
     {languages => [qw /Q-BAL/],
      to_eol    => ['`']},
 
@@ -102,9 +113,11 @@ my @generic = (
 );
 
 my @plain_or_nested = (
+   [Caml         =>  undef,       "(*"  => "*)"],
    [Dylan        =>  "//",        "/*"  => "*/"],
    [Haskell      =>  "-{2,}",     "{-"  => "-}"],
    [Hugo         =>  "!(?!\\\\)", "!\\" => "\\!"],
+   [SLIDE        =>  "#",         "(*"  => "*)"],
 );
 
 #
@@ -136,7 +149,7 @@ sub from_to      {
 
 
 my $count = 0;
-sub nested ($$) {
+sub nested {
     local $^W = 1;
     my ($begin, $end) = @_;
 
@@ -177,9 +190,10 @@ foreach my $info (@plain_or_nested) {
     my ($language, $mark, $begin, $end) = @$info;
     pattern name    => [comment => $language],
             create  =>
-                sub {my $re = nested $begin, $end;
-                     exists $_ [1] -> {-keep} ? qr /($mark[^\n]*\n|$re)/
-                                              : qr  /$mark[^\n]*\n|$re/
+                sub {my $re     = nested $begin => $end;
+                     my $prefix = defined $mark ? $mark . "[^\n]*\n|" : "";
+                     exists $_ [1] -> {-keep} ? qr /($prefix$re)/
+                                              : qr  /$prefix$re/
                 },
             version => 5.006,
             ;
@@ -191,9 +205,9 @@ foreach my $group (@generic) {
                            (map {from_to @$_} @{$group -> {from_to}}),
                            (map {id       $_} @{$group -> {id}}),
                   ;
-    foreach my $language (@{$group -> {languages}}) {
-        pattern name   => [comment => ref $language ? @$language : $language],
-                create => $pattern
+    foreach my $language  (@{$group -> {languages}}) {
+        pattern name    => [comment => ref $language ? @$language : $language],
+                create  => $pattern,
                 ;
     }
 }
@@ -282,6 +296,15 @@ pattern name    =>  [qw /comment Fortran fixed/],
         create  =>  '(?k:(?k:(?:^[Cc*]|(?<!^.....)!))(?k:[^\n]*)(?k:\n))'
         ;
 
+
+# http://www.csis.ul.ie/cobol/Course/COBOLIntro.htm
+# Traditionally, comments in COBOL were indicated with an asteriks in
+# the seventh column. Modern compilers may be more lenient.
+pattern name    =>  [qw /comment COBOL/],
+        create  =>  '(?<=^......)(?k:(?k:[*])(?k:[^\n]*)(?k:\n))',
+        version =>  '5.008',
+        ;
+
 1;
 
 # Todo:
@@ -339,6 +362,12 @@ the opening marker, the content of the comment, and the closing marker
 
 =over 4
 
+=item ABC
+
+Comments in I<ABC> start with a backslash (C<\>), and last till
+the end of the line.
+See L<http://homepages.cwi.nl/%7Esteven/abc/>.
+
 =item Ada
 
 Comments in I<Ada> start with C<-->, and last till the end of the line.
@@ -394,7 +423,7 @@ L<http://www.rainingdata.com/products/beta/docs/mve/50/ReferenceManual/Basic.pdf
 
 =item Beatnik
 
-The estoric language I<Beatnik> only uses words consisting of letters.
+The esotoric language I<Beatnik> only uses words consisting of letters.
 Words are scored according to the rules of Scrabble. Words scoring less
 than 5 points, or 18 points or more are considered comments (although
 the compiler might mock at you if you score less than 5 points).
@@ -409,7 +438,7 @@ L<http://www.catseye.mb.ca/esoteric/b-juliet/index.html>.
 
 =item Befunge-98
 
-The estoric language I<Befunge-98> uses comments that start and end
+The esotoric language I<Befunge-98> uses comments that start and end
 with a C<;>. See L<http://www.catseye.mb.ca/esoteric/befunge/98/spec98.html>.
 
 =item Brainfuck
@@ -423,12 +452,53 @@ C<$1> is set to the entire comment.
 
 The I<C> language has comments starting with C</*> and ending with C<*/>.
 
+=item C--
+
+The I<C--> language has comments starting with C</*> and ending with C<*/>.
+See L<http://cs.uas.arizona.edu/classes/453/programs/C--Spec.html>.
+
 =item C++
 
 The I<C++> language has two forms of comments. Comments that start with
 C<//> and last till the end of the line, and comments that start with
 C</*>, and end with C<*/>. If C<{-keep}> is used, only C<$1> will be
 set, and set to the entire comment.
+
+=item C#
+
+The I<C#> language has two forms of comments. Comments that start with
+C<//> and last till the end of the line, and comments that start with
+C</*>, and end with C<*/>. If C<{-keep}> is used, only C<$1> will be
+set, and set to the entire comment.
+See L<http://msdn.microsoft.com/library/default.asp?url=/library/en-us/csspec/html/vclrfcsharpspec_C.asp>.
+
+=item Caml
+
+Comments in I<Caml> start with C<(*>, end with C<*)>, and can be nested.
+See L<http://www.cs.caltech.edu/courses/cs134/cs134b/book.pdf> and
+L<http://pauillac.inria.fr/caml/index-eng.html>.
+
+=item Cg
+
+The I<Cg> language has two forms of comments. Comments that start with
+C<//> and last till the end of the line, and comments that start with
+C</*>, and end with C<*/>. If C<{-keep}> is used, only C<$1> will be
+set, and set to the entire comment.
+See L<http://developer.nvidia.com/attach/3722>.
+
+=item CLU
+
+In C<CLU>, a comment starts with a procent sign (C<%>), and ends with the
+next newline. See L<ftp://ftp.lcs.mit.edu:/pub/pclu/CLU-syntax.ps> and
+L<http://www.pmg.lcs.mit.edu/CLU.html>.
+
+=item COBOL
+
+Traditionally, comments in I<COBOL> are indicated by an asteriks in the
+seventh column. This is what the pattern matches. Modern compiler may
+more lenient though. See L<http://www.csis.ul.ie/cobol/Course/COBOLIntro.htm>,
+and L<http://www.csis.ul.ie/cobol/default.htm>. Due to a bug in the regexp
+engine of perl 5.6.x, this regexp is only available in version 5.8.0 and up.
 
 =item Crystal Report
 
@@ -441,6 +511,16 @@ There are two types of comments in I<Dylan>. They either start with
 C<//>, or are nested comments, delimited with C</*> and C<*/>.
 Under C<{-keep}>, only C<$1> will be set, returning the entire comment.
 This pattern requires I<perl 5.6.0> or newer.
+
+=item ECMAScript
+
+The I<ECMAScript> language has two forms of comments. Comments that start with
+C<//> and last till the end of the line, and comments that start with
+C</*>, and end with C<*/>. If C<{-keep}> is used, only C<$1> will be
+set, and set to the entire comment. I<JavaScript> is Netscapes implementation
+of I<ECMAScript>. See
+L<http://www.ecma-international.org/publications/files/ecma-st/Ecma-262.pdf>,
+and L<http://www.ecma-international.org/publications/standards/Ecma-262.htm>.
 
 =item Eiffel
 
@@ -476,7 +556,7 @@ See also L<http://www.cray.com/craydoc/manuals/007-3692-005/html-007-3692-005/>.
 
 =item Funge-98
 
-The estoric language I<Funge-98> uses comments that start and end with
+The esotoric language I<Funge-98> uses comments that start and end with
 a C<;>.
 
 =item fvwm2
@@ -486,7 +566,7 @@ C<#> and lasting the rest of the line.
 
 =item Haifu
 
-I<Haifu>, an estoric language using haikus, has comments starting and
+I<Haifu>, an esotoric language using haikus, has comments starting and
 ending with a C<,>.
 See L<http://www.dangermouse.net/esoteric/haifu.html>.
 
@@ -550,11 +630,25 @@ delimited with C<!\> and C<\!>.
 Under C<{-keep}>, only C<$1> will be set, returning the entire comment.
 This pattern requires I<perl 5.6.0> or newer.
 
+=item Icon
+
+I<Icon> has comments that start with C<#> and end at the next new line.
+See L<http://www.toolsofcomputing.com/IconHandbook/IconHandbook.pdf>,
+L<http://www.cs.arizona.edu/icon/index.htm>, and
+L<http://burks.bton.ac.uk/burks/language/icon/index.htm>.
+
 =item ILLGOL
 
-The estoric language I<ILLGOL> uses comments starting with I<NB> and lasting
+The esotoric language I<ILLGOL> uses comments starting with I<NB> and lasting
 till the end of the line.
 See L<http://www.catseye.mb.ca/esoteric/illgol/index.html>.
+
+=item J
+
+The language I<J> uses comments that start with C<NB.>, and that last till
+the end of the line. See
+L<http://www.jsoftware.com/books/help/primer/contents.htm>, and
+L<http://www.jsoftware.com/>.
 
 =item Java
 
@@ -562,10 +656,26 @@ The I<Java> language has two forms of comments. Comments that start with
 C<//> and last till the end of the line, and comments that start with
 C</*>, and end with C<*/>. If C<{-keep}> is used, only C<$1> will be
 set, and set to the entire comment.
+
+=item JavaScript
+
+The I<JavaScript> language has two forms of comments. Comments that start with
+C<//> and last till the end of the line, and comments that start with
+C</*>, and end with C<*/>. If C<{-keep}> is used, only C<$1> will be
+set, and set to the entire comment. I<JavaScript> is Netscapes implementation
+of I<ECMAScript>.
+See L<http://www.mozilla.org/js/language/E262-3.pdf>,
+and L<http://www.mozilla.org/js/language/>.
+
 =item LaTeX
 
 The documentation language I<LaTeX> uses comments starting with C<%>
 and ending at the end of the line.
+
+=item Lisp
+
+Comments in I<Lisp> start with a semi-colon (C<;>) and last till the
+end of the line.
 
 =item LPC
 
@@ -581,10 +691,29 @@ of the line.
 Comments for the I<lua> language start with C<-->, and last till the end
 of the line. See also L<http://www.lua.org/manual/manual.html>.
 
+=item M, MUMPS
+
+In C<M> (aka C<MUMPS>), comments start with a semi-colon, and last
+till the end of a line. The language specification requires the 
+semi-colon to be preceeded by one or more I<linestart character>s.
+Those characters default to a space, but that's configurable. This
+requirement, of preceeding the comment with linestart characters is
+B<not> tested for. See
+L<ftp://ftp.intersys.com/pub/openm/ism/ism64docs.zip>,
+L<http://mtechnology.intersys.com/mproducts/openm/index.html>, and
+L<http://mcenter.com/mtrc/index.html>.
+
 =item mutt
 
 Configuration files for I<mutt> have comments starting with a
 C<#> and lasting the rest of the line.
+
+=item Nickle
+
+The I<Nickle> language has one line comments starting with C<#>
+(like Perl), or multiline comments delimited by C</*> and C<*/>
+(like C). Under C<-keep>, only C<$1> will be set. See also
+L<http://www.nickle.org>.
 
 =item Oberon
 
@@ -593,8 +722,8 @@ See L<http://www.oberon.ethz.ch/oreport.html>.
 
 =item Pascal
 
-There are many implementations of Pascal. Some of them are implemented
-by this module.
+There are many implementations of Pascal. This modules provides
+pattern for comments of several implementations.
 
 =over 4
 
@@ -661,6 +790,11 @@ next newline. See L<http://www.mmcctech.com/pl-b/plb-0010.htm>.
 
 The I<PL/I> language has comments starting with C</*> and ending with C<*/>.
 
+=item PL/SQL
+
+In I<PL/SQL>, comments either start with C<--> and run till the end
+of the line, or start with C</*> and end with C<*/>.
+
 =item Perl
 
 I<Perl> uses comments that start with a C<#>, and continue till the end
@@ -680,6 +814,11 @@ of the line.
 
 Comments in the I<Q-BAL> language start with C<`> (a backtick), and
 contine till the end of the line.
+
+=item QML
+
+In C<QML>, comments start with C<#> and last till the end of the line.
+See L<http://www.questionmark.com/uk/qml/overview.doc>.
 
 =item REBOL
 
@@ -702,8 +841,18 @@ the line.
 
 =item Shelta
 
-The estoric language I<Shelta> uses comments that start and end with
+The esotoric language I<Shelta> uses comments that start and end with
 a C<;>. See L<http://www.catseye.mb.ca/esoteric/shelta/index.html>.
+
+=item SLIDE
+
+The I<SLIDE> language has two froms of comments. First there is the
+line comment, which starts with a C<#> and includes the rest of the
+line (just like Perl). Second, there is the multiline, nested comment,
+which are delimited by C<(*> and C<*)>. Under C{-keep}>, only 
+C<$1> is set, and is set to the entire comment. This pattern needs
+at least Perl version 5.6.0. See
+L<http://www.cs.berkeley.edu/~ug/slide/docs/slide/spec/spec_frame_intro.shtml>.
 
 =item slrn
 
@@ -781,6 +930,24 @@ Press. B<1990>. ISBN 0-19-853737-9. Ch. 10.3, pp 390-391.
 =head1 HISTORY
 
  $Log: comment.pm,v $
+ Revision 2.112  2004/06/09 21:44:48  abigail
+ New languages
+
+ Revision 2.111  2003/09/24 08:39:35  abigail
+ Stupid "syntax" warning issues false positives
+
+ Revision 2.110  2003/08/19 21:27:55  abigail
+ Nickle language
+
+ Revision 2.109  2003/08/13 10:07:39  abigail
+ Added patterns for C--, C#, Cg and SLIDE comments
+
+ Revision 2.108  2003/08/01 11:30:25  abigail
+ Comments for 'QML' and 'PL/SQL'
+
+ Revision 2.107  2003/05/25 21:33:48  abigail
+ POD nits from Bryan C. Warnock
+
  Revision 2.106  2003/03/12 22:25:42  abigail
  - More generic setup to define comments for various languages.
  - Expanded and redid the documentation for comment.pm.

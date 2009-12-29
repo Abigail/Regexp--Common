@@ -7,6 +7,7 @@ lib/Regexp/Common/list.pm
 lib/Regexp/Common/net.pm
 lib/Regexp/Common/number.pm
 lib/Regexp/Common/profanity.pm
+lib/Regexp/Common/SEN.pm
 lib/Regexp/Common/URI.pm
 lib/Regexp/Common/URI/RFC1035.pm
 lib/Regexp/Common/URI/RFC1738.pm
@@ -34,6 +35,7 @@ README
 TODO
 t/number/decimal.t
 t/Common.pm
+t/SEN/usa_ssn.t
 t/test_balanced.t
 t/test_bases.t
 t/test_bases_sep.t
@@ -76,4 +78,8 @@ t/zip/france.t
 t/zip/germany.t
 t/zip/greenland.t
 t/zip/netherlands.t
+t/zip/norway.t
+t/zip/italy.t
+t/zip/spain.t
 t/zip/us.t
+META.yml                                 Module meta-data (added by MakeMaker)

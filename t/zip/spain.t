@@ -8,34 +8,33 @@ use Regexp::Common;
 
 $^W = 1;
 
-($VERSION) = q $Revision: 2.105 $ =~ /[\d.]+/;
+($VERSION) = q $Revision: 2.100 $ =~ /[\d.]+/;
 
 sub passes;
 sub failures;
 
+use constant  PASSES  =>   20;
 use constant  FAIL    =>    5;
 
-my $normal      = $RE {zip} {Australia};
-my $prefix      = $RE {zip} {Australian} {-prefix  => 'yes'};
-my $no_prefix   = $RE {zip} {Australia}  {-prefix  => 'no'};
-my $iso         = $RE {zip} {Australian} {-country => "iso"};
-my $cept        = $RE {zip} {Australia}  {-country => "cept"};
-my $country     = $RE {zip} {Australian} {-country => "Aus"};
+my $normal      = $RE {zip} {Spain};
+my $prefix      = $RE {zip} {Spain} {-prefix  => 'yes'};
+my $no_prefix   = $RE {zip} {Spain} {-prefix  => 'no'};
+my $iso         = $RE {zip} {Spain} {-country => "iso"};
+my $cept        = $RE {zip} {Spain} {-country => "cept"};
+my $country     = $RE {zip} {Spain} {-country => "ES"};
 my $iso_prefix  = $iso  -> {-prefix => 'yes'};
 my $cept_prefix = $cept -> {-prefix => 'yes'};
 
 my @tests = (
-    [ normal       => $normal      =>  [qw /1 1 1 0/]],
-    [ prefix       => $prefix      =>  [qw /0 1 1 0/]],
-    ['no prefix'   => $no_prefix   =>  [qw /1 0 0 0/]],
-    [ iso          => $iso         =>  [qw /1 0 1 0/]],
-    [ cept         => $cept        =>  [qw /1 1 0 0/]],
-    [ country      => $country     =>  [qw /1 0 0 1/]],
-    ['iso prefix'  => $iso_prefix  =>  [qw /0 0 1 0/]],
-    ['cept prefix' => $cept_prefix =>  [qw /0 1 0 0/]],
+    [ normal       => $normal      =>  [qw /1 1 1/]],
+    [ prefix       => $prefix      =>  [qw /0 1 1/]],
+    ['no prefix'   => $no_prefix   =>  [qw /1 0 0/]],
+    [ iso          => $iso         =>  [qw /1 0 1/]],
+    [ cept         => $cept        =>  [qw /1 1 0/]],
+    [ country      => $country     =>  [qw /1 0 1/]],
+    ['iso prefix'  => $iso_prefix  =>  [qw /0 0 1/]],
+    ['cept prefix' => $cept_prefix =>  [qw /0 1 0/]],
 );
-
-my @states = (2, 8, 9, '02', '08', '09', 10 .. 97);
 
 my @failures = failures;
 
@@ -54,8 +53,8 @@ foreach my $test (@tests) {
 }
 
 my $max  = 1;
-   $max += @states   * $m;
-   $max += @states   * $k;
+   $max += PASSES    * $m;
+   $max += PASSES    * $k;
    $max += @failures * @tests;
 print "1..$max\n";
 
@@ -105,18 +104,23 @@ sub _ {
 }
 
 my %cache;
-foreach my $x (@states) {
-    my $y = $x =~ /9$/ ? "09" : _ 2;
+foreach my $d (1 .. PASSES) {
+    my ($x, $y, $z) = qw /01 0 00/;
 
-    my @t = ([undef, "$x$y", $x, $y],
-             ["AUS", "$x$y", $x, $y],
-             ["AU",  "$x$y", $x, $y],
-             ["Aus", "$x$y", $x, $y]);
+    while ($cache {"$x$y$z"} ++) {
+        $x = _ 2; redo unless 00 < $x && $x <= 52;
+        $y = _ 1;
+        $z = _ 2;
+    }
+
+    my @t = ([undef, "$x$y$z", $x, $y, $z],
+             ["E",   "$x$y$z", $x, $y, $z],
+             ["ES",  "$x$y$z", $x, $y, $z]);
 
     my $c = 0;
     foreach my $t (@t) {
         local $_  = defined $t -> [0] ? $t -> [0] . "-" : "";
-              $_ .= join "" => @$t [2 .. 3];
+              $_ .= join "" => @$t [2 .. 4];
         foreach my $test (@tests) {
             my ($name, $re, $matches) = @$test;
             run_test $name, $re,                  $matches -> [$c];
@@ -142,78 +146,66 @@ sub failures {
     # Too short.
     push @failures => 0 .. 9;
     for (1 .. FAIL) {
-        my $x = _ 1, 3;
-        redo if $x =~ /^[28]..$/ || $x eq "909" || $cache {$x} ++;
+        my $x = _ 2, 4;
+        redo if $cache {$x} ++;
         push @failures => $x;
     }
 
     # Too long.
     for (1 .. FAIL) {
-        my $x = _ 5, 10; 
+        my $x = _ 6, 10; 
         redo if $cache {$x} ++;
         push @failures => $x;
     }
 
     for my $c ('.', ';', '-', ' ', '+') {
         for (1 .. FAIL) {
-            my $x  = _ 3;
+            my $x  = _ 4;
                $x .= $c;
             redo if $cache {$x} ++;
             push @failures => $x;
         }
         for (1 .. FAIL) {
-            my $x  = _ 3;
+            my $x  = _ 4;
                $x  = "$c$x";
             redo if $cache {$x} ++;
             push @failures => $x;
         }
     }
 
-    # Wrong states
-    for my $s ('00', '01', '03' .. '07') {
-        my $x = _ 2;
-        my $zip = "$s$x";
-        redo if $cache {$zip} ++;
-        push @failures => $zip;
+    # Wrong provinces.
+    for (1 .. FAIL) {
+        my $x = _ 2; redo if $x < 52;
+        my $y = _ 3;
+        redo if $cache {"$x$y"};
+        push @failures => "$x$y";
     }
 
-    # Test leading '9'/'09'.
- OUTER:
-    for (1 .. FAIL) {
-        my $x = _ 2;
-        redo if $x eq "09";
-        for my $s ("9", "09") {
-            my $zip = "$s$x";
-            redo OUTER if $cache {$zip} ++;
-            push @failures => $zip;
-        }
-    }
+    push @failures => "00" . _ 3;
 
     # Same failures, with country in front of it as well.
-    push @failures => map {("AUS-$_", "AU-$_")} @failures;
+    push @failures => map {("ES-$_", "E-$_")} @failures;
 
     # Wrong countries.
     for (1 .. FAIL) {
-        my $c = join "" => map {('A' .. 'Z') [rand 26]} 1 .. 1 + int rand 3;
-        redo if $c eq "AUS" || $c eq "AU" || $cache {$c} ++;
-        my $x = _ 4;
+        my $c = join "" => map {('A' .. 'Z') [rand 26]} 1 .. 2;
+        redo if $c eq "ES" || $c eq "E" || $cache {$c} ++;
+        my $x = _ 5;
         push @failures => "$c-$x";
     }
 
     for (1 .. FAIL) {
         my $c = ('A' .. 'Z') [rand 26];
         redo if $cache {$c} ++;
-        my $x = _ 4;
-        push @failures => "${c}AUS-$x";
-        push @failures => "AUS$c-$x";
-        push @failures => "${c}AU-$x";
-        $c =~ y!S!Z!;
-        push @failures => "AU$c-$x";
+        my $x = _ 5;
+        push @failures => "${c}ES-$x";
+        push @failures => "ES$c-$x";
     }
 
     for (1 .. FAIL) {
-        my $x = _ 4;
-        push @failures => "aus-$x", "au-$x";
+        my $x = _ 5;
+        redo if $cache {"es-$x"} ++;
+        push @failures => "es-$x", "e-$x";
     }
 
     @failures;
@@ -224,19 +216,7 @@ __END__
 
 =pod
 
- $Log: australia.t,v $
- Revision 2.105  2004/06/09 21:34:18  abigail
- Prevent test from hanging
-
- Revision 2.104  2003/08/01 11:31:58  abigail
- Added Australian postal code '0909'
-
- Revision 2.103  2003/02/09 13:30:36  abigail
- Moved to australia.t
-
- Revision 2.102  2003/02/05 09:54:15  abigail
- Removed 'use Config'
-
- Revision 2.101  2003/02/01 22:11:15  abigail
+ $Log: spain.t,v $
+ Revision 2.100  2004/06/09 21:32:28  abigail
  Initial checkin
 

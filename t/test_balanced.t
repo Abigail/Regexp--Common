@@ -1,6 +1,9 @@
-# $Id: test_balanced.t,v 2.100 2003/01/21 23:19:13 abigail Exp $
+# $Id: test_balanced.t,v 2.101 2003/07/04 23:09:36 abigail Exp $
 #
 # $Log: test_balanced.t,v $
+# Revision 2.101  2003/07/04 23:09:36  abigail
+# Added tests for
+#
 # Revision 2.100  2003/01/21 23:19:13  abigail
 # The whole world understands RCS/CVS version numbers, that 1.9 is an
 # older version than 1.10. Except CPAN. Curse the idiot(s) who think
@@ -28,6 +31,8 @@ use Regexp::Common;
 ok;
 exit unless $] >= 5.006;
 
+ok (defined $Regexp::Common::balanced::VERSION &&
+            $Regexp::Common::balanced::VERSION =~ /^\d+[.]\d+$/);
 
 # SIMPLE BALANCING ACT
 

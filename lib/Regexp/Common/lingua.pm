@@ -1,4 +1,4 @@
-# $Id: lingua.pm,v 2.103 2003/03/25 23:46:29 abigail Exp $
+# $Id: lingua.pm,v 2.104 2003/07/04 13:34:05 abigail Exp $
 
 package Regexp::Common::lingua;
 
@@ -10,7 +10,7 @@ use Carp;
 
 use vars qw /$VERSION/;
 
-($VERSION) = q $Revision: 2.103 $ =~ /[\d.]+/;
+($VERSION) = q $Revision: 2.104 $ =~ /[\d.]+/g;
 
 pattern name    => [qw /lingua palindrome -chars=[A-Za-z]/],
         create  => sub {
@@ -71,6 +71,9 @@ This pattern requires at least perl 5.6.0.
 =head1 HISTORY
 
  $Log: lingua.pm,v $
+ Revision 2.104  2003/07/04 13:34:05  abigail
+ Fixed assignment to
+
  Revision 2.103  2003/03/25 23:46:29  abigail
  Removed outer braces
 

@@ -1,4 +1,4 @@
-# $Id: whitespace.pm,v 2.102 2003/02/11 09:48:54 abigail Exp $
+# $Id: whitespace.pm,v 2.103 2003/07/04 13:34:05 abigail Exp $
 
 package Regexp::Common::whitespace;
 
@@ -8,7 +8,7 @@ local $^W = 1;
 use Regexp::Common qw /pattern clean no_defaults/;
 use vars qw /$VERSION/;
 
-($VERSION) = q $Revision: 2.102 $ =~ /[\d.]+/;
+($VERSION) = q $Revision: 2.103 $ =~ /[\d.]+/g;
 
 pattern name   => [qw (ws crop)],
         create => '(?:^\s+|\s+$)',
@@ -63,6 +63,9 @@ This pattern does not capture under C<-keep>.
 =head1 HISTORY
 
  $Log: whitespace.pm,v $
+ Revision 2.103  2003/07/04 13:34:05  abigail
+ Fixed assignment to
+
  Revision 2.102  2003/02/11 09:48:54  abigail
  Added
 

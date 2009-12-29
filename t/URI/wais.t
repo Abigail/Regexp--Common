@@ -9,7 +9,7 @@ use t::Common;
 
 $^W    = 1;
 
-($VERSION) = q $Revision: 2.100 $ =~ /[\d.]+/;
+($VERSION) = q $Revision: 2.101 $ =~ /[\d.]+/;
 
 sub create_parts;
 
@@ -86,19 +86,19 @@ sub create_parts {
     $bad  [1] = ["", qw /: port/];
 
     # Database
-    $good [2] = ["", qw /database 0 %00%FF-!*,/];
+    $good [2] = ["", qw /database 0/, '%00%FF-!*,'];
     $bad  [2] = [undef, qw /~/];
 
     # Search
-    $good [3] = [undef, "", qw /database 0 %00%FF-!*,/];
+    $good [3] = [undef, "", qw /database 0/, '%00%FF-!*,'];
     $bad  [3] = [qw {~ []}];
 
     # Wtype
-    $good [4] = [undef, "", qw /wtype 0 %00%FF-!*,/];
+    $good [4] = [undef, "", qw /wtype 0/, '%00%FF-!*,'];
     $bad  [4] = [qw {~ []}];
 
     # Wpath
-    $good [5] = [undef, "", qw /wpath 0 %00%FF-!*,/];
+    $good [5] = [undef, "", qw /wpath 0/, '%00%FF-!*,'];
     $bad  [5] = [qw {~ []}];
 
     return (\@good, \@bad);
@@ -124,6 +124,9 @@ sub filter {
 __END__
 
  $Log: wais.t,v $
+ Revision 2.101  2003/08/01 11:28:10  abigail
+ Fixed a warning
+
  Revision 2.100  2003/03/12 22:23:14  abigail
  Forced 2.100 revision
 

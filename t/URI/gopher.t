@@ -9,7 +9,7 @@ use t::Common;
 
 $^W    = 1;
 
-($VERSION) = q $Revision: 2.100 $ =~ /[\d.]+/;
+($VERSION) = q $Revision: 2.102 $ =~ /[\d.]+/;
 
 sub create_parts;
 
@@ -77,6 +77,8 @@ sub wanted {
 sub create_parts {
     my (@good, @bad);
 
+    local $^W = 0;
+
     # Hosts.
     # Host/ports are tested with other URIs as well, we're not using
     # all the combinations here.
@@ -96,15 +98,16 @@ sub create_parts {
     # Selector
     # Don't use an 'undef' here. It will create the same URI as for
     # the empty string, but {-keep} will return "".
-    $good [3] = ["", qw {FNURD 0 $_.+!*'(),:@&=%FF}];
+    $good [3] = ["", qw {FNURD 0}, q {$_.+!*'(),:@&=%FF}];
+    pop @{$good [3]} if $] < 5.006;  # For speed.
     $bad  [3] = [qw {/ []}];
 
     # Search
-    $good [4] = [undef, "", qw {FNORD 0 $_.+!*'(),:@&=%FF}];
+    $good [4] = [undef, "", qw {FNORD 0}, q {$_.+!*'(),:@&=%FF}];
     $bad  [4] = [qw {/ []}];
 
     # Gopherplus string
-    $good [5] = [undef, "", qw {fnord 0 $_.+%09!*'(),:@&=%FF}];
+    $good [5] = [undef, "", qw {fnord 0}, q {$_.+%09!*'(),:@&=%FF}];
     $bad  [5] = [qw {/ []}];
 
     return (\@good, \@bad);
@@ -126,6 +129,13 @@ sub filter {
 __END__
 
  $Log: gopher.t,v $
+ Revision 2.102  2004/06/09 21:35:31  abigail
+ Reducing the number of tests for pre-5.6 perls (for speed)
+
+ Revision 2.101  2003/05/23 14:08:11  abigail
+ Took words containing comma's out of qw list, to silence warnings.
+ (Ticket #2564)
+
  Revision 2.100  2003/02/21 14:50:22  abigail
  Tests for gopher URIs
 

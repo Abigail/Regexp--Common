@@ -7,11 +7,11 @@ use Regexp::Common qw /pattern clean no_defaults/;
 
 use vars qw /$VERSION/;
 
-($VERSION) = q $Revision: 2.102 $ =~ /[\d.]+/g;
+($VERSION) = q $Revision: 2.103 $ =~ /[\d.]+/g;
 
 my %IPunit = (
-    dec => q{(?k:25[0-5]|2[0-4]\d|[0-1]??\d{1,2})},
-    oct => q{(?k:[0-3]??[0-7]{1,2})},
+    dec => q{(?k:25[0-5]|2[0-4]\d|[0-1]?\d{1,2})},
+    oct => q{(?k:[0-3]?[0-7]{1,2})},
     hex => q{(?k:[0-9A-F]{1,2})},
     bin => q{(?k:[0-1]{1,8})},
 );
@@ -290,6 +290,9 @@ L<Regexp::Common> for a general description of how to use this interface.
 =head1 HISTORY
 
  $Log: net.pm,v $
+ Revision 2.103  2004/06/09 21:47:01  abigail
+ dec/oct greediness
+
  Revision 2.102  2003/03/12 22:26:35  abigail
  -nospace switch for domain names
 

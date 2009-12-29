@@ -1,4 +1,4 @@
-# $Id: list.pm,v 2.102 2003/02/11 09:42:06 abigail Exp $
+# $Id: list.pm,v 2.103 2003/07/04 13:34:05 abigail Exp $
 
 package Regexp::Common::list;
 
@@ -8,7 +8,7 @@ local $^W = 1;
 use Regexp::Common qw /pattern clean no_defaults/;
 use vars qw /$VERSION/;
 
-($VERSION) = q $Revision: 2.102 $ =~ /[\d.]+/;
+($VERSION) = q $Revision: 2.103 $ =~ /[\d.]+/g;
 
 sub gen_list_pattern {
     my ($pat, $sep, $lsep) = @_;
@@ -129,6 +129,9 @@ An alias for C<< $RE{list}{conj}{-word=>'or'} >>
 =head1 HISTORY
 
  $Log: list.pm,v $
+ Revision 2.103  2003/07/04 13:34:05  abigail
+ Fixed assignment to
+
  Revision 2.102  2003/02/11 09:42:06  abigail
  Added
 

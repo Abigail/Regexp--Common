@@ -8,8 +8,9 @@ use Regexp::Common;
 use Exporter ();
 
 @ISA       = qw /Exporter/;
-@EXPORT    = qw /run_tests NORMAL_PASS NORMAL_FAIL FAIL $DEBUG/;
-@EXPORT_OK = qw /cross/;
+@EXPORT    = qw /run_tests run_new_tests NORMAL_PASS NORMAL_FAIL FAIL $DEBUG/;
+@EXPORT_OK = qw /cross criss_cross pass fail
+                 d pd dd pdd l ll L LL a aa w ww _x xx X XX/;
 
 use constant   NORMAL_PASS =>  0x01;   # Normal test, should pass.
 use constant   NORMAL_FAIL =>  0x02;   # Normal test, should fail.
@@ -17,12 +18,12 @@ use constant   NORMAL      =>  NORMAL_PASS | NORMAL_FAIL;
 use constant   FAIL        =>  0x04;   # Test for failure.
 
 sub run_test;
-sub run_keep;
+sub run_old_keep;
 sub run_fail;
 
 local $^W = 1;
 
-($VERSION) = q $Revision: 2.107 $ =~ /[\d.]+/;
+($VERSION) = q $Revision: 2.108 $ =~ /[\d.]+/;
 
 my $count;
 
@@ -32,7 +33,7 @@ sub pass {print     "ok "; &mess}
 sub fail {print "not ok "; &mess}
 
 sub import {
-    if (@_ > 1) {
+    if (@_ > 1 && $_ [-1] =~ /^\d+\.\d+$/) {
         my $version = pop;
         if ($version > $]) {
             print "1..1\n";
@@ -48,6 +49,16 @@ sub cross {
        @r = map {my $s = $_; map {[@$_ => $s]} @r} @$_ for @_;
        @r
 }
+sub criss_cross {
+    my ($f, $s) = @_;
+    my @r;
+
+    push @r => cross @$f [0 .. $_ - 1], $$s [$_], @$f [$_ + 1 .. $#$f]
+               for 0 .. $#$f;
+
+    @r;
+}
+
 sub __ {map {defined () ? $_ : "UNDEF"} @_}
 
 sub count_test_runs {
@@ -85,17 +96,25 @@ sub run_tests {
     my %args = @_;
 
     my $tests    = $args {tests};
-    my @passes   = cross @{$args {good}};
 
     # Collect the names of all tags.
     my %tag_names;
        @tag_names {keys %{$_ -> [2]}} = () foreach @$tests;
 
-    my @failures = ();
-    foreach my $i (0 .. $#{$args {good}}) {
-        push @failures => cross @{$args {good}} [0 .. $i - 1],
-                                  $args {bad}   [$i],
-                                @{$args {good}} [$i + 1 .. $#{$args {good}}]
+    my (@passes, @failures);
+
+    if ($args {good}) {
+        @passes   = cross @{$args {good}};
+
+        @failures = ();
+        foreach my $i (0 .. $#{$args {good}}) {
+            push @failures => cross @{$args {good}} [0 .. $i - 1],
+                                      $args {bad}   [$i],
+                                    @{$args {good}} [$i + 1 .. $#{$args {good}}]
+        }
+    }
+    elsif ($args {good_list}) {
+        @passes   = @{$args {good_list}};
     }
 
     # General filters.
@@ -147,15 +166,15 @@ sub run_tests {
                 foreach my $pass (@{$passes {$tag}}) {
                     local $_ = $args {query} -> ($tag => $pass);
 
-                    run_test re    => $re,
-                             name  => $name,
-                             match => $match & NORMAL_PASS;
+                    run_test     re    => $re,
+                                 name  => $name,
+                                 match => $match & NORMAL_PASS;
 
-                    run_keep re     => $re,
-                             name   => $name,
-                             tag    => $tag,
-                             parts  => $pass,
-                             wanted => $wanted if $match & NORMAL_PASS;
+                    run_old_keep re     => $re,
+                                 name   => $name,
+                                 tag    => $tag,
+                                 parts  => $pass,
+                                 wanted => $wanted if $match & NORMAL_PASS;
                 }
             }
             if ($match & FAIL) {
@@ -169,6 +188,7 @@ sub run_tests {
         }
     }
 }
+
 
 
 
@@ -198,7 +218,7 @@ sub array_cmp {
     return 1;
 }
 
-sub run_keep {
+sub run_old_keep {
     my %args = @_;
 
     my $re         = $args {re};     # Regexp that's being tried.
@@ -230,11 +250,158 @@ sub run_fail {
 }
 
 
+sub run_pass {
+    my %args = @_;
+
+    my $re           = $args {re};
+    my $name         = $args {name};
+
+    my $match = /^$re/;   # Not anchored at the end on purpose.
+    my $good  = $match && $_ eq $&;
+    my $line  = $good  ? "match; $name"                 :
+                $match ? "wrong match (got: $&); $name" :
+                         "no match; $name";
+    $good ? pass $line
+          : fail $line
+}
+
+
+sub run_keep {
+    my %args = @_;
+
+    my $re         = $args {re};     # Regexp that's being tried.
+    my $name       = $args {name};   # Name of the test.
+    my $wanted     = $args {wanted}; # Wanted list.
+
+    my @chunks = /^$re->{-keep}$/;
+    unless (@chunks) {fail "no match; $name - keep"; return}
+
+    local $" = ", ";
+    array_cmp (\@chunks, $wanted)
+         ? pass "match; $name - keep"
+         : $DEBUG ?  fail "wrong match,\n#      got [@{[__ @chunks]}]\n" .
+                                        "# expected [@{[__ @$wanted]}]"
+                  :  fail "wrong match [@{[__ @chunks]}]"
+}
+
+
+sub run_new_test_set {
+    my %args     = @_;
+
+    my $test_set = $args {test_set};
+    my $targets  = $args {targets};
+    my $name     = $$test_set {name};
+    my $regex    = $$test_set {regex};
+    my $keep     = $regex -> {-keep};
+
+    # Run the passes.
+    foreach my $target_name (@{$$test_set {pass}}) {
+        my $query = $$targets {$target_name} {query};
+        foreach my $parts (@{$$targets {$target_name} {list}}) {
+            local $_ = $query -> ($parts);
+            run_pass name   => $name,
+                     re     => $regex;
+            run_keep name   => $name,
+                     re     => $keep,
+                     wanted => $$targets {$target_name} {wanted} -> ($parts);
+        }
+    }
+
+    # Run the failures.
+    foreach my $target_name (@{$$test_set {fail}}) {
+        my $query = $$targets {$target_name} {query};
+        foreach my $parts (@{$$targets {$target_name} {list}}) {
+            local $_ = $query -> ($parts);
+            run_fail name => $name,
+                     re   => $regex,
+        }
+    }
+}
+
+
+sub run_new_tests {
+    my %args = @_;
+
+    my ($tests, $targets) = @args {qw /tests targets/};
+
+    # Count the tests to be run.
+    my $runs = 1;
+    foreach my $test (@$tests) {
+        $runs += 2 * @{$$targets {$_} {list}} for @{$$test {pass}};
+        $runs += 1 * @{$$targets {$_} {list}} for @{$$test {fail}};
+    }
+
+    print "1..$runs\n";
+
+    # Check whether a version is defined.
+    {
+        no strict 'refs';
+        print "not " unless defined ${$args {version} . '::VERSION'};
+        print "ok ", ++ $count, " - ", $args {version}, "::VERSION\n";
+    }
+
+    foreach my $test (@$tests) {
+        run_new_test_set test_set => $test,
+                         targets  => $targets;
+    }
+}
+
+#
+# Function to produce random strings.
+#
+
+# Digit.
+sub  d {int rand 10}
+# Positive digit.
+sub pd {1 + int rand 9}
+# String of digits.
+sub dd {my ($min, $max) = @_ > 1 ? (@_) : ($_ [0], $_ [0]);
+        join "" => map {d} 1 .. $min + int rand ($max - $min)}
+# String of digits, not all 0.
+sub pdd {my ($min, $max) = @_ > 1 ? (@_) : ($_ [0], $_ [0]);
+    TRY: my $dd = join "" => map {d} 1 .. $min + int rand ($max - $min);
+         goto TRY unless $dd =~ /[^0]/;
+         $dd}
+# Lowercase letter.
+sub  l {chr (ord ('a') + int rand 26)}
+# String of lowercase letters.
+sub ll {my ($min, $max) = @_ > 1 ? (@_) : ($_ [0], $_ [0]);
+        join "" => map {l} 1 .. $min + int rand ($max - $min)}
+# Uppercase letter.
+sub  L {chr (ord ('a') + int rand 26)}
+# String of uppercase letters.
+sub LL {my ($min, $max) = @_ > 1 ? (@_) : ($_ [0], $_ [0]);
+        join "" => map {L} 1 .. $min + int rand ($max - $min)}
+# Alpha.
+sub  a {50 < rand (100) ? l : L}
+# String of alphas.
+sub aa {my ($min, $max) = @_ > 1 ? (@_) : ($_ [0], $_ [0]);
+        join "" => map {a} 1 .. $min + int rand ($max - $min)}
+# Alphanum.
+sub  w {52 < rand (62) ? d : a}
+# String of alphanums.
+sub ww {my ($min, $max) = @_ > 1 ? (@_) : ($_ [0], $_ [0]);
+        join "" => map {w} 1 .. $min + int rand ($max - $min)}
+# Lowercase hex digit.
+sub _x {(0 .. 9, 'a' .. 'f') [int rand 16]}
+# String of lowercase hex digits.
+sub xx {my ($min, $max) = @_ > 1 ? (@_) : ($_ [0], $_ [0]);
+        join "" => map {_x} 1 .. $min + int rand ($max - $min)}
+# Uppercase hex digit.
+sub  X {(0 .. 9, 'A' .. 'F') [int rand 16]}
+# String of uppercase hex digits.
+sub XX {my ($min, $max) = @_ > 1 ? (@_) : ($_ [0], $_ [0]);
+        join "" => map {X} 1 .. $min + int rand ($max - $min)}
+
+
 1;
 
 __END__
 
 $Log: Common.pm,v $
+Revision 2.108  2004/06/09 21:39:49  abigail
+New way of doing tests
+
 Revision 2.107  2003/03/12 22:26:54  abigail
 More filter flexibility
 

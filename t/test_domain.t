@@ -1,6 +1,9 @@
-# $Revision: 2.101 $
+# $Revision: 2.102 $
 #
 # $Log: test_domain.t,v $
+# Revision 2.102  2003/07/04 23:09:36  abigail
+# Added tests for
+#
 # Revision 2.101  2003/03/12 22:26:35  abigail
 # -nospace switch for domain names
 #
@@ -26,6 +29,9 @@ sub try{$P=qr/^$_[0]$/}sub fail{ok($S=$_[0]!~$P)}sub pass{ok($S=$_[0]=~$P)}
 
 use Regexp::Common;
 ok;
+
+ok (defined $Regexp::Common::net::VERSION &&
+            $Regexp::Common::net::VERSION =~ /^\d+[.]\d+$/);
 
 # Domains.
 

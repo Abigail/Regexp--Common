@@ -1,6 +1,21 @@
-# $Id: test_comments.t,v 2.103 2003/03/12 22:25:48 abigail Exp $
+# $Id: test_comments.t,v 2.108 2004/06/09 21:41:04 abigail Exp $
 #
 # $Log: test_comments.t,v $
+# Revision 2.108  2004/06/09 21:41:04  abigail
+# test_comments.t
+#
+# Revision 2.107  2003/09/24 08:39:36  abigail
+# Stupid "syntax" warning issues false positives
+#
+# Revision 2.106  2003/08/19 21:27:56  abigail
+# Nickle language
+#
+# Revision 2.105  2003/08/13 10:07:39  abigail
+# Added patterns for C--, C#, Cg and SLIDE comments
+#
+# Revision 2.104  2003/08/01 11:30:25  abigail
+# Comments for 'QML' and 'PL/SQL'
+#
 # Revision 2.103  2003/03/12 22:25:48  abigail
 # - Comments for Advisor, Advsys, Alan, Algol 60, Algol 68, B,
 #   BASIC (mvEnterprise), Forth, Fortran (both fixed and free form),
@@ -86,22 +101,27 @@ sub fail2 {ok ($S=($_[0] !~ $P || $& ne $_[1]))}
 use Regexp::Common;
 ok;
 
+ok (defined $Regexp::Common::comment::VERSION &&
+            $Regexp::Common::comment::VERSION =~ /^\d+[.]\d+$/);
+
 my @markers  =   (
-   ['--'     =>  [qw /Ada Alan Eiffel lua/]],
-   ['#'      =>  [qw /Advisor awk fvwm2 mutt Perl Python Ruby shell Tcl/]],
+   ['\\'     =>  [qw /ABC Forth/]],
+   ['--'     =>  [qw !Ada Alan Eiffel lua PL/SQL SQL!]],
+   ['#'      =>  [qw /Advisor awk fvwm2 Icon mutt Nickle Perl Python QML
+                      Ruby shell Tcl/]],
    ['//'     =>  [qw /Advisor beta-Juliet Portia/, 'Crystal Report',
                      [Pascal => 'Delphi'], [Pascal => 'Free'], 
                      [Pascal => 'GPC']]],
-   [';'      =>  [qw {Advsys LOGO REBOL PL/B Scheme SMITH zonefile}]],
-   ['\\'     =>  [qw /Forth/]],
+   [';'      =>  [qw {Advsys Lisp LOGO M MUMPS REBOL PL/B Scheme
+                      SMITH zonefile}]],
    ['NB'     =>  [qw /ILLGOL/]],
+   ['NB.'    =>  [qw /J/]],
    ['REM'    =>  [[BASIC => 'mvEnterprise']]],
    ['!'      =>  [[BASIC => 'mvEnterprise'], 'Fortran']],
    ['*'      =>  [[BASIC => 'mvEnterprise']]],
    ['`'      =>  [qw /Q-BAL/]],
-   ['--'     =>  [qw /SQL/]],
    ['---'    =>  [qw /SQL/]],
-   ['%'      =>  [qw /TeX slrn LaTeX/]],
+   ['%'      =>  [qw /CLU LaTeX TeX slrn/]],
    ['\\"'    =>  [qw /troff/]],
    ['"'      =>  [qw /vi/]],
    ['.'      =>  [qw {PL/B}]],
@@ -116,7 +136,7 @@ my @ids = (
 my @from_to = (
    [['Algol 60']                 =>  "comment", ";"],
 
-   [[qw {ALPACA B C LPC PL/I}, [Pascal => 'Workshop']]
+   [[qw {ALPACA B C C-- LPC Nickle PL/I PL/SQL}, [Pascal => 'Workshop']]
                                  =>  "/*", "*/"],
 
    [[qw /False Pascal/, [Pascal => 'Workshop'], [Pascal => 'Delphi'],
@@ -147,6 +167,13 @@ my @plain_or_nested = (
     single    =>  ["!.", "!!", "!"],
     nested    =>  ["!\\" => "\\!"],
    },
+   {language  =>  [qw /SLIDE/],
+    single    =>  ["#"],
+    nested    =>  ["(*" => "*)"],
+   },
+   {language  =>  [qw /Caml/],
+    nested    =>  ["(*" => "*)"],
+   },
 );
 
 
@@ -167,7 +194,11 @@ foreach my $info (@markers) {
 
         $M .= "# $language\n";
 
-        $not_a_mark = "!!" if $language eq 'Advisor';
+        my $not_a_mark  = $language eq 'Advisor' ? '!!' : $not_a_mark;
+        my $not_a_mark2 = $language eq 'PL/SQL' ||
+                          $language eq 'Nickle' ? '(*' : $not_a_mark2;
+        my $not_a_mark3 = $language eq 'PL/SQL' ||
+                          $language eq 'Nickle' ? '*)' : $not_a_mark3;
 
         pass "${mark}\n";
         pass "${mark}a comment\n";
@@ -261,6 +292,8 @@ foreach my $info (@from_to) {
             try $RE{comment}{$language};
         }
 
+        my $mark = $language eq 'Nickle' ? ';' : '#';
+
         $M .= "# $language\n";
 
         pass "${from}a comment ${to}";
@@ -277,22 +310,22 @@ foreach my $info (@from_to) {
         pass "${from}a ${from}pretend${to}";
         pass "${from} {) ${to}";
         fail "${from}${t}${t}${t}${t}${t}${t}${t}${t}${t}${t}";
-        fail "#\n";
-        fail "#a comment\n";
-        fail "#${from}a comment ${to}\n";
-        fail "#${from}${t}${t}${t}${t}${t}${t}${t}${t}${t}${t}${t}\n";
-        fail "#${f}${f}${f}${f}${f}${f}${f}${f}${f}${f}${f}${f}${f}\n";
-        fail "#a\n#multiline\n#comment\n";
-        fail "#a comment";
-        fail "#${from}a comment ${to}";
-        fail "#${from}${t}${t}${t}${t}${t}${t}${t}${t}${t}${t}${t}";
-        fail "#${from}${t}${t}${t}${t}${t}${t}${t}${t}${t}${t}${to}";
-        fail "#${f}${f}${f}${f}${f}${f}${f}${f}${f}${f}${f}${f}${f}";
+        fail "${mark}\n";
+        fail "${mark}a comment\n";
+        fail "${mark}${from}a comment ${to}\n";
+        fail "${mark}${from}${t}${t}${t}${t}${t}${t}${t}${t}${t}${t}${t}\n";
+        fail "${mark}${f}${f}${f}${f}${f}${f}${f}${f}${f}${f}${f}${f}${f}\n";
+        fail "${mark}a\n${mark}multiline\n${mark}comment\n";
+        fail "${mark}a comment";
+        fail "${mark}${from}a comment ${to}";
+        fail "${mark}${from}${t}${t}${t}${t}${t}${t}${t}${t}${t}${t}${t}";
+        fail "${mark}${from}${t}${t}${t}${t}${t}${t}${t}${t}${t}${t}${to}";
+        fail "${mark}${f}${f}${f}${f}${f}${f}${f}${f}${f}${f}${f}${f}${f}";
     }
 }
     
 
-foreach my $language (qw /C++ FPL Java/) {
+foreach my $language (qw /C++/, 'C#', qw /Cg FPL ECMAScript Java JavaScript/) {
     try $RE{comment}{$language};
 
     $M .= "# $language\n";
@@ -539,7 +572,6 @@ pass2 "    !This is a comment\n",   "!This is a comment\n";
 fail  "     !This is a comment\n";
 pass2 "      !This is a comment\n", "!This is a comment\n";
 
-
 exit if $] < 5.006;
 
 foreach my $info (@plain_or_nested) {
@@ -604,3 +636,23 @@ fail "Zulu";
 fail "Hello";
 fail "Is a";
 fail "Is;";
+
+try2 $RE{comment}{COBOL};
+
+$M .= "# COBOL\n";
+fail  "This is a comment\n";
+fail  "*This is a comment\n";
+fail  " *This is a comment\n";
+fail  "  *This is a comment\n";
+fail  "   *This is a comment\n";
+fail  "    *This is a comment\n";
+fail  "     *This is a comment\n";
+pass2 "      *This is a comment\n", "*This is a comment\n";
+fail  "       *This is a comment\n";
+fail  "        *This is a comment\n";
+fail  "         *This is a comment\n";
+fail  "      !This is a comment\n";
+fail  "      *This is a comment";
+fail  "      *This is a comment\n     *This is a comment\n";
+pass2 "      ******************\n",  "******************\n";
+
