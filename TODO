@@ -1,13 +1,14 @@
-$Id: TODO,v 2.103 2003/02/07 15:27:09 abigail Exp $
+$Id: TODO,v 2.104 2003/02/21 14:53:51 abigail Exp $
 
 - URIs:
-    + mail, rsync, news/nntp, file.
-    + And more.
+    + As defined in RFC 1738.
+    + More of them.
 - Dates:
     + localtime dates.
     + ISO Dates.
     + An inverse of strftime?
 - numbers:
+    + Decimal numbers (e.g. 7.5, 0.3, .99, 15, but not 1.23E5).
     + Roman numbers >= 4000. Unicode?
     + Prime numbers? Fibonacci? Other special numbers?
     + Ranges of numbers.

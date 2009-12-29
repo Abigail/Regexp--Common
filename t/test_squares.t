@@ -8,14 +8,15 @@ use Config;
 use Regexp::Common;
 use t::Common '5.008';
 
+local $^W = 0;
+
+my $MAX_INT32 = 0x7FFFFFFF;
+my $MAX_INT   = $Config {use64bitint} ? eval "0x7FFFFFFFFFFFFFFF" : 0x7FFFFFFF;
+
 local $^W = 1;
 
-use constant MAX_INT32 =>         0x7FFFFFFF;
-use constant MAX_INT64 => 0x7FFFFFFFFFFFFFFF;
-use constant MAX_INT   => $Config {use64bitint} ? MAX_INT64 : MAX_INT32;
 
-
-($VERSION) = q $Revision: 2.101 $ =~ /[\d.]+/;
+($VERSION) = q $Revision: 2.102 $ =~ /[\d.]+/;
 
 sub create_parts;
 
@@ -36,18 +37,18 @@ run_tests version   =>  "Regexp::Common::number",
 
 my %c;
 sub _1 {{
-    my $x = int rand sqrt MAX_INT32;
+    my $x = int rand sqrt $MAX_INT32;
     redo if $c {$x} ++ || $x <= 100;
     sprintf "%d" => $x;
 }}
 sub _2 {{
-    my $x = int rand sqrt MAX_INT;
+    my $x = int rand sqrt $MAX_INT;
     redo if $c {$x} ++ || $x <= 100;
     sprintf "%d" => $x;
 }}
 my %d;
 sub _3 {{
-    my $x = int rand MAX_INT;
+    my $x = int rand $MAX_INT;
     redo if $d {$x} ++ || $x != (int sqrt ($x) ** 2);
     sprintf "%d" => $x;
 }}
@@ -67,6 +68,9 @@ sub create_parts {
 __END__
  
  $Log: test_squares.t,v $
+ Revision 2.102  2003/02/11 09:35:09  abigail
+ Wrapped '0x7FFFFFFFFFFFFFFF' inside an eval
+
  Revision 2.101  2003/02/10 21:22:17  abigail
  Cut down on the number of tests
 

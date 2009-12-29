@@ -1,9 +1,14 @@
-package Regexp::Common::comment; {
+# $Id: comment.pm,v 2.104 2003/02/21 14:48:06 abigail Exp $
+
+package Regexp::Common::comment;
 
 use strict;
 local $^W = 1;
 
 use Regexp::Common qw /pattern clean no_defaults/;
+use vars qw /$VERSION/;
+
+($VERSION) = q $Revision: 2.104 $ =~ /[\d.]+/g;
 
 #
 # Data.
@@ -14,7 +19,7 @@ my @markers  =   (
    ['--'     =>  [qw /Ada Eiffel lua/]],
    ['#'      =>  [qw /awk Perl Python Ruby shell Tcl/]],
                  # http://www.catseye.mb.ca/esoteric/b-juliet/index.html
-   ['//'     =>  ['beta-Juliet', 'Portia']],
+   ['//'     =>  ['beta-Juliet', 'Crystal Report', 'Portia']],
                  # http://www.catseye.mb.ca/esoteric/illgol/index.html
    ['NB'     =>  [qw /ILLGOL/]],
                  # http://www.catseye.mb.ca/esoteric/smith/index.html
@@ -201,7 +206,6 @@ pattern name    =>  [qw /comment Beatnik/],
         ;
 
 
-};
 1;
 
 # Todo:
@@ -257,6 +261,7 @@ Available languages are:
         $RE{comment}{Brainfuck}
         $RE{comment}{C}
         $RE{comment}{'C++'}
+        $RE{comment}{'Crystal Report'}
         $RE{comment}{Dylan}          # Require at least Perl 5.6.0.
         $RE{comment}{Eiffel}
         $RE{comment}{FPL}
@@ -307,10 +312,10 @@ If we are using C{-keep} (See L<Regexp::Common>):
 
 =over 4
 
-=item For Ada, ALPACA, awk, beta-Juliet, Befunge-98, C, Eiffel, Funge-98,
-          Haifu, ILLGOL, LaTeX, LOGO, LPC, lua, Perl, Portia, Python, Q-BAL,
-          REBOL, Ruby, shell, Shelta, Smalltalk, SMITH, SQL, TeX, Tcl,
-          troff, vi, *W, and zonefile:
+=item For Ada, ALPACA, awk, beta-Juliet, Befunge-98, C, Crystal Report,
+          Eiffel, Funge-98, Haifu, ILLGOL, LaTeX, LOGO, LPC, lua, Perl,
+          Portia, Python, Q-BAL, REBOL, Ruby, shell, Shelta, Smalltalk,
+          SMITH, SQL, TeX, Tcl, troff, vi, *W, and zonefile:
 
 =over 4
 
@@ -385,6 +390,12 @@ Press. B<1990>. ISBN 0-19-853737-9. Ch. 10.3, pp 390-391.
 =head1 HISTORY
 
  $Log: comment.pm,v $
+ Revision 2.104  2003/02/21 14:48:06  abigail
+ Crystal Reports
+
+ Revision 2.103  2003/02/11 09:39:08  abigail
+ Added
+
  Revision 2.102  2003/02/07 15:23:54  abigail
  Lua and FPL
 

@@ -2,13 +2,14 @@ package t::Common;
 
 use strict;
 use lib  qw {blib/lib};
-use vars qw /$VERSION @ISA @EXPORT/;
+use vars qw /$VERSION @ISA @EXPORT @EXPORT_OK $DEBUG/;
 
 use Regexp::Common;
 use Exporter ();
 
-@ISA    = qw /Exporter/;
-@EXPORT = qw /run_tests NORMAL_PASS NORMAL_FAIL FAIL/;
+@ISA       = qw /Exporter/;
+@EXPORT    = qw /run_tests NORMAL_PASS NORMAL_FAIL FAIL $DEBUG/;
+@EXPORT_OK = qw /cross/;
 
 use constant   NORMAL_PASS =>  0x01;   # Normal test, should pass.
 use constant   NORMAL_FAIL =>  0x02;   # Normal test, should fail.
@@ -21,7 +22,7 @@ sub run_fail;
 
 local $^W = 1;
 
-($VERSION) = q $Revision: 2.104 $ =~ /[\d.]+/;
+($VERSION) = q $Revision: 2.106 $ =~ /[\d.]+/;
 
 my $count;
 
@@ -193,8 +194,12 @@ sub run_keep {
 
     my $wanted = $wanted_sub -> ($tag => $parts);
 
-    array_cmp (\@chunks, $wanted) ? pass "match; $name - keep"
-                                  : fail "wrong match [@{[__ @chunks]}]"
+    local $" = ", ";
+    array_cmp (\@chunks, $wanted)
+         ? pass "match; $name - keep"
+         : $DEBUG ?  fail "wrong match,\n#      got [@{[__ @chunks]}]\n" .
+                                        "# expected [@{[__ @$wanted]}]"
+                  :  fail "wrong match [@{[__ @chunks]}]"
 }
 
 sub run_fail {
@@ -212,6 +217,12 @@ sub run_fail {
 __END__
 
 $Log: Common.pm,v $
+Revision 2.106  2003/02/21 14:51:08  abigail
+Support for
+
+Revision 2.105  2003/02/11 14:12:52  abigail
+*** empty log message ***
+
 Revision 2.104  2003/02/10 21:33:08  abigail
 import() function
 

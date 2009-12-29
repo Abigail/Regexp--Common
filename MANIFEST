@@ -10,12 +10,15 @@ lib/Regexp/Common/profanity.pm
 lib/Regexp/Common/URI.pm
 lib/Regexp/Common/URI/RFC1035.pm
 lib/Regexp/Common/URI/RFC1738.pm
+lib/Regexp/Common/URI/RFC1808.pm
 lib/Regexp/Common/URI/RFC2396.pm
 lib/Regexp/Common/URI/RFC2806.pm
 lib/Regexp/Common/URI/fax.pm
 lib/Regexp/Common/URI/file.pm
 lib/Regexp/Common/URI/ftp.pm
+lib/Regexp/Common/URI/gopher.pm
 lib/Regexp/Common/URI/http.pm
+lib/Regexp/Common/URI/news.pm
 lib/Regexp/Common/URI/tel.pm
 lib/Regexp/Common/URI/telnet.pm
 lib/Regexp/Common/URI/tv.pm
@@ -49,7 +52,10 @@ t/test_ws.t
 t/URI/fax.t
 t/URI/file.t
 t/URI/ftp.t
+t/URI/gopher.t
 t/URI/http.t
+t/URI/news.t
+t/URI/nntp.t
 t/URI/tel.t
 t/URI/telnet.t
 t/URI/tv.t

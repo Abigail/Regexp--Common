@@ -1,4 +1,4 @@
-# $Id: URI.pm,v 2.103 2003/02/10 21:18:07 abigail Exp $
+# $Id: URI.pm,v 2.105 2003/02/21 14:49:41 abigail Exp $
 
 package Regexp::Common::URI;
 
@@ -17,12 +17,14 @@ use Regexp::Common qw /pattern clean no_defaults/;
 require Regexp::Common::URI::fax;
 require Regexp::Common::URI::file;
 require Regexp::Common::URI::ftp;
+require Regexp::Common::URI::gopher;
 require Regexp::Common::URI::http;
+require Regexp::Common::URI::news;
 require Regexp::Common::URI::tel;
 require Regexp::Common::URI::telnet;
 require Regexp::Common::URI::tv;
 
-($VERSION) = q $Revision: 2.103 $ =~ /[\d.]+/g;
+($VERSION) = q $Revision: 2.105 $ =~ /[\d.]+/g;
 
 my %uris;
 
@@ -58,9 +60,11 @@ Regexp::Common::URI -- provide patterns for URIs.
 
 =head1 DESCRIPTION
 
-Patterns for the following URIs are supported: fax, file, ftp, http, tel,
-telnet and tv. Each is documented in the I<Regexp::Common::URI::B<scheme>>,
-manual page, for the appropriate scheme.
+Patterns for the following URIs are supported: fax, file, FTP, gopher,
+HTTP, news, NTTP, tel, telnet, and tv.
+Each is documented in the I<Regexp::Common::URI::B<scheme>>,
+manual page, for the appropriate scheme (in lowercase), except for
+I<NNTP> URIs which are found in I<Regexp::Common::URI::news>.
 
 =head2 C<$RE{URI}>
 
@@ -110,6 +114,12 @@ Vaha-Sipila, A.: I<URLs for Telephone Calls>. April 2000.
 =head1 HISTORY
 
  $Log: URI.pm,v $
+ Revision 2.105  2003/02/21 14:49:41  abigail
+ Gopher added
+
+ Revision 2.104  2003/02/11 14:10:25  abigail
+ Changed 'nntp' to 'NNTP'
+
  Revision 2.103  2003/02/10 21:18:07  abigail
  Move most of the code into separate files. One file per URI, and
  one file per RFC.

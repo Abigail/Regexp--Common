@@ -1,9 +1,14 @@
-package Regexp::Common::delimited; {
+# $Id: delimited.pm,v 2.102 2003/02/11 09:40:14 abigail Exp $
+
+package Regexp::Common::delimited;
 
 use strict;
 local $^W = 1;
 
 use Regexp::Common qw /pattern clean no_defaults/;
+use vars qw /$VERSION/;
+
+($VERSION) = q $Revision: 2.102 $ =~ /[\d.]+/;
 
 sub gen_delimited {
 
@@ -55,7 +60,6 @@ pattern name   => [qw( quoted -esc=\\ )],
                   },
         ;
 
-}
 
 1;
 

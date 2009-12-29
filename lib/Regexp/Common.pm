@@ -8,7 +8,7 @@ local $^W = 1;
 use vars qw /$VERSION %RE %sub_interface/;
 
 
-($VERSION) = q $Revision: 2.109 $ =~ /([\d.]+)/;
+($VERSION) = q $Revision: 2.110 $ =~ /([\d.]+)/;
 
 use Carp;
 
@@ -810,6 +810,9 @@ project, especially: Elijah, Jarkko, Tom, Nat, Ed, and Vivek.
 =head1 HISTORY
 
   $Log: Common.pm,v $
+  Revision 2.110  2003/02/21 14:55:31  abigail
+  New release
+
   Revision 2.109  2003/02/10 21:36:58  abigail
   New release
 

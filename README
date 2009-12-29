@@ -1,5 +1,5 @@
 ==============================================================================
-                  Release of version 2.109 of Regexp::Common
+                  Release of version 2.110 of Regexp::Common
 ==============================================================================
 
 NOTE:  The jump to version 2.100 is there for no other reason than that
@@ -14,6 +14,10 @@ NOTE:  The jump to version 2.100 is there for no other reason than that
 
        It would be sooo tempting to start using Roman numerals as version
        numbers.
+
+       Andreas points out that blaming CPAN isn't fair, that CPAN is just
+       following Perls idea of Module version numbers: floats. So, in the
+       rant, read 'Perl' where it says 'CPAN'.
 
 NOTE:  The jump from version 0.09 to 1.20 does not indicate a significant
        change in the API, or any other significant change. It's just that
@@ -69,6 +73,7 @@ DESCRIPTION
         * currency (universal 3 letter format, Latin-1, currency names)
         * dates
         * binary formats (e.g. UUencoded, MIMEd)
+        * Credit card numbers.
 
 
 INSTALLATION
@@ -104,9 +109,17 @@ COPYRIGHT
 
 ==============================================================================
 
-CHANGES IN VERSION 2.109
+CHANGES IN VERSION 2.110
 
 Revision history for Perl extension Regexp::Common.
+
+2.110 Fri Feb 21 15:58:14 2003
+        - Fixed t/test_squares.t. '0x7FFFFFFFFFFFFFFF' cannot be used
+          on non-64bit platforms - eval to the rescue.
+        - Added $VERSION to the .pm files who were missing them.
+        - gopher, news, nntp URIs.
+        - 145013 tests in 39 files.
+        - 100 patterns in 11 classes and 9 subclasses.
 
 2.109 Mon Feb 10 22:41:45 2003
         - Split out URI.pm into a myriad of files. There is a
@@ -115,7 +128,7 @@ Revision history for Perl extension Regexp::Common.
           URI scheme files, and constructs the combining URI regexp.
         - file URIs.
         - Cut down on the number of tests run for certain classes.
-        - 123810 tests in 35 files.
+        - 123810 tests in 36 files.
         - 95 patterns in 11 classes and 7 subclasses.
 
 2.108 Sun Feb  9 22:58:56 2003
@@ -213,6 +226,6 @@ AVAILABILITY
 Regexp::Common has been uploaded to the CPAN
 and is also available from:
 
-	http://www.csse.monash.edu.au/~damian/CPAN/Regexp-Common.tar.gz
+	http://perl.abigail.nl/Modules/Regexp-Common/latest.tar.gz
 
 ==============================================================================

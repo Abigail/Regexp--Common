@@ -1,6 +1,9 @@
-# $Id: test_comments.t,v 2.101 2003/02/07 15:26:16 abigail Exp $
+# $Id: test_comments.t,v 2.102 2003/02/21 14:50:52 abigail Exp $
 #
 # $Log: test_comments.t,v $
+# Revision 2.102  2003/02/21 14:50:52  abigail
+# Crystal Reports
+#
 # Revision 2.101  2003/02/07 15:26:16  abigail
 # Lua and FPL
 #
@@ -76,7 +79,7 @@ ok;
 my @markers  =   (
    ['--'     =>  [qw /Ada Eiffel lua/]],
    ['#'      =>  [qw /awk Perl Python Ruby shell Tcl/]],
-   ['//'     =>  [qw /beta-Juliet Portia/]],
+   ['//'     =>  [qw /beta-Juliet Portia/, 'Crystal Report']],
    ['NB'     =>  [qw /ILLGOL/]],
    [';'      =>  [qw /LOGO REBOL SMITH zonefile/]],
    ['`'      =>  [qw /Q-BAL/]],
