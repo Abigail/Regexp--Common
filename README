@@ -1,5 +1,5 @@
 ==============================================================================
-                  Release of version 2.111 of Regexp::Common
+                  Release of version 2.112 of Regexp::Common
 ==============================================================================
 
 NOTE:  The jump to version 2.100 is there for no other reason than that
@@ -109,9 +109,16 @@ COPYRIGHT
 
 ==============================================================================
 
-CHANGES IN VERSION 2.111
+CHANGES IN VERSION 2.112
 
 Revision history for Perl extension Regexp::Common.
+
+2.112 Wed Mar 26 00:25:04 2003
+        - prospero and pop URIs
+        - Fixed documentation of Regexp::Common::lingua to document the
+          lingua stuff instead of Regexp::Common::zip (Murat).
+        - 157761 tests in 44 files.
+        - 127 patterns in 11 classes and 12 subclasses.
 
 2.111 Wed Mar 12 23:30:03 2003
         - Introduced the -i switch. Important if you are using the functional

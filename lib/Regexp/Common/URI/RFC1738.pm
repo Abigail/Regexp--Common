@@ -1,4 +1,4 @@
-# $Id: RFC1738.pm,v 2.103 2003/03/12 22:29:21 abigail Exp $
+# $Id: RFC1738.pm,v 2.104 2003/03/25 23:09:59 abigail Exp $
 
 package Regexp::Common::URI::RFC1738;
 
@@ -12,7 +12,7 @@ use vars qw /$VERSION @EXPORT @EXPORT_OK %EXPORT_TAGS @ISA/;
 use Exporter ();
 @ISA = qw /Exporter/;
 
-($VERSION) = q $Revision: 2.103 $ =~ /[\d.]+/g;
+($VERSION) = q $Revision: 2.104 $ =~ /[\d.]+/g;
 
 my %vars;
 
@@ -26,7 +26,8 @@ BEGIN {
                            $host $hostport $user $password $login/];
 
     $vars {parts}   = [qw /$fsegment $fpath $group $article $grouppart
-                           $search $database $wtype $wpath/];
+                           $search $database $wtype $wpath $psegment
+                           $fieldname $fieldvalue $fieldspec $ppath/];
 }
 
 use vars map {@$_} values %vars;
@@ -91,6 +92,13 @@ $database          =  $uchars;
 $wtype             =  $uchars;
 $wpath             =  $uchars;
 
+# prospero
+$psegment          =  "(?:(?:[$unreserved_range?:\@&=]+|$escape)*)";
+$fieldname         =  "(?:(?:[$unreserved_range?:\@&]+|$escape)*)";
+$fieldvalue        =  "(?:(?:[$unreserved_range?:\@&]+|$escape)*)";
+$fieldspec         =  "(?:;$fieldname=$fieldvalue)";
+$ppath             =  "(?:$psegment(?:/$psegment)*)";
+
 
 1;
 
@@ -126,6 +134,9 @@ Locators (URL)>. December 1994.
 =head1 HISTORY
 
  $Log: RFC1738.pm,v $
+ Revision 2.104  2003/03/25 23:09:59  abigail
+ Prospero definitions
+
  Revision 2.103  2003/03/12 22:29:21  abigail
  Small fixes
 
@@ -141,11 +152,7 @@ Locators (URL)>. December 1994.
 
 =head1 AUTHOR
 
-Damian Conway (damian@conway.org)
-
-=head1 MAINTAINANCE
-
-This package is maintained by Abigail S<(I<regexp-common@abigail.nl>)>.
+Abigail S<(I<regexp-common@abigail.nl>)>.
 
 =head1 BUGS AND IRRITATIONS
 
@@ -153,7 +160,7 @@ Bound to be plenty.
 
 =head1 COPYRIGHT
 
-     Copyright (c) 2001 - 2003, Damian Conway. All Rights Reserved.
+   Copyright (c) 2003, Abigail and Damian Conway. All Rights Reserved.
        This module is free software. It may be used, redistributed
       and/or modified under the terms of the Perl Artistic License
             (see http://www.perl.com/perl/misc/Artistic.html)

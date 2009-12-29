@@ -1,4 +1,4 @@
-package Regexp::Common::lingua; {
+package Regexp::Common::lingua;
 
 use strict;
 local $^W = 1;
@@ -8,7 +8,7 @@ use Carp;
 
 use vars qw /$VERSION/;
 
-($VERSION) = q $Revision: 2.101 $ =~ /[\d.]+/;
+($VERSION) = q $Revision: 2.102 $ =~ /[\d.]+/;
 
 pattern name    => [qw /lingua palindrome -chars=[A-Za-z]/],
         create  => sub {
@@ -27,10 +27,6 @@ pattern name    => [qw /lingua palindrome -chars=[A-Za-z]/],
         ;
 
 
-
-
-}
-
 1;
 
 __END__
@@ -39,14 +35,14 @@ __END__
 
 =head1 NAME
 
-Regexp::Common::zip -- provide regexes for zip codes.
+Regexp::Common::lingua -- provide regexes for language related stuff.
 
 =head1 SYNOPSIS
 
-    use Regexp::Common qw /zip/;
+    use Regexp::Common qw /lingua/;
 
     while (<>) {
-        /^$RE{zip}{Dutch}$/        and  print "Dutch zip code\n";
+        /^$RE{lingua}{palindrome}$/    and  print "is a palindrome\n";
     }
 
 
@@ -57,48 +53,25 @@ of the works of this interface.
 
 Do not use this module directly, but load it via I<Regexp::Common>.
 
-=head2 C<$RE{zip}{Dutch}{-lax}{-strict}>
+=head2 C<$RE{lingua}{palindrome}>
 
-Return a pattern that recognizes Dutch zip codes. Dutch zip codes
-consists of 4 digits, followed by 4 uppercase letters. Officially,
-a single space should be used between the digits and the letters,
-but this isn't always done in practise. If C<-strict> is given,
-a single space is mandatory, else any whitespace (including no
-whitespace at all) is allowed. Uppercase letters are required,
-unless the C<{-lax}> option is used, then lowercase letters
-may be used.
+Returns a pattern that recognizes a palindrome, a string that is the
+same if you reverse it. By default, it only matches strings consisting
+of letters, but this can be changed using the C<{-chars}> option.
+This option takes a character class (default is C<[A-Za-z]>) as
+argument.
 
-If C<{-keep}> is used, the zipcode is returned in C<$1>.
+If C<{-keep}> is used, only C<$1> will be set, and set to the entire
+match. 
 
-=head2 C<< $RE{zip}{US}{-extended => 'allow'} >>
-
-Returns a pattern that recognizes US zip codes. US zip codes are 5 digits,
-with a possible 4 digit extention. By default, the extention is optional.
-If the option C<< {-extended => 'yes'} >> is given, the pattern only
-matches zip codes with the extention. If the option C<< {-extended => 'no'} >>
-is given, the pattern will not recognize an extention.
-
-If C<{-keep}> is being used, the following will be returned:
-
-=over 4
-
-=item $1
-
-The entire zip code.
-
-=item $2
-
-The first 5 digits of the zip code.
-
-=item $3
-
-The 4 digit extention (if any).
-
-=back
+This pattern requires at least perl 5.6.0.
 
 =head1 HISTORY
 
  $Log: lingua.pm,v $
+ Revision 2.102  2003/03/25 23:20:02  abigail
+ Added documentation
+
  Revision 2.101  2003/02/01 22:55:31  abigail
  Changed Copyright years
 
@@ -116,13 +89,6 @@ The 4 digit extention (if any).
  Revision 1.1  2003/01/01 17:05:56  abigail
  First version
 
- Revision 1.2  2003/01/01 15:09:47  abigail
- Added US zip codes.
-
- Revision 1.1  2002/12/31 02:01:33  abigail
- First version
-
-
 =head1 SEE ALSO
 
 L<Regexp::Common> for a general description of how to use this interface.
@@ -137,11 +103,8 @@ This package is maintained by Abigail S<(I<regexp-common@abigail.nl>)>.
 
 =head1 BUGS AND IRRITATIONS
 
-Zip codes for most countries are missing.
+Many regexes are missing.
 Send them in to I<regexp-common@abigail.nl>.
-
-Do Dutch zip code actually allow all letters? Or are I and O omitted?
-What about the Q?
 
 =head1 COPYRIGHT
 

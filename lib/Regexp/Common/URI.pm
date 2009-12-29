@@ -1,4 +1,4 @@
-# $Id: URI.pm,v 2.106 2003/03/12 22:28:57 abigail Exp $
+# $Id: URI.pm,v 2.107 2003/03/25 23:20:30 abigail Exp $
 
 package Regexp::Common::URI;
 
@@ -16,13 +16,13 @@ use Regexp::Common qw /pattern clean no_defaults/;
 # Use 'require' here, not 'use', so we delay running them after we are compiled.
 # We also do it using an 'eval'; this saves us from have repeated similar
 # lines. The eval is further explained in 'perldoc -f require'.
-my @uris = qw /fax file ftp gopher http news tel telnet tv wais/;
+my @uris = qw /fax file ftp gopher http pop prospero news tel telnet tv wais/;
 foreach my $uri (@uris) {
     eval "require Regexp::Common::URI::$uri";
     die $@ if $@;
 }
 
-($VERSION) = q $Revision: 2.106 $ =~ /[\d.]+/g;
+($VERSION) = q $Revision: 2.107 $ =~ /[\d.]+/g;
 
 my %uris;
 
@@ -112,6 +112,9 @@ Vaha-Sipila, A.: I<URLs for Telephone Calls>. April 2000.
 =head1 HISTORY
 
  $Log: URI.pm,v $
+ Revision 2.107  2003/03/25 23:20:30  abigail
+ pop and prospero URIs
+
  Revision 2.106  2003/03/12 22:28:57  abigail
  WAIS URIs
 
