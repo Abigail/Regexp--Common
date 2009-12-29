@@ -21,7 +21,7 @@ sub run_fail;
 
 $^W = 1;
 
-($VERSION) = q $Revision: 2.102 $ =~ /[\d.]+/;
+($VERSION) = q $Revision: 2.103 $ =~ /[\d.]+/;
 
 my $count;
 
@@ -148,7 +148,7 @@ sub run_test {
     my $name         = $args {name};
     my $should_match = $args {match};
 
-    my $match = "<<$_>>" =~ /$re/;
+    my $match = /^$re/;   # Not anchored at the end on purpose.
     my $good  = $match && $_ eq $&;
     my $line  = $good ? "match" : $match ? "wrong match (got: $&)" : "no match";
        $line .= "; $name";
@@ -200,6 +200,9 @@ sub run_fail {
 __END__
 
 $Log: Common.pm,v $
+Revision 2.103  2003/02/09 12:43:00  abigail
+Minor changes
+
 Revision 2.102  2003/02/07 22:19:52  abigail
 Added general filters
 

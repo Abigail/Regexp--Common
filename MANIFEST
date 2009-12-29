@@ -42,8 +42,11 @@ t/URI/tel.t
 t/URI/telnet.t
 t/URI/tv.t
 t/URI/any.t
-t/zip/australian.t
-t/zip/dutch.t
-t/zip/french.t
-t/zip/german.t
+t/zip/australia.t
+t/zip/belgium.t
+t/zip/denmark.t
+t/zip/france.t
+t/zip/germany.t
+t/zip/greenland.t
+t/zip/netherlands.t
 t/zip/us.t

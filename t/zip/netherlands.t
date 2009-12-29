@@ -8,7 +8,7 @@ use Regexp::Common;
 
 $^W = 1;
 
-($VERSION) = q $Revision: 2.103 $ =~ /[\d.]+/;
+($VERSION) = q $Revision: 2.106 $ =~ /[\d.]+/;
 
 sub failures;
 
@@ -17,16 +17,16 @@ use constant  FAIL       =>  10;
 
 my $count;
 
-my $normal          = $RE {zip} {Dutch};
-my $no_space        = $RE {zip} {Dutch} {-sep => ""};
-my $dash            = $RE {zip} {Dutch} {-sep => "-"};
-my $prefix          = $RE {zip} {Dutch} {-prefix => "yes"};
-my $no_prefix       = $RE {zip} {Dutch} {-prefix => "no"};
-my $iso             = $RE {zip} {Dutch} {-country => "iso"};
-my $cept            = $RE {zip} {Dutch} {-country => "cept"};
-my $country         = $RE {zip} {Dutch} {-country => "NLD"};
-my $dash_prefix     = $RE {zip} {Dutch} {-sep => "-"} {-prefix => "yes"};
-my $dash_no_prefix  = $RE {zip} {Dutch} {-sep => "-"} {-prefix => "no"};
+my $normal          = $RE {zip} {Netherlands};
+my $no_space        = $RE {zip} {Dutch}       {-sep => ""};
+my $dash            = $RE {zip} {Netherlands} {-sep => "-"};
+my $prefix          = $RE {zip} {Dutch}       {-prefix => "yes"};
+my $no_prefix       = $RE {zip} {Netherlands} {-prefix => "no"};
+my $iso             = $RE {zip} {Dutch}       {-country => "iso"};
+my $cept            = $RE {zip} {Netherlands} {-country => "cept"};
+my $country         = $RE {zip} {Dutch}       {-country => "NLD"};
+my $dash_prefix     = $dash -> {-prefix => "yes"};
+my $dash_no_prefix  = $dash -> {-prefix => "no"};
 
 my @tests = (
     [ normal             =>  $normal          => [qw /1 1 0 0 0 0 0/]],
@@ -291,12 +291,21 @@ sub failures {
 
 =pod
 
- $Log: dutch.t,v $
+ $Log: netherlands.t,v $
+ Revision 2.106  2003/02/09 15:13:21  abigail
+ 'The Netherlands' -> 'Netherlands'
+
+ Revision 2.105  2003/02/09 13:31:46  abigail
+ Moved to netherlands.t
+
+ Revision 2.104  2003/02/08 14:58:57  abigail
+ Doc patch
+
  Revision 2.103  2003/02/05 09:54:15  abigail
  Removed 'use Config'
 
  Revision 2.102  2003/02/02 03:11:20  abigail
- File moved to t/URI
+ File moved to t/zip
 
  Revision 2.101  2003/02/02 02:56:53  abigail
  Debugged the test suite

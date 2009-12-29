@@ -1,5 +1,5 @@
 ==============================================================================
-                  Release of version 2.107 of Regexp::Common
+                  Release of version 2.108 of Regexp::Common
 ==============================================================================
 
 NOTE:  The jump to version 2.100 is there for no other reason than that
@@ -104,9 +104,15 @@ COPYRIGHT
 
 ==============================================================================
 
-CHANGES IN VERSION 2.107
+CHANGES IN VERSION 2.108
 
 Revision history for Perl extension Regexp::Common.
+
+2.108 Sun Feb  9 22:58:56 2003
+        - Postal codes for Belgium, Denmark and Greenland.
+        - Renamed the postal code patterns.
+        - 194125 tests in 34 files.
+        - 94 patterns in 11 classes.
 
 2.107 Fri Feb  7 23:20:35 2003
         - telnet URIs; Lua and FPL comments.
@@ -141,7 +147,7 @@ Revision history for Perl extension Regexp::Common.
 
 1.29  Thu Jan 16 12:07:02 2003
         - New since last release: Squares, Roman numbers, TV URIs,
-          Palindromes, Dutch and US zip coded.
+          Palindromes, Dutch and US postal codes.
         - 131710 tests in 28 files.
           11 pattern classes.
 

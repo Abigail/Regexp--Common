@@ -8,7 +8,7 @@ use Regexp::Common;
 
 $^W = 1;
 
-($VERSION) = q $Revision: 2.103 $ =~ /[\d.]+/;
+($VERSION) = q $Revision: 2.105 $ =~ /[\d.]+/;
 
 sub passes;
 sub failures;
@@ -16,25 +16,27 @@ sub failures;
 use constant  PASSES  =>   20;
 use constant  FAIL    =>    5;
 
-my $normal      = $RE {zip} {German};
-my $prefix      = $RE {zip} {German} {-prefix => 'yes'};
-my $no_prefix   = $RE {zip} {German} {-prefix => 'no'};
-my $iso         = $RE {zip} {German} {-country => "iso"};
-my $cept        = $RE {zip} {German} {-country => "cept"};
-my $country     = $RE {zip} {German} {-country => "DE"};
+my $normal      = $RE {zip} {France};
+my $prefix      = $RE {zip} {French} {-prefix => 'yes'};
+my $no_prefix   = $RE {zip} {France} {-prefix => 'no'};
+my $iso         = $RE {zip} {French} {-country => "iso"};
+my $cept        = $RE {zip} {France} {-country => "cept"};
+my $country     = $RE {zip} {French} {-country => "Fr"};
 my $iso_prefix  = $iso  -> {-prefix => 'yes'};
 my $cept_prefix = $cept -> {-prefix => 'yes'};
 
 my @tests = (
-    [ normal       => $normal      =>  [qw /1 1 1/]],
-    [ prefix       => $prefix      =>  [qw /0 1 1/]],
-    ['no prefix'   => $no_prefix   =>  [qw /1 0 0/]],
-    [ iso          => $iso         =>  [qw /1 0 1/]],
-    [ cept         => $cept        =>  [qw /1 1 0/]],
-    [ country      => $country     =>  [qw /1 0 1/]],
-    ['iso prefix'  => $iso_prefix  =>  [qw /0 0 1/]],
-    ['cept prefix' => $cept_prefix =>  [qw /0 1 0/]],
+    [ normal       => $normal      =>  [qw /1 1 1 0/]],
+    [ prefix       => $prefix      =>  [qw /0 1 1 0/]],
+    ['no prefix'   => $no_prefix   =>  [qw /1 0 0 0/]],
+    [ iso          => $iso         =>  [qw /1 0 1 0/]],
+    [ cept         => $cept        =>  [qw /1 1 0 0/]],
+    [ country      => $country     =>  [qw /1 0 0 1/]],
+    ['iso prefix'  => $iso_prefix  =>  [qw /0 0 1 0/]],
+    ['cept prefix' => $cept_prefix =>  [qw /0 1 0 0/]],
 );
+
+my @depts = ('01' .. '98');
 
 my @failures = failures;
 
@@ -53,8 +55,8 @@ foreach my $test (@tests) {
 }
 
 my $max  = 1;
-   $max += PASSES    * $m;
-   $max += PASSES    * $k;
+   $max += @depts    * $m;
+   $max += @depts    * $k;
    $max += @failures * @tests;
 print "1..$max\n";
 
@@ -104,23 +106,23 @@ sub _ {
 }
 
 my %cache;
-foreach my $d (1 .. PASSES) {
-    my ($x, $y, $z) = qw /0 0 000/;
+# foreach my $d (1 .. PASSES) {
+foreach my $x (@depts) {
+    my ($y) = qw /000/;
 
-    while ($cache {"$x$y$z"} ++) {
-        $x = _ 1;
-        $y = _ 1;
-        $z = _ 3;
+    while ($cache {$y} ++) {
+        $y = _ 3;
     }
 
-    my @t = ([undef, "$x$y$z", $x, $y, $z],
-             ["D",   "$x$y$z", $x, $y, $z],
-             ["DE",  "$x$y$z", $x, $y, $z]);
+    my @t = ([undef, "$x$y", $x, $y],
+             ["F",   "$x$y", $x, $y],
+             ["FR",  "$x$y", $x, $y],
+             ["Fr",  "$x$y", $x, $y]);
 
     my $c = 0;
     foreach my $t (@t) {
         local $_  = defined $t -> [0] ? $t -> [0] . "-" : "";
-              $_ .= join "" => @$t [2 .. 4];
+              $_ .= join "" => @$t [2 .. 3];
         foreach my $test (@tests) {
             my ($name, $re, $matches) = @$test;
             run_test $name, $re,                  $matches -> [$c];
@@ -173,13 +175,20 @@ sub failures {
         }
     }
 
+    # Wrong departments.
+    for (1 .. FAIL) {
+        my $x = _ 3;
+        redo if $cache {"00$x"} ++;
+        push @failures => "00$x", "99$x";
+    }
+
     # Same failures, with country in front of it as well.
-    push @failures => map {("DE-$_", "D-$_")} @failures;
+    push @failures => map {("FR-$_", "F-$_")} @failures;
 
     # Wrong countries.
     for (1 .. FAIL) {
         my $c = join "" => map {('A' .. 'Z') [rand 26]} 1 .. 2;
-        redo if $c eq "DE" || $c eq "D" || $cache {$c} ++;
+        redo if $c eq "FR" || $c eq "F" || $cache {$c} ++;
         my $x = _ 5;
         push @failures => "$c-$x";
     }
@@ -188,14 +197,14 @@ sub failures {
         my $c = ('A' .. 'Z') [rand 26];
         redo if $cache {$c} ++;
         my $x = _ 5;
-        push @failures => "${c}DE-$x";
-        push @failures => "DE$c-$x";
+        push @failures => "${c}FR-$x";
+        push @failures => "FR$c-$x";
     }
 
     for (1 .. FAIL) {
         my $x = _ 5;
-        redo if $cache {"de-$x"} ++;
-        push @failures => "de-$x", "d-$x";
+        redo if $cache {"fr-$x"} ++;
+        push @failures => "fr-$x", "f-$x";
     }
 
     @failures;
@@ -206,16 +215,22 @@ __END__
 
 =pod
 
- $Log: german.t,v $
+ $Log: france.t,v $
+ Revision 2.105  2003/02/09 13:31:12  abigail
+ Moved to france.t
+
+ Revision 2.104  2003/02/08 14:58:57  abigail
+ Doc patch
+
  Revision 2.103  2003/02/05 09:54:15  abigail
  Removed 'use Config'
 
  Revision 2.102  2003/02/02 03:11:20  abigail
- File moved to t/URI
+ File moved to t/zip
 
- Revision 2.101  2003/02/01 22:35:39  abigail
+ Revision 2.101  2003/02/01 22:31:16  abigail
  Added some tests
 
- Revision 2.100  2003/01/22 17:25:39  abigail
- Initial checkin. Tests for German zip codes.
+ Revision 2.100  2003/01/23 02:14:22  abigail
+ Tests for French postal codes. Initial checkin.
 

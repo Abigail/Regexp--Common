@@ -8,7 +8,7 @@ use Regexp::Common;
 
 $^W = 1;
 
-($VERSION) = q $Revision: 2.102 $ =~ /[\d.]+/;
+($VERSION) = q $Revision: 2.103 $ =~ /[\d.]+/;
 
 sub passes;
 sub failures;
@@ -16,11 +16,11 @@ sub failures;
 use constant  PASSES  =>   20;
 use constant  FAIL    =>    5;
 
-my $normal      = $RE {zip} {Australian};
+my $normal      = $RE {zip} {Australia};
 my $prefix      = $RE {zip} {Australian} {-prefix  => 'yes'};
-my $no_prefix   = $RE {zip} {Australian} {-prefix  => 'no'};
+my $no_prefix   = $RE {zip} {Australia}  {-prefix  => 'no'};
 my $iso         = $RE {zip} {Australian} {-country => "iso"};
-my $cept        = $RE {zip} {Australian} {-country => "cept"};
+my $cept        = $RE {zip} {Australia}  {-country => "cept"};
 my $country     = $RE {zip} {Australian} {-country => "Aus"};
 my $iso_prefix  = $iso  -> {-prefix => 'yes'};
 my $cept_prefix = $cept -> {-prefix => 'yes'};
@@ -216,7 +216,10 @@ __END__
 
 =pod
 
- $Log: australian.t,v $
+ $Log: australia.t,v $
+ Revision 2.103  2003/02/09 13:30:36  abigail
+ Moved to australia.t
+
  Revision 2.102  2003/02/05 09:54:15  abigail
  Removed 'use Config'
 
