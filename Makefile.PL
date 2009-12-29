@@ -1,10 +1,54 @@
-use ExtUtils::MakeMaker;
-use 5.00473;
-my @tests = qw {t/*.t t/*/*.t};
-WriteMakefile (
-    NAME         => 'Regexp::Common',
-    VERSION_FROM => 'lib/Regexp/Common.pm',
-    test         => {TESTS => $^O eq 'MSWin32'          
-                              ? "@{[map {glob} @tests]}" : "@tests" }
+#!/usr/bin/perl
 
+use 5.00473;
+
+use strict;
+
+use ExtUtils::MakeMaker;
+
+my %args = (
+    NAME                 => 'Regexp::Common',
+    VERSION_FROM         => 'lib/Regexp/Common.pm',
+    ABSTRACT_FROM        => 'lib/Regexp/Common.pm',
+    PREREQ_PM            => {
+        'vars'                  => 0,
+        'strict'                => 0,
+    },
+    MIN_PERL_VERSION     =>  5.00473,
+    AUTHOR               => 'Abigail <regexp-common@abigail.be>',
+    LICENSE              => 'mit',
+    META_MERGE           => {
+        test_requires    => {
+            'strict'     => 0,
+        },
+        resources        => {
+            repository   => 'git://github.com/Abigail/Regexp-Common.git',
+        },
+        keywords         => ['regular expression', 'pattern'],
+    },
 );
+
+$args {META_MERGE} {build_requires} ||= {
+    'ExtUtils::MakeMaker' =>  0,
+    %{$args {META_MERGE} {test_requires}}
+};
+    
+$args {META_MERGE} {configure_requires} ||=
+    $args {META_MERGE} {build_requires};
+    
+my %filter = (
+    MIN_PERL_VERSION     => '6.48',
+    META_MERGE           => '6.46',
+    AUTHOR               => '6.07',
+    ABSTRACT_FROM        => '6.07',
+    LICENSE              => '6.07',
+);
+
+delete $args {$_} for grep {defined $filter {$_} &&
+                            $ExtUtils::MakeMaker::VERSION lt $filter {$_}}
+                            keys %args;
+
+
+WriteMakefile %args;
+
+__END__
