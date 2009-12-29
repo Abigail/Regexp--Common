@@ -9,18 +9,22 @@ use t::Common;
 
 $^W = 1;
 
-($VERSION) = q $Revision: 2.101 $ =~ /[\d.]+/;
+($VERSION) = q $Revision: 2.102 $ =~ /[\d.]+/;
 
 sub create_parts;
 
 my $normal      = $RE {zip} {Denmark};
-my $prefix      = $RE {zip} {Denmark} {-prefix  => 'yes'};
-my $no_prefix   = $RE {zip} {Denmark} {-prefix  => 'no'};
 my $iso         = $RE {zip} {Denmark} {-country => "iso"};
 my $cept        = $RE {zip} {Denmark} {-country => "cept"};
 my $country     = $RE {zip} {Denmark} {-country => "DEN"};
-my $iso_prefix  = $iso  -> {-prefix => 'yes'};
-my $cept_prefix = $cept -> {-prefix => 'yes'};
+
+my ($prefix, $no_prefix, $iso_prefix, $cept_prefix);
+unless ($] < 5.00503) {
+    $prefix      = $RE {zip} {Denmark} {-prefix  => 'yes'};
+    $no_prefix   = $RE {zip} {Denmark} {-prefix  => 'no'};
+    $iso_prefix  = $iso  -> {-prefix => 'yes'};
+    $cept_prefix = $cept -> {-prefix => 'yes'};
+}
 
 my @tests = (
     [ normal       => $normal      =>  {no_prefix      => NORMAL_PASS | FAIL,
@@ -28,12 +32,6 @@ my @tests = (
                                         cept_prefix    => NORMAL_PASS | FAIL,
                                         prefix_dk      => NORMAL_FAIL,
                                         prefix_DEN     => NORMAL_FAIL}],
-    [ prefix       => $prefix      =>  {no_prefix      => NORMAL_FAIL,
-                                        iso_prefix     => NORMAL_PASS,
-                                        cept_prefix    => NORMAL_PASS}],
-    ['no prefix'   => $no_prefix   =>  {no_prefix      => NORMAL_PASS,
-                                        iso_prefix     => NORMAL_FAIL,
-                                        cept_prefix    => NORMAL_FAIL}],
     [ iso          => $iso         =>  {no_prefix      => NORMAL_PASS,
                                         iso_prefix     => NORMAL_PASS,
                                         cept_prefix    => NORMAL_PASS}],
@@ -44,13 +42,22 @@ my @tests = (
                                         iso_prefix     => NORMAL_FAIL,
                                         cept_prefix    => NORMAL_FAIL,
                                         prefix_DEN     => NORMAL_PASS}],
+);
+
+push @tests => (
+    [ prefix       => $prefix      =>  {no_prefix      => NORMAL_FAIL,
+                                        iso_prefix     => NORMAL_PASS,
+                                        cept_prefix    => NORMAL_PASS}],
+    ['no prefix'   => $no_prefix   =>  {no_prefix      => NORMAL_PASS,
+                                        iso_prefix     => NORMAL_FAIL,
+                                        cept_prefix    => NORMAL_FAIL}],
     ['iso prefix'  => $iso_prefix  =>  {no_prefix      => NORMAL_FAIL,
                                         iso_prefix     => NORMAL_PASS,
                                         cept_prefix    => NORMAL_PASS}],
     ['cept prefix' => $cept_prefix =>  {no_prefix      => NORMAL_FAIL,
                                         iso_prefix     => NORMAL_PASS,
                                         cept_prefix    => NORMAL_PASS}],
-);
+) unless $] < 5.00503;
 
 my ($good, $bad) = create_parts;
 
@@ -132,6 +139,9 @@ __END__
 =pod
 
  $Log: denmark.t,v $
+ Revision 2.102  2004/12/14 23:11:38  abigail
+ Don't run all tests for pre-5.00503 perls
+
  Revision 2.101  2003/02/09 16:40:26  abigail
  Removed redundant tests
 

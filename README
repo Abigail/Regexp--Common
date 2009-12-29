@@ -1,5 +1,5 @@
 ==============================================================================
-                  Release of version 2.117 of Regexp::Common
+                  Release of version 2.118 of Regexp::Common
 ==============================================================================
 
 WARNING: INCOMPATIBLE CHANGE in version 2.113!
@@ -101,9 +101,17 @@ COPYRIGHT
 
 ==============================================================================
 
-CHANGES IN VERSION 2.117
+CHANGES IN VERSION 2.118
 
 Revision history for Perl extension Regexp::Common.
+
+2.118 Wed Dec 15 00:16:09 CET 2004
+        - Introduced Regexp::Common::_support.
+        - Disabled the '-prefix' option for Danish zip codes if the Perl
+          version is older than 5.005_03, as they triggered bugs. 5.005_03
+          and more recent versions of Perl don't have this problem.
+        - Fixed the generic OO routines. (They never worked correctly).
+        - 134191 tests in 49 files.
 
 2.117 Thu Jul  1 12:11:47 CEST 2004
         - Fixed problems with squares and 32bit integer Perls.

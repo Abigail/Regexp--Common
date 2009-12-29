@@ -8,7 +8,7 @@ local $^W = 1;
 use vars qw /$VERSION %RE %sub_interface/;
 
 
-($VERSION) = q $Revision: 2.117 $ =~ /([\d.]+)/;
+($VERSION) = q $Revision: 2.118 $ =~ /([\d.]+)/;
 
 use Carp;
 
@@ -30,8 +30,9 @@ sub FETCH {
 }
 
 my %imports = map {$_ => "Regexp::Common::$_"}
-              qw /balanced comment   delimited lingua list       net
-                  number   profanity SEN       URI    whitespace zip/;
+              qw /balanced CC     comment   delimited lingua list
+                  net      number profanity SEN       URI    whitespace
+                  zip/;
 
 sub import {
     tie %RE, __PACKAGE__;
@@ -213,19 +214,19 @@ sub pattern {
         return 1;
 }
 
-sub generic_match { $_[0] =~ /$_[1]/ }
-sub generic_subs  { $_[0] =~ s/$_[1]/$_[2]/ }
+sub generic_match {$_ [1] =~  /$_[0]/}
+sub generic_subs  {$_ [1] =~ s/$_[0]/$_[2]/}
 
 sub matches {
         my ($self, $str) = @_;
-        my $entry = $self->_decache;
-        $entry->{match}->($entry,$str);
+        my $entry = $self -> _decache;
+        $entry -> {match} -> ($entry, $str);
 }
 
 sub subs {
         my ($self, $str, $newstr) = @_;
-        my $entry = $self->_decache;
-        $entry->{subs}->($entry, $str, $newstr);
+        my $entry = $self -> _decache;
+        $entry -> {subs} -> ($entry, $str, $newstr);
         return $str;
 }
 
@@ -805,6 +806,9 @@ project, especially: Elijah, Jarkko, Tom, Nat, Ed, and Vivek.
 =head1 HISTORY
 
   $Log: Common.pm,v $
+  Revision 2.118  2004/12/14 23:17:57  abigail
+  Fixed the generic OO routines.
+
   Revision 2.117  2004/06/30 15:01:35  abigail
   Pod nits. (Jim Cromie)
 

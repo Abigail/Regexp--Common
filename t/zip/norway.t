@@ -9,7 +9,7 @@ use t::Common qw /run_new_tests cross pdd dd a/;
 
 $^W = 1;
 
-($VERSION) = q $Revision: 2.100 $ =~ /[\d.]+/;
+($VERSION) = q $Revision: 2.101 $ =~ /[\d.]+/;
 
 sub create_parts;
 
@@ -32,7 +32,6 @@ my $wrong   = [@$long, @$short, @$letter];
 my %targets = (
     no_prefix    => {
         list     => $valid,
-        query    => sub {$_ [0]},
         wanted   => sub {[$_, undef, $_ [0]]},
     },
     iso_prefix   => {
@@ -52,7 +51,6 @@ my %targets = (
     },
     wrong1       => {
         list     => $wrong,
-        query    => sub {$_ [0]},
     },
     wrong2       => {
         list     => $wrong,
@@ -113,6 +111,9 @@ __END__
 =pod
 
  $Log: norway.t,v $
+ Revision 2.101  2004/12/14 23:13:17  abigail
+ Minor changes because Common.pm got smarter
+
  Revision 2.100  2004/06/09 21:32:41  abigail
  Initial checkin
 

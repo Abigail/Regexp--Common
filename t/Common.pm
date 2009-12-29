@@ -23,14 +23,44 @@ sub run_fail;
 
 local $^W = 1;
 
-($VERSION) = q $Revision: 2.108 $ =~ /[\d.]+/;
+($VERSION) = q $Revision: 2.109 $ =~ /[\d.]+/;
 
 my $count;
 
-sub mess {print ++ $count, " - $_ (@_)\n"}
+sub mess {
+    my $str = $_;
+       $str =~ s/\n/\\n/g;
+    map {s/\n/\\n/g} @_;
+    print ++ $count, " - '$str' (@_)\n";
+}
 
 sub pass {print     "ok "; &mess}
 sub fail {print "not ok "; &mess}
+
+sub stringify;
+sub stringify {
+    my $arg = shift;
+
+    if    (!defined $arg)        {return "UNDEF"}
+    elsif (!ref $arg)            {$arg =~ s/\n/\\n/g; return "'$arg'"}
+    elsif ( ref $arg eq "ARRAY") {
+        local $" = ", ";
+        return "[@{[map {stringify $_} @$arg]}]";
+    }
+    else {return ref $arg}
+}
+
+sub Fail {
+    my $mess = shift;
+    my %args = @_;
+
+    if ($args {got} && $args {expected}) {
+        printf "# Expected: %s\n", stringify $args {expected};
+        printf "# Got:      %s\n", stringify $args {got};
+    }
+
+    fail $mess;
+}
 
 sub import {
     if (@_ > 1 && $_ [-1] =~ /^\d+\.\d+$/) {
@@ -240,13 +270,54 @@ sub run_old_keep {
                   :  fail "wrong match [@{[__ @chunks]}]"
 }
 
+#
+# New style subs
+#
+
 sub run_fail {
     my %args = @_;
 
     my $re   = $args {re};
     my $name = $args {name};
 
-    /^$re$/ ? fail "match; $name" : pass "no match; $name";
+    /^$re$/ ? fail "fail/match; $name"
+            : pass "fail/no match; $name";
+}
+
+#
+# We can test whether it matched, but we can't really test whether
+# it matched the entire string. $& relates to the last successful
+# match in the current scope, but the match done in $re -> matches()
+# is done in a subscope. @-/@+ are equally useless.
+#
+sub run_OO_pass {
+    my %args  = @_;
+
+    my $re    = $args {re};
+    my $name  = $args {name};
+
+    my $match = $re -> matches ($_);
+
+    if ($match) {pass "OO-pass/match; $name"}
+    else        {fail "OO-pass/no match; $name"}
+
+}
+
+
+sub run_OO_sub_pass {
+    my %args  = @_;
+
+    my $re    = $args {re};
+    my $name  = $args {name};
+    my $token = $args {token} || "---";
+
+    my $sub   = $re -> subs ($_, $token);
+    my $good  = $sub eq $token;
+
+    if    ($good)      {pass "OO-sub-pass/match; $name"}
+    elsif ($sub ne $_) {Fail "OO-sub-pass/fail; $name",
+                              got => $sub, expected => $token}
+    else               {fail "OO-sub-pass/no match; $name"}
 }
 
 
@@ -258,11 +329,10 @@ sub run_pass {
 
     my $match = /^$re/;   # Not anchored at the end on purpose.
     my $good  = $match && $_ eq $&;
-    my $line  = $good  ? "match; $name"                 :
-                $match ? "wrong match (got: $&); $name" :
-                         "no match; $name";
-    $good ? pass $line
-          : fail $line
+
+    if    ($good)  {pass "pass/match; $name"}
+    elsif ($match) {Fail "pass/fail; $name", got => $&, expected => $_}
+    else           {fail "pass/no match; $name"}
 }
 
 
@@ -274,14 +344,11 @@ sub run_keep {
     my $wanted     = $args {wanted}; # Wanted list.
 
     my @chunks = /^$re->{-keep}$/;
-    unless (@chunks) {fail "no match; $name - keep"; return}
+    unless (@chunks) {fail "keep/no match; $name"; return}
 
-    local $" = ", ";
     array_cmp (\@chunks, $wanted)
-         ? pass "match; $name - keep"
-         : $DEBUG ?  fail "wrong match,\n#      got [@{[__ @chunks]}]\n" .
-                                        "# expected [@{[__ @$wanted]}]"
-                  :  fail "wrong match [@{[__ @chunks]}]"
+         ? pass "keep/match; $name"
+         : Fail "keep/fail; $name", got => \@chunks, expected => $wanted;
 }
 
 
@@ -298,12 +365,18 @@ sub run_new_test_set {
     foreach my $target_name (@{$$test_set {pass}}) {
         my $query = $$targets {$target_name} {query};
         foreach my $parts (@{$$targets {$target_name} {list}}) {
-            local $_ = $query -> ($parts);
-            run_pass name   => $name,
-                     re     => $regex;
-            run_keep name   => $name,
-                     re     => $keep,
-                     wanted => $$targets {$target_name} {wanted} -> ($parts);
+            local $_ = $query     ? $query -> ($parts) :
+                       ref $parts ? join "" => @$parts : $parts;
+            run_pass        name   => $name,
+                            re     => $regex;
+            run_OO_pass     name   => $name,
+                            re     => $regex;
+            run_OO_sub_pass name   => $name,
+                            re     => $regex;
+            run_keep        name   => $name,
+                            re     => $keep,
+                            wanted => $$targets {$target_name} {wanted}
+                                             -> ($parts);
         }
     }
 
@@ -311,7 +384,8 @@ sub run_new_test_set {
     foreach my $target_name (@{$$test_set {fail}}) {
         my $query = $$targets {$target_name} {query};
         foreach my $parts (@{$$targets {$target_name} {list}}) {
-            local $_ = $query -> ($parts);
+            local $_ = $query     ? $query -> ($parts) :
+                       ref $parts ? join "" => @$parts : $parts;
             run_fail name => $name,
                      re   => $regex,
         }
@@ -327,8 +401,8 @@ sub run_new_tests {
     # Count the tests to be run.
     my $runs = 1;
     foreach my $test (@$tests) {
-        $runs += 2 * @{$$targets {$_} {list}} for @{$$test {pass}};
-        $runs += 1 * @{$$targets {$_} {list}} for @{$$test {fail}};
+        $runs += 4 * @{$$targets {$_} {list} || []} for @{$$test {pass}};
+        $runs += 1 * @{$$targets {$_} {list} || []} for @{$$test {fail}};
     }
 
     print "1..$runs\n";
@@ -399,6 +473,9 @@ sub XX {my ($min, $max) = @_ > 1 ? (@_) : ($_ [0], $_ [0]);
 __END__
 
 $Log: Common.pm,v $
+Revision 2.109  2004/12/14 23:03:17  abigail
+Test OO form when running 'new' tests
+
 Revision 2.108  2004/06/09 21:39:49  abigail
 New way of doing tests
 

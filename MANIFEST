@@ -1,5 +1,7 @@
 lib/Regexp/Common.pm
+lib/Regexp/Common/_support.pm
 lib/Regexp/Common/balanced.pm
+lib/Regexp/Common/CC.pm
 lib/Regexp/Common/comment.pm
 lib/Regexp/Common/delimited.pm
 lib/Regexp/Common/lingua.pm
@@ -36,6 +38,7 @@ TODO
 t/number/decimal.t
 t/Common.pm
 t/SEN/usa_ssn.t
+t/test___luhn.t
 t/test_balanced.t
 t/test_bases.t
 t/test_bases_sep.t

@@ -8,7 +8,7 @@ use Carp;
 
 use vars qw /$VERSION/;
 
-($VERSION) = q $Revision: 2.110 $ =~ /[\d.]+/g;
+($VERSION) = q $Revision: 2.111 $ =~ /[\d.]+/g;
 
 #
 # Prefer '[0-9]' over \d, because the latter may include more
@@ -120,8 +120,11 @@ while (my ($country, $zip) = each %zip) {
     my @names = ($country);
     push @names => @{$alternatives {$country}} if $alternatives {$country};
     foreach my $name (@names) {
-        pattern name   => [zip => $name, qw /-prefix= -country=/],
-                create => sub {
+        my $pat_name = $name eq "Denmark" && $] < 5.00503
+                       ?   [zip => $name, qw /-country=/]
+                       :   [zip => $name, qw /-prefix= -country=/];
+        pattern name    => $pat_name,
+                create  => sub {
                     my $pt  = _t $_ [1] {-prefix};
 
                     my $cn  = _c $country => $_ [1] {-country};
@@ -719,6 +722,9 @@ postal codes.
 =head1 HISTORY
 
  $Log: zip.pm,v $
+ Revision 2.111  2004/12/14 23:15:13  abigail
+ Disable '-prefix' for Danish postal codes for pre-5.00503 perls.
+
  Revision 2.110  2004/06/09 21:44:13  abigail
  - Norway, Italy, Spain.
  - References.
