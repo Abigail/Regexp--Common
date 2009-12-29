@@ -2,14 +2,12 @@
 
 use strict;
 use lib  qw {blib/lib};
-use vars qw /$VERSION/;
 
 use Regexp::Common qw /RE_zip_US/;
 use t::Common qw /run_new_tests cross gimme sample pdd/;
 
 use warnings;
 
-($VERSION) = q $Revision: 2.106 $ =~ /[\d.]+/;
 
 my $basic   = $RE {zip} {US};
 my $ext_yes = $RE {zip} {US} {-extended => 'yes'};

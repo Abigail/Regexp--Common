@@ -2,14 +2,12 @@
 
 use strict;
 use lib  qw {blib/lib};
-use vars qw /$VERSION/;
 
 use Regexp::Common;
 use t::Common qw /run_new_tests cross criss_cross dd pdd/;
 
 $^W = 1;
 
-($VERSION) = q $Revision: 2.102 $ =~ /[\d.]+/;
 
 my $ssn   = $RE {SEN} {USA} {SSN};
 my $space = $ssn -> {-sep => ' '};

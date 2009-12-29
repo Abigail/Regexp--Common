@@ -7,9 +7,6 @@ use Regexp::Common               qw /pattern clean no_defaults/;
 use Regexp::Common::URI          qw /register_uri/;
 use Regexp::Common::URI::RFC1738 qw /$host $fpath/;
 
-use vars qw /$VERSION/;
-
-($VERSION) = q $Revision: 2.102 $ =~ /[\d.]+/g;
 
 my $scheme = 'file';
 my $uri    = "(?k:(?k:$scheme)://(?k:(?k:(?:$host|localhost)?)" .

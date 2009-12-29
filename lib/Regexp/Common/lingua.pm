@@ -5,9 +5,6 @@ local $^W = 1;
 
 use Regexp::Common qw /pattern clean no_defaults/;
 
-use vars qw /$VERSION/;
-
-($VERSION) = q $Revision: 2.107 $ =~ /[\d.]+/g;
 
 pattern name    => [qw /lingua palindrome -chars=[A-Za-z]/],
         create  => sub {

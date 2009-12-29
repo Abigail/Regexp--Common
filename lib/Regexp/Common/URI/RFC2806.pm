@@ -6,12 +6,11 @@ local $^W = 1;
 use Regexp::Common::URI::RFC1035 qw /$domain/;
 use Regexp::Common::URI::RFC2396 qw /$unreserved $escaped $hex/;
 
-use vars qw /$VERSION @EXPORT @EXPORT_OK %EXPORT_TAGS @ISA/;
+use vars qw /@EXPORT @EXPORT_OK %EXPORT_TAGS @ISA/;
 
 use Exporter ();
 @ISA = qw /Exporter/;
 
-($VERSION) = q $Revision: 2.102 $ =~ /[\d.]+/g;
 
 my %vars;
 

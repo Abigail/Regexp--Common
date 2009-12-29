@@ -5,9 +5,6 @@ use Regexp::Common qw /pattern clean no_defaults/;
 use strict;
 use warnings;
 
-use vars qw /$VERSION/;
-
-($VERSION) = q $Revision: 2.108 $ =~ /[\d.]+/g;
 
 my %IPunit = (
     dec => q{(?k:25[0-5]|2[0-4][0-9]|[0-1]?[0-9]{1,2})},

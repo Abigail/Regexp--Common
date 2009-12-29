@@ -1,7 +1,6 @@
 #!/usr/bin/perl
 
 use strict;
-use vars qw /$VERSION/;
 use lib "blib/lib";
 
 use Regexp::Common qw /pattern RE_comment_ALL/;
@@ -10,7 +9,6 @@ use t::Common qw /run_new_tests cross ww/;
 
 use warnings;
 
-($VERSION) = q $Revision: 2.101 $ =~ /[\d.]+/;
 
 pattern name   => [qw /comment fairy-language-1/],
         create => 

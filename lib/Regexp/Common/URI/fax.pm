@@ -8,9 +8,6 @@ use Regexp::Common::URI          qw /register_uri/;
 use Regexp::Common::URI::RFC2806 qw /$fax_subscriber 
                                      $fax_subscriber_no_future/;
 
-use vars qw /$VERSION/;
-
-($VERSION) = q $Revision: 2.102 $ =~ /[\d.]+/g;
 
 my $fax_scheme  = 'fax';
 my $fax_uri     = "(?k:(?k:$fax_scheme):(?k:$fax_subscriber))";

@@ -1,7 +1,6 @@
 #!/usr/bin/perl
 
 use strict;
-use vars qw /$VERSION/;
 use lib "blib/lib";
 
 use Regexp::Common qw /RE_comment_ALL/;
@@ -11,7 +10,6 @@ BEGIN {$^W = 0 if $[ < 5.006};
 
 use warnings;
 
-($VERSION) = q $Revision: 2.104 $ =~ /[\d.]+/;
 
 # 1. List of tokens.
 # 2. List of languages.

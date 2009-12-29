@@ -7,9 +7,6 @@ use Regexp::Common               qw /pattern clean no_defaults/;
 use Regexp::Common::URI          qw /register_uri/;
 use Regexp::Common::URI::RFC2396 qw /$host $port $path_segments $query/;
 
-use vars qw /$VERSION/;
-
-($VERSION) = q $Revision: 2.103 $ =~ /[\d.]+/g;
 
 my $http_uri = "(?k:(?k:http)://(?k:$host)(?::(?k:$port))?"           .
                "(?k:/(?k:(?k:$path_segments)(?:[?](?k:$query))?))?)";

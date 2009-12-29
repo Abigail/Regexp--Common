@@ -1,7 +1,6 @@
 #!/usr/bin/perl
 
 use strict;
-use vars qw /$VERSION/;
 use lib "blib/lib";
 
 use Regexp::Common qw /RE_comment_HTML/;
@@ -10,7 +9,6 @@ use t::Common qw /run_new_tests cross/;
 
 use warnings;
 
-($VERSION) = q $Revision: 2.102 $ =~ /[\d.]+/;
 
 my @good = ("", "This is a comment", "This is - a comment",
                 "This is - - comment", ">This is a comment", 

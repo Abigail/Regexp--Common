@@ -5,9 +5,6 @@ local $^W = 1;
 
 use Regexp::Common qw /pattern clean no_defaults/;
 
-use vars qw /$VERSION/;
-
-($VERSION) = q $Revision: 2.116 $ =~ /[\d.]+/g;
 
 #
 # Prefer '[0-9]' over \d, because the latter may include more

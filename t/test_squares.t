@@ -2,7 +2,6 @@
 
 use strict;
 use lib  qw {blib/lib};
-use vars qw /$VERSION/;
 
 use Config;
 use Regexp::Common;
@@ -13,7 +12,6 @@ use warnings;
 my $MAX = $Config {use64bitint} ? do {no warnings; "9000000000000000"}
                                 : 0x7FFFFFFF;
 
-($VERSION) = q $Revision: 2.105 $ =~ /[\d.]+/;
 
 sub create_parts;
 

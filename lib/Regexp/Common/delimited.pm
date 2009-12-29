@@ -4,9 +4,6 @@ use strict;
 local $^W = 1;
 
 use Regexp::Common qw /pattern clean no_defaults/;
-use vars qw /$VERSION/;
-
-($VERSION) = q $Revision: 2.106 $ =~ /[\d.]+/g;
 
 sub gen_delimited {
 

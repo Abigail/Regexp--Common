@@ -6,10 +6,6 @@ local $^W = 1;
 use Regexp::Common qw /pattern clean no_defaults/;
 use Regexp::Common::_support qw /luhn/;
 
-use vars qw /$VERSION/;
-
-($VERSION) = q $Revision: 2.100 $ =~ /[\d.]+/g;
-
 my @cards = (
     # Name           Prefix                    Length           mod 10
     [Mastercard   =>   '5[1-5]',                16,                1],

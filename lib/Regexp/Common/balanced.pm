@@ -3,9 +3,6 @@ package Regexp::Common::balanced; {
 use strict;
 local $^W = 1;
 
-use vars qw /$VERSION/;
-($VERSION) = q $Revision: 2.103 $ =~ /[\d.]+/g;
-
 use Regexp::Common qw /pattern clean no_defaults/;
 
 my %closer = ( '{'=>'}', '('=>')', '['=>']', '<'=>'>' );

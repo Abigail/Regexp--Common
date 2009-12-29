@@ -8,9 +8,6 @@ use Regexp::Common::URI          qw /register_uri/;
 use Regexp::Common::URI::RFC1738 qw /$host $port/;
 use Regexp::Common::URI::RFC2384 qw /$enc_user $enc_auth_type/;
 
-use vars qw /$VERSION/;
-
-($VERSION) = q $Revision: 2.102 $ =~ /[\d.]+/g;
 
 my $scheme = "pop";
 my $uri    = "(?k:(?k:$scheme)://(?:(?k:$enc_user)"     .  

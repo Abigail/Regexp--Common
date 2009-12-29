@@ -10,9 +10,6 @@ use Regexp::Common               qw /pattern clean no_defaults/;
 use Regexp::Common::URI          qw /register_uri/;
 use Regexp::Common::URI::RFC2396 qw /$hostname/;
 
-use vars qw /$VERSION/;
-
-($VERSION)    = q $Revision: 2.102 $ =~ /[\d.]+/g;
 
 my $tv_scheme = 'tv';
 my $tv_url    = "(?k:(?k:$tv_scheme):(?k:$hostname)?)";

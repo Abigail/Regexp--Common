@@ -2,13 +2,11 @@
 
 use strict;
 use lib  qw {blib/lib};
-use vars qw /$VERSION/;
 
 use Regexp::Common;
 
 $^W = 1;
 
-($VERSION) = q $Revision: 2.102 $ =~ /[\d.]+/;
 
 my $count;
 

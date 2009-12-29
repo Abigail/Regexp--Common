@@ -2,14 +2,12 @@
 
 use strict;
 use lib  qw {blib/lib};
-use vars qw /$VERSION/;
 
 use Regexp::Common qw /RE_zip_Italy/;
 use t::Common qw /run_new_tests cross d pd dd a/;
 
 # use warnings;
 
-($VERSION) = q $Revision: 2.103 $ =~ /[\d.]+/;
 
 sub create_parts;
 

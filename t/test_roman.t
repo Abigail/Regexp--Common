@@ -4,11 +4,9 @@ use strict;
 use lib qw {blib/lib};
 
 use Regexp::Common;
-use vars qw /$VERSION/;
 
 use warnings;
 
-($VERSION) = q $Revision: 2.103 $ =~ /[\d.]+/;
 
 my ($regex, $count);
 

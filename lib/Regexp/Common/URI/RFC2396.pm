@@ -5,12 +5,11 @@ local $^W = 1;
 
 use Regexp::Common qw /pattern clean no_defaults/;
 
-use vars qw /$VERSION @EXPORT @EXPORT_OK %EXPORT_TAGS @ISA/;
+use vars qw /@EXPORT @EXPORT_OK %EXPORT_TAGS @ISA/;
 
 use Exporter ();
 @ISA = qw /Exporter/;
 
-($VERSION) = q $Revision: 2.102 $ =~ /[\d.]+/g;
 
 my %vars;
 

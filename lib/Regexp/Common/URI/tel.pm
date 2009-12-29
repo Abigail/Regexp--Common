@@ -8,9 +8,6 @@ use Regexp::Common::URI          qw /register_uri/;
 use Regexp::Common::URI::RFC2806 qw /$telephone_subscriber 
                                      $telephone_subscriber_no_future/;
 
-use vars qw /$VERSION/;
-
-($VERSION) = q $Revision: 2.102 $ =~ /[\d.]+/g;
 
 my $tel_scheme  = 'tel';
 my $tel_uri     = "(?k:(?k:$tel_scheme):(?k:$telephone_subscriber))";

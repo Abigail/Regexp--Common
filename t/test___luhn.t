@@ -2,14 +2,12 @@
 
 use strict;
 use lib  qw {blib/lib};
-use vars qw /$VERSION/;
 
 use Regexp::Common;
 use Regexp::Common::_support qw /luhn/;
 
 use warnings;
 
-($VERSION) = q $Revision: 2.101 $ =~ /[\d.]+/;
 
 my $TESTS = 100;
 

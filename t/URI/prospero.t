@@ -2,7 +2,6 @@
 
 use strict;
 use lib  qw {blib/lib};
-use vars qw /$VERSION/;
 
 use Regexp::Common;
 use t::Common;
@@ -10,7 +9,6 @@ use t::Common;
 $^W    = 1;
 $DEBUG = 1;
 
-($VERSION) = q $Revision: 2.101 $ =~ /[\d.]+/;
 
 sub create_parts;
 

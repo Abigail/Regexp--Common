@@ -8,9 +8,6 @@ use Regexp::Common::URI          qw /register_uri/;
 use Regexp::Common::URI::RFC1738 qw /$host $port $ppath $fieldname $fieldvalue
                                      $fieldspec/;
 
-use vars qw /$VERSION/;
-
-($VERSION) = q $Revision: 2.102 $ =~ /[\d.]+/g;
 
 my $scheme = 'prospero';
 my $uri    = "(?k:(?k:$scheme)://(?k:$host)(?::(?k:$port))?" .

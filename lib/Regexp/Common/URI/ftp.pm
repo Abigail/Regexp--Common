@@ -8,9 +8,6 @@ use Regexp::Common::URI          qw /register_uri/;
 use Regexp::Common::URI::RFC2396 qw /$host $port $ftp_segments $userinfo
                                      $userinfo_no_colon/;
 
-use vars qw /$VERSION/;
-
-($VERSION) = q $Revision: 2.103 $ =~ /[\d.]+/g;
 
 my $ftp_uri = "(?k:(?k:ftp)://(?:(?k:$userinfo)(?k:)\@)?(?k:$host)" .
               "(?::(?k:$port))?(?k:/(?k:(?k:$ftp_segments)"         .

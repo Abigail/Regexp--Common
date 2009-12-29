@@ -8,9 +8,6 @@ use Regexp::Common::URI          qw /register_uri/;
 use Regexp::Common::URI::RFC1738 qw /$grouppart $group $article
                                      $host $port $digits/;
 
-use vars qw /$VERSION/;
-
-($VERSION) = q $Revision: 2.102 $ =~ /[\d.]+/g;
 
 my $news_scheme = 'news';
 my $news_uri    = "(?k:(?k:$news_scheme):(?k:$grouppart))";

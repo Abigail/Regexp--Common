@@ -5,10 +5,6 @@ local $^W = 1;
 
 use Regexp::Common qw /pattern clean no_defaults/;
 
-use vars qw /$VERSION @EXPORT_OK @ISA/;
-
-($VERSION) = q $Revision: 2.104 $ =~ /[\d.]+/g;
-
 =pod
 
 sub par11 {

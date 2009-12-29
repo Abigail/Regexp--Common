@@ -1,7 +1,6 @@
 #!/usr/bin/perl
 
 use strict;
-use vars qw /$VERSION/;
 use lib "blib/lib";
 
 use Regexp::Common qw /RE_comment_ALL/;
@@ -9,7 +8,6 @@ use t::Common qw /run_new_tests/;
 
 use warnings;
 
-($VERSION) = q $Revision: 2.103 $ =~ /[\d.]+/;
 
 BEGIN {$^W = 0 if $] < 5.006}
 

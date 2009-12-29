@@ -2,7 +2,6 @@
 
 use strict;
 use lib  qw {blib/lib};
-use vars qw /$VERSION/;
 
 use Regexp::Common qw /RE_num_decimal/;
 use t::Common;

@@ -8,9 +8,6 @@ use Regexp::Common::URI          qw /register_uri/;
 use Regexp::Common::URI::RFC1738 qw /$host $port $uchars/;
 use Regexp::Common::URI::RFC1808 qw /$pchars $pchar_range/;
 
-use vars qw /$VERSION/;
-
-($VERSION) = q $Revision: 2.102 $ =~ /[\d.]+/g;
 
 my $pchars_notab      = "(?:(?:[$pchar_range]+|" . 
                         "%(?:[1-9a-fA-F][0-9a-fA-F]|0[0-8a-fA-F]))*)";

@@ -4,7 +4,7 @@ use strict;
 local $^W = 1;
 
 use Exporter ();
-use vars qw /$VERSION @EXPORT_OK @ISA/;
+use vars qw /@EXPORT_OK @ISA/;
 
 @ISA       = qw /Exporter/;
 @EXPORT_OK = qw /register_uri/;
@@ -19,8 +19,6 @@ foreach my $uri (@uris) {
     eval "require Regexp::Common::URI::$uri";
     die $@ if $@;
 }
-
-($VERSION) = q $Revision: 2.110 $ =~ /[\d.]+/g;
 
 my %uris;
 

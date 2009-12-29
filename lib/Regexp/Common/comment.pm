@@ -4,9 +4,6 @@ use strict;
 use warnings;
 
 use Regexp::Common qw /pattern clean no_defaults/;
-use vars qw /$VERSION/;
-
-($VERSION) = q $Revision: 2.120 $ =~ /[\d.]+/g;
 
 my @generic = (
     {languages => [qw /ABC Forth/],

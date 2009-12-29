@@ -2,7 +2,7 @@ package t::Common;
 
 use strict;
 use lib  qw {blib/lib};
-use vars qw /$VERSION @ISA @EXPORT @EXPORT_OK $DEBUG/;
+use vars qw /@ISA @EXPORT @EXPORT_OK $DEBUG/;
 
 use Regexp::Common;
 use Exporter ();
@@ -28,7 +28,6 @@ sub run_fail;
 sub count_me;
 sub is_skipped;
 
-($VERSION) = q $Revision: 2.114 $ =~ /[\d.]+/;
 
 my $count;
 

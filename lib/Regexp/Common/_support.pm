@@ -3,10 +3,6 @@ package Regexp::Common::_support;
 use strict;
 local $^W = 1;
 
-use vars qw /$VERSION/;
-($VERSION) = q $Revision: 2.103 $ =~ /[\d.]+/g;
-
-
 #
 # Returns true/false, depending whether the given the argument
 # satisfies the LUHN checksum.
