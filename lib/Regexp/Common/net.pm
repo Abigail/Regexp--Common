@@ -5,6 +5,10 @@ local $^W = 1;
 
 use Regexp::Common qw /pattern clean no_defaults/;
 
+use vars qw /$VERSION/;
+
+($VERSION) = q $Revision: 1.7 $ =~ /[\d.]+/g;
+
 my %IPunit = (
     dec => q{(?k:25[0-5]|2[0-4]\d|[0-1]??\d{1,2})},
     oct => q{(?k:[0-3]??[0-7]{1,2})},
@@ -57,7 +61,19 @@ foreach my $type (qw /dec oct hex bin/) {
                                           {-keep};
             },
             ;
+
 }
+
+my $letter      =  "[A-Za-z]";
+my $let_dig     =  "[A-Za-z0-9]";
+my $let_dig_hyp = "[-A-Za-z0-9]";
+
+# Domain names, from RFC 1035.
+pattern name   => [qw (net domain)],
+        create => "(?k: |(?:$letter(?:(?:$let_dig_hyp){0,61}$let_dig)?" .
+                     "(?:\\.$letter(?:(?:$let_dig_hyp){0,61}$let_dig)?)*))",
+        ;
+
 
 }
 
@@ -94,9 +110,7 @@ Do not use this module directly, but load it via I<Regexp::Common>.
 This modules gives you regular expressions for various style IPv4 
 and MAC (or ethernet) addresses.
 
-=over 4
-
-=item C<$RE{net}{IPv4}>
+=head2 C<$RE{net}{IPv4}>
 
 Returns a pattern that matches a valid IP address in "dotted decimal"
 
@@ -126,14 +140,14 @@ captures the final component of the address
 
 =back
 
-=item C<$RE{net}{IPv4}{dec}{-sep}>
+=head2 C<$RE{net}{IPv4}{dec}{-sep}>
 
 Returns a pattern that matches a valid IP address in "dotted decimal"
 
 If C<< -sep=I<P> >> is specified the pattern I<P> is used as the separator.
 By default I<P> is C<qr/[.]/>. 
 
-=item C<$RE{net}{IPv4}{hex}{-sep}>
+=head2 C<$RE{net}{IPv4}{hex}{-sep}>
 
 Returns a pattern that matches a valid IP address in "dotted hexadecimal",
 with the letters C<A> to C<F> capitalized.
@@ -142,21 +156,21 @@ If C<< -sep=I<P> >> is specified the pattern I<P> is used as the separator.
 By default I<P> is C<qr/[.]/>. C<< -sep="" >> and
 C<< -sep=" " >> are useful alternatives.
 
-=item C<$RE{net}{IPv4}{oct}{-sep}>
+=head2 C<$RE{net}{IPv4}{oct}{-sep}>
 
 Returns a pattern that matches a valid IP address in "dotted octal"
 
 If C<< -sep=I<P> >> is specified the pattern I<P> is used as the separator.
 By default I<P> is C<qr/[.]/>.
 
-=item C<$RE{net}{IPv4}{bin}{-sep}>
+=head2 C<$RE{net}{IPv4}{bin}{-sep}>
 
 Returns a pattern that matches a valid IP address in "dotted binary"
 
 If C<< -sep=I<P> >> is specified the pattern I<P> is used as the separator.
 By default I<P> is C<qr/[.]/>.
 
-=item C<$RE{net}{MAC}>
+=head2 C<$RE{net}{MAC}>
 
 Returns a pattern that matches a valid MAC or ethernet address as
 colon separated hexadecimals.
@@ -204,7 +218,7 @@ components will be separated by a colon.
 The C<subs> method will not work for binary MAC addresses if the
 Perl version predates 5.6.0.
 
-=item C<$RE{net}{MAC}{dec}{-sep}>
+=head2 C<$RE{net}{MAC}{dec}{-sep}>
 
 Returns a pattern that matches a valid MAC address as colon separated
 decimals.
@@ -212,7 +226,7 @@ decimals.
 If C<< -sep=I<P> >> is specified the pattern I<P> is used as the separator.
 By default I<P> is C<qr/:/>. 
 
-=item C<$RE{net}{MAC}{hex}{-sep}>
+=head2 C<$RE{net}{MAC}{hex}{-sep}>
 
 Returns a pattern that matches a valid MAC address as colon separated
 hexadecimals, with the letters C<a> to C<f> in lower case.
@@ -220,7 +234,7 @@ hexadecimals, with the letters C<a> to C<f> in lower case.
 If C<< -sep=I<P> >> is specified the pattern I<P> is used as the separator.
 By default I<P> is C<qr/:/>.
 
-=item C<$RE{net}{MAC}{oct}{-sep}>
+=head2 C<$RE{net}{MAC}{oct}{-sep}>
 
 Returns a pattern that matches a valid MAC address as colon separated
 octals.
@@ -228,7 +242,7 @@ octals.
 If C<< -sep=I<P> >> is specified the pattern I<P> is used as the separator.
 By default I<P> is C<qr/:/>.
 
-=item C<$RE{net}{MAC}{bin}{-sep}>
+=head2 C<$RE{net}{MAC}{bin}{-sep}>
 
 Returns a pattern that matches a valid MAC address as colon separated
 binary numbers.
@@ -236,12 +250,35 @@ binary numbers.
 If C<< -sep=I<P> >> is specified the pattern I<P> is used as the separator.
 By default I<P> is C<qr/:/>.
 
+=head2 $RE{net}{domain}
+
+Returns a pattern to match domains (and hosts) as defined in RFC 1035.
+Under I{-keep} only the entire domain name is returned.
+
+=head1 REFERENCES
+
+=over 4
+
+=item B<RFC 1035>
+
+Mockapetris, P.: I<DOMAIN NAMES - IMPLEMENTATION AND SPECIFICATION>.
+November 1987.
 
 =back
 
 =head1 SEE ALSO
 
 L<Regexp::Common> for a general description of how to use this interface.
+
+=head1 HISTORY
+
+    $Log: net.pm,v $
+    Revision 1.7  2002/08/05 22:02:06  abigail
+    Typo fix.
+
+    Revision 1.6  2002/08/05 20:36:10  abigail
+    Added $RE{net}{domain}
+
 
 =head1 AUTHOR
 

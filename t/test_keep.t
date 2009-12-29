@@ -1,3 +1,52 @@
+# $Id: test_keep.t,v 1.15 2002/08/06 13:02:58 abigail Exp $
+#
+# $Log: test_keep.t,v $
+# Revision 1.15  2002/08/06 13:02:58  abigail
+# Cosmetic changes.
+#
+# Revision 1.14  2002/08/06 12:59:38  abigail
+# Added tests for 'tel:' URIs.
+#
+# Revision 1.13  2002/08/05 20:22:36  abigail
+# Tests for $RE{net}{domain}
+#
+# Revision 1.12  2002/08/04 22:52:07  abigail
+# Added FTP URIs.
+# 
+# Revision 1.11  2002/08/04 19:52:22  abigail
+# Testing {-scheme} for HTTP URIs.
+# 
+# Revision 1.10  2002/08/04 19:36:11  abigail
+# First set of URI regexes is ready.
+# 
+# Revision 1.9  2002/07/31 23:15:17  abigail
+# Added tests for MAC addresses.
+# 
+# Revision 1.8  2002/07/31 13:07:11  abigail
+# Tests for MySQL, Dylan and Haskell.
+# 
+# Revision 1.7  2002/07/31 00:31:09  abigail
+# Tests for Smalltalk.
+# 
+# Revision 1.6  2002/07/28 22:17:55  abigail
+# Changed a qw// with commas to a list of strings to keep -w happy.
+# 
+# Revision 1.5  2002/07/26 16:36:08  abigail
+# Added tests for new language comments.
+# 
+# Revision 1.4  2002/07/25 23:58:05  abigail
+# Cosmetic changes (again).
+# 
+# Revision 1.3  2002/07/25 23:57:35  abigail
+# Cosmetic changes.
+# 
+# Revision 1.2  2002/07/23 22:49:06  abigail
+# Added tests for $RE{comment}{HTML}.
+# 
+# Revision 1.1  2002/07/23 12:22:51  abigail
+# Initial revision
+# 
+
 # VOODOO LINE-NOISE
 my($C,$M,$P,$N,$S);END{print"1..$C\n$M";print"\nfailed: $N\n"if$N}
 sub ok{$C++; $M.= ($_[0]||!@_)?"ok $C\n":($N++,"not ok $C (".
@@ -83,6 +132,9 @@ pass '123.234.1.0', qw( 123 234 1 0 );
 try $RE{net}{MAC}{-keep};
 pass '12:34:56:78:9a:bc', qw /12 34 56 78 9a bc/;
 
+try $RE{net}{domain}{-keep};
+pass 'host.example.com';
+
 try $RE{list}{conj}{-word=>'(?:and|or)'}{-keep};
 pass 'a, b, and c', ', and ';
 
@@ -137,3 +189,6 @@ pass 'ftp://abigail:secret@ftp.example.com:21/some/path/somewhere;type=a',
      'ftp', 'abigail', 'secret', 'ftp.example.com', 21,
      '/some/path/somewhere;type=a', 'some/path/somewhere;type=a',
      'some/path/somewhere', 'a';
+
+try $RE{URI}{tel}{-keep};
+pass 'tel:+123-456-7890;isub=543', 'tel', '+123-456-7890;isub=543';

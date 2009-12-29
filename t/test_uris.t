@@ -1,3 +1,37 @@
+# $Id: test_uris.t,v 1.10 2002/08/06 13:02:58 abigail Exp $
+#
+# $Log: test_uris.t,v $
+# Revision 1.10  2002/08/06 13:02:58  abigail
+# Cosmetic changes.
+#
+# Revision 1.9  2002/08/06 12:59:38  abigail
+# Added tests for 'tel:' URIs.
+#
+# Revision 1.8  2002/08/05 12:23:55  abigail
+# Moved tests for FTP and HTTP URIs to separate files.
+# 
+# Revision 1.7  2002/08/04 23:06:52  abigail
+# Quoted a bareword.
+# 
+# Revision 1.6  2002/08/04 22:55:17  abigail
+# Added tests for $RE{URI}{FTP}{-test}
+# 
+# Revision 1.5  2002/08/04 22:52:07  abigail
+# Added FTP URIs.
+# 
+# Revision 1.4  2002/08/04 19:52:22  abigail
+# Testing {-scheme} for HTTP URIs.
+# 
+# Revision 1.3  2002/08/04 19:36:11  abigail
+# First set of URI regexes is ready.
+# 
+# Revision 1.2  2002/07/31 13:15:42  abigail
+# Regexp::Common::URL isn't ready for shipment yet.
+# 
+# Revision 1.1  2002/07/25 19:57:27  abigail
+# Tests for URL regexes.
+# 
+
 # VOODOO LINE-NOISE
 my($C,$M,$P,$N,$S);END{print"1..$C\n$M";print"\nfailed: $N\n"if$N}
 sub ok{$C++; $M.= ($_[0]||!@_)?"ok $C\n":($N++,"not ok $C (".
@@ -103,3 +137,26 @@ pass 'ftp://ftp.example.com/;type=I';
 fail 'HTTP://ftp.example.com/';
 fail 'FTP://ftp.example.com/';
 fail 'feeble://ftp.example.com/';
+
+pass 'tel:+12345';
+pass 'tel:+358-555-1234567';
+pass 'tel:456-7890;phone-context=213';
+pass 'tel:456-7890;phone-context=X-COMPANY-NET';
+pass 'tel:+1-212-555-1234;tsp=terrifictelecom.com';
+pass 'tel:+1-212-555-1234;tsp=terrifictelecom.com;phone-context=X-COMPANY-NET';
+pass 'tel:+358-555-1234567;postd=pp22';
+pass 'tel:0w003585551234567;phone-context=+3585551234';
+pass 'tel:+1234567890;phone-context=+1234;vnd.company.option=foo';
+pass 'tel:+1234567890;phone-context=+1234;vnd.company.option=%22foo%22';
+pass 'tel:+1234;option=%22!%22';
+pass 'tel:+1234;option=%22%5C%22%22';
+pass 'tel:+1234;option=%22%5C!%22';
+pass 'tel:+1234;option=%22bar%22';
+pass 'tel:+456-7890;phone-context=213;phone-context=213';
+fail 'tel:456-7890;phone-context=213;phone-context=213';
+fail 'tel:456-7890';
+fail 'tel:+1-800-RUN-PERL';
+fail 'tel:+1234;option=%22%22%22';
+fail 'tel:+1234;option=%22%5C%22';
+pass 'tel:+123-456-789;isub=123(456)';
+pass 'tel:+123456;postd=***';

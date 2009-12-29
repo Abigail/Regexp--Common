@@ -1,3 +1,5 @@
+# $Id: URI.pm,v 1.6 2002/08/06 13:18:03 abigail Exp $
+
 package Regexp::Common::URI; {
 
 use strict;
@@ -5,60 +7,68 @@ local $^W = 1;
 
 use Regexp::Common qw /pattern clean no_defaults/;
 
+use vars qw /$VERSION/;
+
+($VERSION) = q $Revision: 1.6 $ =~ /[\d.]+/g;
+
 # RFC 2396, base definitions.
-my $digit          =  '[0-9]';
-my $upalpha        =  '[A-Z]';
-my $lowalpha       =  '[a-z]';
-my $alpha          =  '[a-zA-Z]';                # lowalpha | upalpha
-my $alphanum       =  '[a-zA-Z0-9]';             # alpha    | digit
-my $hex            =  '[a-fA-F0-9]';
-my $escaped        =  "(?:%$hex$hex)";
-my $mark           =  "[\\-_.!~*'()]";
-my $unreserved     =  "[a-zA-Z0-9\\-_.!~*'()]";  # alphanum | mark
-my $reserved       =  "[;/?:@&=+\$,]";
-my $pchar          =  "(?:[a-zA-Z0-9\\-_.!~*'():\@&=+\$,]|$escaped)";
-                                      # unreserved | escaped | [:@&=+$,]
-my $uric           =  "(?:[;/?:\@&=+\$,a-zA-Z0-9\\-_.!~*'()]|$escaped)";
-                                      # reserved | unreserved | escaped
-my $urics          =  "(?:(?:[;/?:\@&=+\$,a-zA-Z0-9\\-_.!~*'()]+|$escaped)*)";
+my $digit             =  '[0-9]';
+my $upalpha           =  '[A-Z]';
+my $lowalpha          =  '[a-z]';
+my $alpha             =  '[a-zA-Z]';                # lowalpha | upalpha
+my $alphanum          =  '[a-zA-Z0-9]';             # alpha    | digit
+my $hex               =  '[a-fA-F0-9]';
+my $escaped           =  "(?:%$hex$hex)";
+my $mark              =  "[\\-_.!~*'()]";
+my $unreserved        =  "[a-zA-Z0-9\\-_.!~*'()]";  # alphanum | mark
+                         # %61-%7A, %41-%5A, %30-%39
+                         #  a - z    A - Z    0 - 9
+                         # %21, %27, %28, %29, %2A, %2D, %2E, %5F, %7E
+                         #  !    '    (    )    *    -    .    _    ~
+my $reserved          =  "[;/?:@&=+\$,]";
+my $pchar             =  "(?:[a-zA-Z0-9\\-_.!~*'():\@&=+\$,]|$escaped)";
+                                         # unreserved | escaped | [:@&=+$,]
+my $uric              =  "(?:[;/?:\@&=+\$,a-zA-Z0-9\\-_.!~*'()]|$escaped)";
+                                         # reserved | unreserved | escaped
+my $urics             =  "(?:(?:[;/?:\@&=+\$,a-zA-Z0-9\\-_.!~*'()]+|"     .
+                         "$escaped)*)";
 
-my $query          =  $urics;
-my $fragment       =  $urics;
-my $param          =  "(?:(?:[a-zA-Z0-9\\-_.!~*'():\@&=+\$,]+|$escaped)*)";
-my $segment        =  "(?:$param(?:;$param)*)";
-my $path_segments  =  "(?:$segment(?:/$segment)*)";
-my $ftp_segments   =  "(?:$param(?:/$param)*)";   # NOT from RFC 2396.
-my $rel_segment    =  "(?:(?:[a-zA-Z0-9\\-_.!~*'();\@&=+\$,]*|$escaped)+)";
-my $abs_path       =  "(?:/$path_segments)";
-my $rel_path       =  "(?:$rel_segment(?:$abs_path)?)";
-my $path           =  "(?:(?:$abs_path|$rel_path)?)";
+my $query             =  $urics;
+my $fragment          =  $urics;
+my $param             =  "(?:(?:[a-zA-Z0-9\\-_.!~*'():\@&=+\$,]+|$escaped)*)";
+my $segment           =  "(?:$param(?:;$param)*)";
+my $path_segments     =  "(?:$segment(?:/$segment)*)";
+my $ftp_segments      =  "(?:$param(?:/$param)*)";   # NOT from RFC 2396.
+my $rel_segment       =  "(?:(?:[a-zA-Z0-9\\-_.!~*'();\@&=+\$,]*|$escaped)+)";
+my $abs_path          =  "(?:/$path_segments)";
+my $rel_path          =  "(?:$rel_segment(?:$abs_path)?)";
+my $path              =  "(?:(?:$abs_path|$rel_path)?)";
 
-my $port           =  "(?:$digit*)";
-my $IPv4address    =  "(?:$digit+\\.$digit+\\.$digit+\\.$digit+)";
-my $toplabel       =  "(?:$alpha|$alphanum"."[-a-zA-Z0-9]*$alphanum)";
-my $domainlabel    =  "(?:$alphanum|$alphanum"."[-a-zA-Z0-9]*$alphanum)";
-my $hostname       =  "(?:(?:$domainlabel\\.)*$toplabel\\.?)";
-my $host           =  "(?:$hostname|$IPv4address)";
-my $hostport       =  "(?:$host(?::$port))";
+my $port              =  "(?:$digit*)";
+my $IPv4address       =  "(?:$digit+[.]$digit+[.]$digit+[.]$digit+)";
+my $toplabel          =  "(?:$alpha|$alphanum"."[-a-zA-Z0-9]*$alphanum)";
+my $domainlabel       =  "(?:$alphanum|$alphanum"."[-a-zA-Z0-9]*$alphanum)";
+my $hostname          =  "(?:(?:$domainlabel\[.])*$toplabel\[.]?)";
+my $host              =  "(?:$hostname|$IPv4address)";
+my $hostport          =  "(?:$host(?::$port))";
 
-my $userinfo       =  "(?:(?:[a-zA-Z0-9\\-_.!~*'();:&=+\$,]+|$escaped)*)";
-my $userinfo_no_colon =
-                      "(?:(?:[a-zA-Z0-9\\-_.!~*'();&=+\$,]+|$escaped)*)";
-my $server         =  "(?:(?:$userinfo\@)?$hostport)";
+my $userinfo          =  "(?:(?:[a-zA-Z0-9\\-_.!~*'();:&=+\$,]+|$escaped)*)";
+my $userinfo_no_colon =  "(?:(?:[a-zA-Z0-9\\-_.!~*'();&=+\$,]+|$escaped)*)";
+my $server            =  "(?:(?:$userinfo\@)?$hostport)";
 
-my $reg_name       =  "(?:(?:[a-zA-Z0-9\\-_.!~*'()\$,;:\@&=+]*|$escaped)+)";
-my $authority      =  "(?:$server|$reg_name)";
+my $reg_name          =  "(?:(?:[a-zA-Z0-9\\-_.!~*'()\$,;:\@&=+]*|$escaped)+)";
+my $authority         =  "(?:$server|$reg_name)";
 
-my $scheme         =  "(?:$alpha"."[a-zA-Z0-9+\\-.]*)";
+my $scheme            =  "(?:$alpha"."[a-zA-Z0-9+\\-.]*)";
 
-my $net_path       =  "(?://$authority$abs_path?)";
-my $uric_no_slash  =  "(?:[a-zA-Z0-9\\-_.!~*'();?:\@&=+\$,]|$escaped)";
-my $opaque_part    =  "(?:$uric_no_slash$urics)";
-my $hier_part      =  "(?:(?:$net_path|$abs_path)(?:?$query)?)";
+my $net_path          =  "(?://$authority$abs_path?)";
+my $uric_no_slash     =  "(?:[a-zA-Z0-9\\-_.!~*'();?:\@&=+\$,]|$escaped)";
+my $opaque_part       =  "(?:$uric_no_slash$urics)";
+my $hier_part         =  "(?:(?:$net_path|$abs_path)(?:[?]$query)?)";
 
-my $relativeURI    =  "(?:(?:$net_path|$abs_path|$rel_path)(?:?$query)?";
-my $absoluteURI    =  "(?:$scheme:(?:$hier_part|$opaque_part))";
-my $URI_reference  =  "(?:(?:$absoluteURI|$relativeURI)?(?:#$fragment)?)";
+my $relativeURI       =  "(?:(?:$net_path|$abs_path|$rel_path)(?:[?]$query)?";
+my $absoluteURI       =  "(?:$scheme:(?:$hier_part|$opaque_part))";
+my $URI_reference     =  "(?:(?:$absoluteURI|$relativeURI)?(?:#$fragment)?)";
 
 
 # The defined schemes, collect them in a hash.
@@ -67,12 +77,13 @@ my %uri;
 # HTTP: See RFC 2396 for generic syntax, and RFC 2616 for HTTP.
 # RFC 2616:
 #       http_URI = "http:" "//" host [ ":" port ] [ abs_path [ "?" query ]]
-$uri {HTTP}        =  "(?k:(?k:http)://(?k:$host)(?::(?k:$port))?"             .
-                      "(?k:/(?k:(?k:$path_segments)(?:\\?(?k:$query))?))?)";
-$uri {FTP}         =  "(?k:(?k:ftp)://"                                        .
-                        "(?:(?k:$userinfo)(?k:)\@)?(?k:$host)(?::(?k:$port))?" .
-                        "(?k:/(?k:(?k:$ftp_segments)"                          .
-                        "(?:;type=(?k:[AIai]))?))?)";
+$uri {HTTP}           =  "(?k:(?k:http)://(?k:$host)(?::(?k:$port))?"     .
+                         "(?k:/(?k:(?k:$path_segments)(?:[?](?k:$query))?))?)";
+$uri {FTP}            =  "(?k:(?k:ftp)://"                                .
+                           "(?:(?k:$userinfo)(?k:)\@)?(?k:$host)"         .
+                           "(?::(?k:$port))?"                             .
+                           "(?k:/(?k:(?k:$ftp_segments)"                  .
+                           "(?:;type=(?k:[AIai]))?))?)";
 
 
 pattern name    => [qw (URI)],
@@ -109,9 +120,91 @@ pattern name    => [qw (URI FTP), "-type=[AIai]", "-password="],
         }
         ;
 
+# From RFC 1035, domain names.
+my $alphanum_hyp      = "[-A-Za-z0-9]";
+my $domain            = "(?: |(?:$alpha(?:(?:$alphanum_hyp){0,61}$alphanum)?" .
+                          "(?:[.]$alpha(?:(?:$alphanum_hyp){0,61}$alphanum)?" .
+                        ")*))";
+
+# RFC 2806, URIs for tel, fax & modem.
+my $dtmf_digit        =  "(?:[*#ABCD])";
+my $wait_for_dial_tone=  "(?:w)";
+my $one_second_pause  =  "(?:p)";
+my $pause_character   =  "(?:[wp])";   # wait_for_dial_tone | one_second_pause.
+my $visual_separator  =  "(?:[\\-.()])";
+my $phonedigit        =  "(?:[0-9\\-.()])";  # DIGIT | visual_separator
+my $escaped_no_dquote =  "(?:%(?:[01]$hex)|2[013-9A-Fa-f]|[3-9A-Fa-f]$hex)";
+my $quoted_string     =  "(?:%22(?:(?:%5C(?:$unreserved|$escaped))|" .
+                                 "$unreserved+|$escaped_no_dquote)*%22)";
+                         # It is unclear wether we can allow only unreserved
+                         # characters to unescaped, or can we also use uric
+                         # characters that are unescaped? Or pchars?
+my $token_char        =  "(?:[!'*\\-.0-9A-Z_a-z~]|" .
+                             "%(?:2[13-7ABDEabde]|3[0-9]|4[1-9A-Fa-f]|" .
+                                 "5[AEFaef]|6[0-9A-Fa-f]|7[0-9ACEace]))";
+                         # Only allowing unreserved chars to be unescaped.
+my $token_chars       =  "(?:(?:[!'*\\-.0-9A-Z_a-z~]+|"                   .
+                               "%(?:2[13-7ABDEabde]|3[0-9]|4[1-9A-Fa-f]|" .
+                                   "5[AEFaef]|6[0-9A-Fa-f]|7[0-9ACEace]))*)";
+my $future_extension  =  "(?:;$token_chars"                       .
+                         "(?:=(?:(?:$token_chars(?:[?]$token_chars)?)|" .
+                         "$quoted_string))?)";
+my $provider_hostname =  $domain;
+my $provider_tag      =  "(?:tsp)";
+my $service_provider  =  "(?:;$provider_tag=$provider_hostname)";
+my $private_prefix    =  "(?:(?:[!'E-OQ-VX-Z_e-oq-vx-z~]|"                   .
+                            "(?:%(?:2[124-7CFcf]|3[AC-Fac-f]|4[05-9A-Fa-f]|" .
+                                   "5[1-689A-Fa-f]|6[05-9A-Fa-f]|"           .
+                                   "7[1-689A-Ea-e])))"                       .
+                            "(?:[!'()*\\-.0-9A-Z_a-z~]+|"                    .
+                            "(?:%(?:2[1-9A-Fa-f]|3[AC-Fac-f]|"               .
+                               "[4-6][0-9A-Fa-f]|7[0-9A-Ea-e])))*)";
+my $local_network_prefix
+                      =  "(?:[0-9\\-.()*#ABCDwp]+)";
+my $global_network_prefix
+                      =  "(?:[+][0-9\\-.()]+)";
+my $network_prefix    =  "(?:$global_network_prefix|$local_network_prefix)";
+my $phone_context_ident
+                      =  "(?:$network_prefix|$private_prefix)";
+my $phone_context_tag =  "(?:phone-context)";
+my $area_specifier    =  "(?:;$phone_context_tag=$phone_context_ident)";
+my $post_dial         =  "(?:;postd=[0-9\\-.()*#ABCDwp]+)";
+my $isdn_subaddress   =  "(?:;isub=[0-9\\-.()]+)";
+my $local_phone_number=  "(?:[0-9\\-.()*#ABCDwp]+$isdn_subaddress?" .
+                            "$post_dial?$area_specifier)";
+my $base_phone_number =  "(?:[0-9\\-.()]+)";
+my $global_phone_number
+                      =  "(?:[+]$base_phone_number$isdn_subaddress?"  .
+                                                 "$post_dial?"        .
+                            "(?:$area_specifier|$service_provider|"   .
+                               "$future_extension)*)";
+my $global_phone_number_no_future
+                      =  "(?:[+]$base_phone_number$isdn_subaddress?"  .
+                                                 "$post_dial?"        .
+                            "(?:$area_specifier|$service_provider)*)";
+my $telephone_subscriber
+                      =  "(?:$global_phone_number|$local_phone_number)";
+my $telephone_subscriber_no_future
+                      =  "(?:$global_phone_number_no_future|" .
+                            "$local_phone_number)";
+my $telephone_scheme  =  "(?:tel)";
+my $telephone_url     =  "(?:$telephone_scheme:$telephone_subscriber)";
+my $telephone_url_no_future
+                      =  "(?:$telephone_scheme:" .
+                            "$telephone_subscriber_no_future)";
+
+$uri {tel}            =  $telephone_url;
+
+pattern name    => [qw (URI tel)],
+        create  => "(?k:(?k:$telephone_scheme):(?k:$telephone_subscriber))";
+        ;
+
+pattern name    => [qw (URI tel nofuture)],
+        create  => "(?k:(?k:$telephone_scheme):" .
+                       "(?k:$telephone_subscriber_no_future))"
+        ;
 
 }
-
 
 1;
 
@@ -285,6 +378,36 @@ The value of the type specification.
 
 =back
 
+=head2 $RE{URI}{tel}
+
+Returns a pattern that matches I<tel> URIs, as defined by RFC 2806.
+Under C<{-keep}>, the following are returned:
+
+=over 4
+
+=item $1
+
+The complete URI.
+
+=item $2
+
+The scheme.
+
+=item $3
+
+The phone number, including any possible add-ons like ISDN subaddress,
+a post dial part, area specifier, service provider, etc.
+
+=back
+
+=head2 $RE{URI}{tel}{nofuture}
+
+As above (including what's returned by C<{-keep}>), with the exception
+that I<future extensions> are not allowed. Without allowing 
+those I<future extensions>, it becomes much easier to check a URI if
+the correct syntax for post dial, service provider, phone context,
+etc has been used - otherwise the regex could always classify them
+as a I<future extension>.
 
 =head1 REFERENCES
 
@@ -294,6 +417,11 @@ The value of the type specification.
 
 Casey, James: I<A FTP URL Format>. November 1996.
 
+=item B<[RFC 1035]>
+
+Mockapetris, P.: I<DOMAIN NAMES - IMPLEMENTATION AND SPECIFICATION>.
+November 1987.
+
 =item B<[RFC 1738]>
 
 Berners-Lee, Tim, Masinter, L., McCahill, M.: I<Uniform Resource
@@ -301,7 +429,7 @@ Locators (URL)>. December 1994.
 
 =item B<[RFC 2396]>
 
-Berners-Lee, Tim, Fielding, R. and Masinter, L.: I<Uniform Resource
+Berners-Lee, Tim, Fielding, R., and Masinter, L.: I<Uniform Resource
 Identifiers (URI): Generic Syntax>. August 1998.
 
 =item B<[RFC 2616]>
@@ -310,7 +438,34 @@ Fielding, R., Gettys, J., Mogul, J., Frystyk, H., Masinter, L.,
 Leach, P. and Berners-Lee, Tim: I<Hypertext Transfer Protocol -- HTTP/1.1>.
 June 1999.
 
+=item B<[RFC 2806]>
+
+Vaha-Sipila, A.: I<URLs for Telephone Calls>. April 2000.
+
 =back
+
+=head1 HISTORY
+
+    $Log: URI.pm,v $
+    Revision 1.6  2002/08/06 13:18:03  abigail
+    Cosmetic changes
+
+    Revision 1.5  2002/08/06 13:16:27  abigail
+    Added $RE{URI}{tel}{nofuture}
+
+    Revision 1.4  2002/08/06 00:03:30  abigail
+    Added $RE{URI}{tel}
+
+    Revision 1.3  2002/08/04 22:51:35  abigail
+    Added FTP URIs.
+
+    Revision 1.2  2002/07/25 22:37:44  abigail
+    Added 'use strict'.
+    Added 'no_defaults' to 'use Regex::Common' to prevent loading of all
+    defaults.
+
+    Revision 1.1  2002/07/25 19:56:07  abigail
+    Modularizing Regexp::Common.
 
 =head1 SEE ALSO
 

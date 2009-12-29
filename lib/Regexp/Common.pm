@@ -7,13 +7,8 @@ local $^W = 1;
 
 use vars qw /$VERSION %RE %sub_interface/;
 
-# $Revision: 1.17 $
-# $Log: Common.pm,v $
-# Revision 1.17  2002/08/05 12:21:46  abigail
-# Upped version number to 0.07.
-#
 
-$VERSION = '0.07';
+$VERSION = '0.08';
 
 use Carp;
 
@@ -802,6 +797,82 @@ You need to write: C<< $RE{delimited}{-delim=>I<X>'} >> for some character I<X>
 
 Deepest thanks to the many people who have encouraged and contributed to this
 project, especially: Elijah, Jarkko, Tom, Nat, Ed, and Vivek.
+
+=head1 HISTORY
+
+  $Log: Common.pm,v $
+  Revision 1.18  2002/08/06 13:50:08  abigail
+  - Added HISTORY section with CVS log.
+  - Upped version number to 0.08.
+
+  Revision 1.17  2002/08/05 12:21:46  abigail
+  Upped version number to 0.07.
+
+  Revision 1.16  2002/08/05 12:16:30  abigail
+  Fixed 'Regex::' typo to 'Regexp::' (Found my Mike Castle).
+
+  Revision 1.15  2002/08/04 22:56:02  abigail
+  Upped version number to 0.06.
+
+  Revision 1.14  2002/08/04 19:33:33  abigail
+  Loaded URI by default.
+
+  Revision 1.13  2002/08/01 10:02:42  abigail
+  Upped version number.
+
+  Revision 1.12  2002/07/31 23:26:06  abigail
+  Upped version number.
+
+  Revision 1.11  2002/07/31 13:11:20  abigail
+  Removed URL from the list of default loaded regexes, as this one isn't
+  ready yet.
+
+  Upped the version number to 0.03.
+
+  Revision 1.10  2002/07/29 13:16:38  abigail
+  Introduced 'use strict' (which uncovered a bug, \@non_flags was used
+  when $spec{create} was called instead of \@nonflags).
+
+  Turned warnings on (using local $^W = 1; "use warnings" isn't available
+  in pre 5.6).
+
+  Revision 1.9  2002/07/28 23:02:54  abigail
+  Split out the remaining pattern groups to separate files.
+
+  Fixed a bug in _decache, changed the regex /$fpat=(.+)/ to
+  /$fpat=(.*)/, to be able to distinguish the case of a flag
+  set to the empty string, or a flag without an argument.
+
+  Added 'undef' to @_ in the sub_interface setting to avoid a warning
+  of setting a hash with an odd number of arguments.
+
+  POD fixes.
+
+  Revision 1.8  2002/07/25 23:55:54  abigail
+  Moved balanced, net and URL to separate files.
+
+  Revision 1.7  2002/07/25 20:01:40  abigail
+  Modified import() to deal with factoring out groups of related regexes.
+  Factored out comments into Common/comment.
+
+  Revision 1.6  2002/07/23 21:20:43  abigail
+  Upped version number to 0.02.
+
+  Revision 1.5  2002/07/23 21:14:55  abigail
+  Added $RE{comment}{HTML}.
+
+  Revision 1.4  2002/07/23 17:01:09  abigail
+  Added lines about new maintainer, and an email address to submit bugs
+  and new regexes to.
+
+  Revision 1.3  2002/07/23 13:58:58  abigail
+  Changed various occurences of C<... => ...> into C<< ... => ... >>.
+
+  Revision 1.2  2002/07/23 12:27:07  abigail
+  Line 733 was missing the closing > of a C<> in the POD.
+
+  Revision 1.1  2002/07/23 12:22:51  abigail
+  Initial revision
 
 =head1 AUTHOR
 

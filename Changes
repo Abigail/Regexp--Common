@@ -1,5 +1,8 @@
 Revision history for Perl extension Regexp::Common.
 
+0.08  Tue Aug  6 15:50:31 CEST 2002
+        - Added tel URI regexes.
+
 0.07  Mon Aug  5 14:31:17 CEST 2002
         - Fixed 'Regex::' and 'Rexexp::' typos.
         - Split t/test_uris.t into t/test_ftp_uri.t, t/test_http_uri.t
