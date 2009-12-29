@@ -1,4 +1,4 @@
-# $Id: number.pm,v 2.105 2004/07/01 10:11:27 abigail Exp $
+# $Id: number.pm,v 2.107 2004/12/28 23:45:51 abigail Exp $
 
 package Regexp::Common::number;
 
@@ -11,7 +11,7 @@ use Carp;
 
 use vars qw /$VERSION @EXPORT_OK @ISA/;
 
-($VERSION) = q $Revision: 2.105 $ =~ /[\d.]+/g;
+($VERSION) = q $Revision: 2.107 $ =~ /[\d.]+/g;
 
 pattern name   => [qw (num int -sep=  -group=3)],
         create => sub {my $flag = $_[1];
@@ -19,9 +19,9 @@ pattern name   => [qw (num int -sep=  -group=3)],
                        $sep = ',' if exists $flag->{-sep}
                                     && !defined $flag->{-sep};
                        return $sep 
-                              ? qq {(?k:(?k:[+-]?)(?k:\\d{1,$group}} .
-                                qq {(?:$sep\\d{$group})*))}
-                              : qq {(?k:(?k:[+-]?)(?k:\\d+))}
+                              ? qq {(?k:(?k:[+-]?)(?k:[0-9]{1,$group}} .
+                                qq {(?:$sep} . qq {[0-9]{$group})*))}
+                              : qq {(?k:(?k:[+-]?)(?k:[0-9]+))}
                       }
         ;
 
@@ -92,16 +92,16 @@ real_synonym (bin =>  2);
 pattern name    => [qw (num square)],
         create  => sub {
             use re 'eval';
-            my $num = $Config {use64bitint} ? '0*[1-8]?\d{1,15}' :
-                     '0*(?:2(?:[0-0]\d{8}' .
-                         '|1(?:[0-3]\d{7}' .
-                         '|4(?:[0-6]\d{6}' .
-                         '|7(?:[0-3]\d{5}' .
-                         '|4(?:[0-7]\d{4}' .
-                         '|8(?:[0-2]\d{3}' .
-                         '|3(?:[0-5]\d{2}' .
-                         '|6(?:[0-3]\d{1}' .
-                         '|4[0-7])))))))))|1?\d{1,9}';
+            my $num = $Config {use64bitint} ? '0*[1-8]?[0-9]{1,15}' :
+                     '0*(?:2(?:[0-0][0-9]{8}' .
+                         '|1(?:[0-3][0-9]{7}' .
+                         '|4(?:[0-6][0-9]{6}' .
+                         '|7(?:[0-3][0-9]{5}' .
+                         '|4(?:[0-7][0-9]{4}' .
+                         '|8(?:[0-2][0-9]{3}' .
+                         '|3(?:[0-5][0-9]{2}' .
+                         '|6(?:[0-3][0-9]{1}' .
+                         '|4[0-7])))))))))|1?[0-9]{1,9}';
             qr {($num)(?(?{sqrt ($^N) == int sqrt ($^N)})|(?!))}
         },
         version => 5.008;
@@ -364,6 +364,12 @@ Under C<-keep>, the number will be captured in $1.
 =head1 HISTORY
 
  $Log: number.pm,v $
+ Revision 2.107  2004/12/28 23:45:51  abigail
+ Perl 5.6.2 parses qq lib/Regexp/Common/number.pm{sep}[0-9]! incorrectly
+
+ Revision 2.106  2004/12/28 23:27:58  abigail
+ Replaced C<\d> with [0-9] (Unicode reasons)
+
  Revision 2.105  2004/07/01 10:11:27  abigail
  Fixed problems with 32bit integer Perls
 

@@ -10,7 +10,8 @@ use Exporter ();
 @ISA       = qw /Exporter/;
 @EXPORT    = qw /run_tests run_new_tests NORMAL_PASS NORMAL_FAIL FAIL $DEBUG/;
 @EXPORT_OK = qw /cross criss_cross pass fail
-                 d pd dd pdd l ll L LL a aa w ww _x xx X XX/;
+                 d pd dd pdd l ll L LL a aa w ww _x xx X XX
+                 gimme sample/;
 
 use constant   NORMAL_PASS =>  0x01;   # Normal test, should pass.
 use constant   NORMAL_FAIL =>  0x02;   # Normal test, should fail.
@@ -23,44 +24,47 @@ sub run_fail;
 
 local $^W = 1;
 
-($VERSION) = q $Revision: 2.109 $ =~ /[\d.]+/;
+($VERSION) = q $Revision: 2.112 $ =~ /[\d.]+/;
 
 my $count;
-
-sub mess {
-    my $str = $_;
-       $str =~ s/\n/\\n/g;
-    map {s/\n/\\n/g} @_;
-    print ++ $count, " - '$str' (@_)\n";
-}
-
-sub pass {print     "ok "; &mess}
-sub fail {print "not ok "; &mess}
 
 sub stringify;
 sub stringify {
     my $arg = shift;
 
     if    (!defined $arg)        {return "UNDEF"}
-    elsif (!ref $arg)            {$arg =~ s/\n/\\n/g; return "'$arg'"}
+    elsif (!ref $arg)            {$arg =~ s/\\/\\\\/g;
+                                  $arg =~ s/\n/\\n/g;
+                                  $arg =~ s/\t/\\t/g;
+                                  return "$arg"}
     elsif ( ref $arg eq "ARRAY") {
         local $" = ", ";
-        return "[@{[map {stringify $_} @$arg]}]";
+        return "[@{[map {q{'} . stringify ($_) . q{'}} @$arg]}]";
     }
     else {return ref $arg}
 }
+
+sub mess {
+    my $str = stringify $_;
+    my $com = join " " => map {stringify $_} @_;
+    printf qq !%4d - %-40s (%s)\n! => ++ $count, qq !"$str"!, $com;
+}
+
+sub pass {print     "ok "; &mess}
+sub fail {print "not ok "; &mess}
 
 sub Fail {
     my $mess = shift;
     my %args = @_;
 
     if ($args {got} && $args {expected}) {
-        printf "# Expected: %s\n", stringify $args {expected};
-        printf "# Got:      %s\n", stringify $args {got};
+        printf "# Expected: '%s'\n", stringify $args {expected};
+        printf "# Got:      '%s'\n", stringify $args {got};
     }
 
     fail $mess;
 }
+
 
 sub import {
     if (@_ > 1 && $_ [-1] =~ /^\d+\.\d+$/) {
@@ -74,6 +78,10 @@ sub import {
     __PACKAGE__ -> export_to_level (1, @_);
 }
 
+#
+# Return a cross product from its arguments. Arguments are array refs.
+# Result is a list of array refs.
+#
 sub cross {
     my @r = [];
        @r = map {my $s = $_; map {[@$_ => $s]} @r} @$_ for @_;
@@ -270,18 +278,42 @@ sub run_old_keep {
                   :  fail "wrong match [@{[__ @chunks]}]"
 }
 
-#
-# New style subs
-#
+##################
+#                #
+# New style subs #
+#                #
+##################
 
+#
+# Given a regex and a string, test whether the regex fails to match.
+# Matching anything other than the entire string is a pass (as it regex
+# fails to match the entire string)
+#
 sub run_fail {
     my %args = @_;
 
     my $re   = $args {re};
     my $name = $args {name};
 
-    /^$re$/ ? fail "fail/match; $name"
-            : pass "fail/no match; $name";
+    /^$re/ && $_ eq $& ? fail "fail/match; $name"
+                       : pass "fail/no match; $name";
+}
+
+
+#
+# Same as 'run_fail', except now not a regex, but a subroutine is given.
+#
+sub run_sub_fail {
+    my %args = @_;
+
+    my $sub  = $args {sub};
+    my $name = $args {name};
+    my @args = $args {sub_args} ? ref $args {sub_args} ? @{$args {sub_args}}
+                                                       :   $args {sub_args}
+                                : ();
+
+    $_ =~ $sub -> (@args) && $_ eq $& ? fail "sub-fail/match; $name"
+                                      : pass "sub-fail/no match; $name";
 }
 
 #
@@ -304,7 +336,31 @@ sub run_OO_pass {
 }
 
 
-sub run_OO_sub_pass {
+#
+# Test whether the subroutine gives the right answer.
+#
+sub run_sub_pass {
+    my %args  = @_;
+
+    my $sub   = $args {sub};
+    my $name  = $args {name};
+    my @args  = $args {sub_args} ? ref $args {sub_args} ? @{$args {sub_args}}
+                                                        :   $args {sub_args}
+                                 : ();
+
+    my $match = $_ =~ $sub -> (@args);
+    my $good  = $match && $_ eq $&;
+
+    if    ($good)  {pass "sub-pass/match; $name"}
+    elsif ($match) {Fail "sub-pass/fail; $name", got => $&, expected => $_}
+    else           {fail "sub-pass/no match; $name"}
+}
+
+
+#
+# Check whether the substitution (only for OO) works correctly.
+#
+sub run_OO_substitution_pass {
     my %args  = @_;
 
     my $re    = $args {re};
@@ -314,10 +370,10 @@ sub run_OO_sub_pass {
     my $sub   = $re -> subs ($_, $token);
     my $good  = $sub eq $token;
 
-    if    ($good)      {pass "OO-sub-pass/match; $name"}
-    elsif ($sub ne $_) {Fail "OO-sub-pass/fail; $name",
+    if    ($good)      {pass "OO-subs-pass/match; $name"}
+    elsif ($sub ne $_) {Fail "OO-subs-pass/fail; $name",
                               got => $sub, expected => $token}
-    else               {fail "OO-sub-pass/no match; $name"}
+    else               {fail "OO-subs-pass/no match; $name"}
 }
 
 
@@ -327,12 +383,14 @@ sub run_pass {
     my $re           = $args {re};
     my $name         = $args {name};
 
-    my $match = /^$re/;   # Not anchored at the end on purpose.
-    my $good  = $match && $_ eq $&;
+    my $match   = /^$re/;   # Not anchored at the end on purpose.
+    my $good    = $match && $_ eq $&;
+    my $perfect = $good  && !defined $1;  # Should *not* set $1 and friends.
 
-    if    ($good)  {pass "pass/match; $name"}
-    elsif ($match) {Fail "pass/fail; $name", got => $&, expected => $_}
-    else           {fail "pass/no match; $name"}
+    if    ($perfect) {pass "pass/match; $name"}
+    elsif ($good)    {fail "pass/match, sets \$1; $name"}
+    elsif ($match)   {Fail "pass/fail; $name", got => $&, expected => $_}
+    else             {fail "pass/no match; $name"}
 }
 
 
@@ -343,7 +401,7 @@ sub run_keep {
     my $name       = $args {name};   # Name of the test.
     my $wanted     = $args {wanted}; # Wanted list.
 
-    my @chunks = /^$re->{-keep}$/;
+    my @chunks = /^$re->{-keep}/;
     unless (@chunks) {fail "keep/no match; $name"; return}
 
     array_cmp (\@chunks, $wanted)
@@ -358,25 +416,38 @@ sub run_new_test_set {
     my $test_set = $args {test_set};
     my $targets  = $args {targets};
     my $name     = $$test_set {name};
-    my $regex    = $$test_set {regex};
+    my $regex    = $$test_set {regex} || $$test_set {re}; # Getting tired of
+                                                          # getting this wrong.
+    my $sub      = $$test_set {sub};
+    my $sub_args = $$test_set {sub_args};
     my $keep     = $regex -> {-keep};
 
     # Run the passes.
     foreach my $target_name (@{$$test_set {pass}}) {
         my $query = $$targets {$target_name} {query};
         foreach my $parts (@{$$targets {$target_name} {list}}) {
-            local $_ = $query     ? $query -> ($parts) :
+            my @args = ref $parts ? @$parts : $parts;
+            local $_ = $query     ? $query -> (@args)  :
                        ref $parts ? join "" => @$parts : $parts;
-            run_pass        name   => $name,
-                            re     => $regex;
-            run_OO_pass     name   => $name,
-                            re     => $regex;
-            run_OO_sub_pass name   => $name,
-                            re     => $regex;
-            run_keep        name   => $name,
-                            re     => $keep,
-                            wanted => $$targets {$target_name} {wanted}
-                                             -> ($parts);
+
+            my @wanted = $$targets {$target_name} {wanted}            ?
+                         $$targets {$target_name} {wanted} -> (@args) : $_;
+            if (@wanted == 1 && ref $wanted [0] eq "ARRAY") {
+                @wanted = @{$wanted [0]};
+            }
+
+            run_pass                 name     => $name,
+                                     re       => $regex;
+            run_OO_pass              name     => $name,
+                                     re       => $regex;
+            run_OO_substitution_pass name     => $name,
+                                     re       => $regex;
+            run_sub_pass             name     => $name,
+                                     sub_args => $sub_args,
+                                     sub      => $sub if $sub;
+            run_keep                 name     => $name,
+                                     re       => $keep,
+                                     wanted   => \@wanted;
         }
     }
 
@@ -384,10 +455,14 @@ sub run_new_test_set {
     foreach my $target_name (@{$$test_set {fail}}) {
         my $query = $$targets {$target_name} {query};
         foreach my $parts (@{$$targets {$target_name} {list}}) {
-            local $_ = $query     ? $query -> ($parts) :
+            my @args = ref $parts ? @$parts : $parts;
+            local $_ = $query     ? $query -> (@args) :
                        ref $parts ? join "" => @$parts : $parts;
-            run_fail name => $name,
-                     re   => $regex,
+            run_fail                 name     => $name,
+                                     re       => $regex;
+            run_sub_fail             name     => $name,
+                                     sub_args => $sub_args,
+                                     sub      => $sub if $sub;
         }
     }
 }
@@ -396,27 +471,46 @@ sub run_new_test_set {
 sub run_new_tests {
     my %args = @_;
 
-    my ($tests, $targets) = @args {qw /tests targets/};
+    my ($tests, $targets, $version, $version_from) =
+        @args {qw /tests targets version version_from/};
+    my  $runs = defined $version_from;  # VERSION test.
+    my  $no_tests;
 
-    # Count the tests to be run.
-    my $runs = 1;
-    foreach my $test (@$tests) {
-        $runs += 4 * @{$$targets {$_} {list} || []} for @{$$test {pass}};
-        $runs += 1 * @{$$targets {$_} {list} || []} for @{$$test {fail}};
+    if (defined $version && $version > $]) {
+        $no_tests = 1;
+    }
+    else {
+        # Count the tests to be run.
+        foreach my $test (@$tests) {
+            # Test: pass: regex, regex/keep, OO, OO-substitution, sub (if given)
+            #       fail: regex, sub (if given).
+            my $pass_mult = 4; $pass_mult ++ if $$test {sub};
+            my $fail_mult = 1; $fail_mult ++ if $$test {sub};
+            foreach my $t (@{$$test {pass}}) {
+                my $size = $$targets {$t} {list} ? @{$$targets {$t} {list}} : 0;
+                $runs += $pass_mult * $size;
+            }
+            foreach my $t (@{$$test {fail}}) {
+                my $size = $$targets {$t} {list} ? @{$$targets {$t} {list}} : 0;
+                $runs += $fail_mult * $size;
+            }
+        }
     }
 
     print "1..$runs\n";
 
     # Check whether a version is defined.
-    {
+    if (defined $version_from) {
         no strict 'refs';
-        print "not " unless defined ${$args {version} . '::VERSION'};
-        print "ok ", ++ $count, " - ", $args {version}, "::VERSION\n";
+        print "not " unless defined ${$version_from . '::VERSION'};
+        print "ok    ", ++ $count, " - ", $version_from, "::VERSION\n";
     }
 
-    foreach my $test (@$tests) {
-        run_new_test_set test_set => $test,
-                         targets  => $targets;
+    unless ($no_tests) {
+        foreach my $test (@$tests) {
+            run_new_test_set test_set => $test,
+                             targets  => $targets;
+        }
     }
 }
 
@@ -468,11 +562,60 @@ sub XX {my ($min, $max) = @_ > 1 ? (@_) : ($_ [0], $_ [0]);
         join "" => map {X} 1 .. $min + int rand ($max - $min)}
 
 
+#
+# Pass a number N and a callback C. Return N different results from C.
+# Will do at most 100 * N tries.
+#
+sub gimme {
+    my ($count, $call) = @_;
+    my %cache;
+    foreach (1 .. 100 * $count) {
+        $cache {$call -> ()} = 1;
+        last if keys %cache >= $count;
+    }
+    keys %cache;
+}
+
+#
+# Given a number N, and a list of things, return a sample of N
+#
+sub sample {
+    my $N = shift;
+    return @_ if @_ <= $N;
+
+    my @cache = splice @_ => 0, $N;
+    my $count = $N;
+    map {rand ++ $count < $N and splice @cache, rand @cache, 1, $_} @_;
+
+    @cache;
+}
+
+
+
 1;
 
 __END__
 
 $Log: Common.pm,v $
+Revision 2.112  2005/01/01 16:40:21  abigail
+- New functions 'sample' and 'gimme'.
+- Renamed 'version' argument of 'run_new_tests' to 'version_from'.
+  Introduced new argument 'version'.
+
+Revision 2.111  2004/12/28 23:03:26  abigail
+More details on failure
+
+Revision 2.110  2004/12/21 23:13:01  abigail
+Even more tests when doing a 'run_new_tests'. We're now testing the
+following:
+  -  Tied hash,  testing for match.
+  -  OO form,    testing for a match.
+  -  OO form,    testing for substitution.
+  -  Subroutine, testing for a match.
+  -  Tied hash,  testing -keep.
+  -  Tied hash,  testing for failure.
+  -  Subroutine, testing for failure.
+
 Revision 2.109  2004/12/14 23:03:17  abigail
 Test OO form when running 'new' tests
 

@@ -1,4 +1,4 @@
-# $Id: comment.pm,v 2.112 2004/06/09 21:44:48 abigail Exp $
+# $Id: comment.pm,v 2.114 2004/12/18 11:43:06 abigail Exp $
 
 package Regexp::Common::comment;
 
@@ -8,7 +8,7 @@ local $^W = 1;
 use Regexp::Common qw /pattern clean no_defaults/;
 use vars qw /$VERSION/;
 
-($VERSION) = q $Revision: 2.112 $ =~ /[\d.]+/g;
+($VERSION) = q $Revision: 2.114 $ =~ /[\d.]+/g;
 
 my @generic = (
     {languages => [qw /ABC Forth/],
@@ -61,7 +61,7 @@ my @generic = (
      to_eol    => ['NB']},
 
     {languages => [qw /J/],
-     to_eol    => ['NB.']},
+     to_eol    => ['NB[.]']},
 
     {languages => [qw /Nickle/],
      to_eol    => ['#'],
@@ -618,7 +618,7 @@ captures the (last) comment, without the surrounding dashes.
 
 =item $5
 
-captures the MDC (markup declaration close), C<E<lt>>.
+captures the MDC (markup declaration close), C<E<gt>>.
 
 =back
 
@@ -930,6 +930,12 @@ Press. B<1990>. ISBN 0-19-853737-9. Ch. 10.3, pp 390-391.
 =head1 HISTORY
 
  $Log: comment.pm,v $
+ Revision 2.114  2004/12/18 11:43:06  abigail
+ POD: HTML comments end in >, not <
+
+ Revision 2.113  2004/12/15 22:06:51  abigail
+ Fixed regex for J comments
+
  Revision 2.112  2004/06/09 21:44:48  abigail
  New languages
 

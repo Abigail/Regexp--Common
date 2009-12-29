@@ -1,4 +1,4 @@
-# $Id: _support.pm,v 2.100 2004/07/01 14:47:00 abigail Exp $
+# $Id: _support.pm,v 2.101 2004/12/18 11:28:25 abigail Exp $
 
 package Regexp::Common::_support;
 
@@ -6,7 +6,7 @@ use strict;
 local $^W = 1;
 
 use vars qw /$VERSION/;
-($VERSION) = q $Revision: 2.100 $ =~ /[\d.]+/g;
+($VERSION) = q $Revision: 2.101 $ =~ /[\d.]+/g;
 
 
 #
@@ -51,7 +51,7 @@ Regexp::Common::support -- Support functions for Regexp::Common.
 
 =head1 SYNOPSIS
 
-    use Regexp::Common::support qw /luhn/;
+    use Regexp::Common::_support qw /luhn/;
 
     luhn ($number)    # Returns true/false.
 
@@ -78,6 +78,9 @@ L<http://www.webopedia.com/TERM/L/Luhn_formula.html>.
 =head1 HISTORY
 
  $Log: _support.pm,v $
+ Revision 2.101  2004/12/18 11:28:25  abigail
+ POD nit (Mike Castle)
+
  Revision 2.100  2004/07/01 14:47:00  abigail
  Force version
 

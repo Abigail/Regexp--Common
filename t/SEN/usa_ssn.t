@@ -9,7 +9,7 @@ use t::Common qw /run_new_tests cross criss_cross dd pdd/;
 
 $^W = 1;
 
-($VERSION) = q $Revision: 2.100 $ =~ /[\d.]+/;
+($VERSION) = q $Revision: 2.102 $ =~ /[\d.]+/;
 
 my $ssn   = $RE {SEN} {USA} {SSN};
 my $space = $ssn -> {-sep => ' '};
@@ -35,26 +35,26 @@ my $wrong   = [criss_cross [[@$areas   [0 .. FAIL - 1]],
 my %targets = (
     ssn        =>  {
         list   =>  $ssns,
-        query  =>  sub {join "-" => @{$_ [0]}},
-        wanted =>  sub {[$_ => @{$_ [0]}]},
+        query  =>  sub {join "-" => @_},
+        wanted =>  sub {$_ => @_},
     },
     space      =>  {
         list   =>  $ssns,
-        query  =>  sub {join " " => @{$_ [0]}},
-        wanted =>  sub {[$_ => @{$_ [0]}]},
+        query  =>  sub {join " " => @_},
+        wanted =>  sub {$_ => @_},
     },
     empty      =>  {
         list   =>  $ssns,
-        query  =>  sub {join "" => @{$_ [0]}},
-        wanted =>  sub {[$_ => @{$_ [0]}]},
+        query  =>  sub {join "" => @_},
+        wanted =>  sub {$_ => @_},
     },
     wrong1     =>  {
         list   =>  $wrong,
-        query  =>  sub {join "-" => @{$_ [0]}},
+        query  =>  sub {join "-" => @_},
     },
     wrong2     =>  {
         list   =>  $wrong,
-        query  =>  sub {join " " => @{$_ [0]}},
+        query  =>  sub {join " " => @_},
     },
 );
 
@@ -79,9 +79,9 @@ my @tests = (
 );
 
 
-run_new_tests  tests   => \@tests,
-               targets => \%targets,
-               version => 'Regexp::Common::SEN',
+run_new_tests  tests        => \@tests,
+               targets      => \%targets,
+               version_from => 'Regexp::Common::SEN',
 ;
 
 __END__

@@ -7,17 +7,17 @@ use Regexp::Common qw /pattern clean no_defaults/;
 
 use vars qw /$VERSION/;
 
-($VERSION) = q $Revision: 2.104 $ =~ /[\d.]+/g;
+($VERSION) = q $Revision: 2.105 $ =~ /[\d.]+/g;
 
 my %IPunit = (
-    dec => q{(?k:25[0-5]|2[0-4]\d|[0-1]?\d{1,2})},
+    dec => q{(?k:25[0-5]|2[0-4][0-9]|[0-1]?[0-9]{1,2})},
     oct => q{(?k:[0-3]?[0-7]{1,2})},
-    hex => q{(?k:[0-9A-F]{1,2})},
+    hex => q{(?k:[0-9a-fA-F]{1,2})},
     bin => q{(?k:[0-1]{1,8})},
 );
 my %MACunit = (
     %IPunit,
-    hex => q{(?k:[0-9a-f]{1,2})},
+    hex => q{(?k:[0-9a-fA-F]{1,2})},
 );
 
 sub dec {$_};
@@ -294,6 +294,9 @@ L<Regexp::Common> for a general description of how to use this interface.
 =head1 HISTORY
 
  $Log: net.pm,v $
+ Revision 2.105  2004/12/28 23:31:54  abigail
+ Replaced C<\d> with [0-9] (Unicode reasons)
+
  Revision 2.104  2004/06/30 15:11:29  abigail
  Discuss unwanted matching
 

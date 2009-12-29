@@ -4,12 +4,12 @@ use strict;
 use lib  qw {blib/lib};
 use vars qw /$VERSION/;
 
-use Regexp::Common;
+use Regexp::Common qw /RE_zip_Italy/;
 use t::Common qw /run_new_tests cross d pd dd a/;
 
 $^W = 1;
 
-($VERSION) = q $Revision: 2.100 $ =~ /[\d.]+/;
+($VERSION) = q $Revision: 2.102 $ =~ /[\d.]+/;
 
 sub create_parts;
 
@@ -32,23 +32,23 @@ my $wrong   = [@long, @short, @letter];
 my %targets = (
     no_prefix    => {
         list     => $zips,
-        query    => sub {join "" => @{$_ [0]}},
-        wanted   => sub {[$_, undef, join ("" => @{$_ [0]}), @{$_ [0]}]},
+        query    => sub {join "" => @_},
+        wanted   => sub {$_, undef, join ("" => @_), @_},
     },
     iso_prefix   => {
         list     => $zips,
-        query    => sub {"IT-" . join "" => @{$_ [0]}},
-        wanted   => sub {[$_, "IT", join ("" => @{$_ [0]}), @{$_ [0]}]},
+        query    => sub {"IT-" . join "" => @_},
+        wanted   => sub {$_, "IT", join ("" => @_), @_},
     },
     cept_prefix  => {
         list     => $zips,
-        query    => sub {"I-" . join "" => @{$_ [0]}},
-        wanted   => sub {[$_, "I", join ("" => @{$_ [0]}), @{$_ [0]}]},
+        query    => sub {"I-" . join "" => @_},
+        wanted   => sub {$_, "I", join ("" => @_), @_},
     },
     own_prefix   => {
         list     => $zips,
-        query    => sub {"it-" . join "" => @{$_ [0]}},
-        wanted   => sub {[$_, "it", join ("" => @{$_ [0]}), @{$_ [0]}]},
+        query    => sub {"it-" . join "" => @_},
+        wanted   => sub {$_, "it", join ("" => @_), @_},
     },
     wrong1       => {
         list     => $wrong,
@@ -64,48 +64,59 @@ my %targets = (
     },
     wrong4       => {
         list     => $zips,
-        query    => sub {"IT " . join "" => @{$_ [0]}},
+        query    => sub {"IT " . join "" => @_},
     },
 );
 
 my @wrongs = qw /wrong1 wrong2 wrong3 wrong4/;
 
 my @tests = (
-    {    name    =>  'basic',
-         regex   =>  $italy,
-         pass    =>  [qw /no_prefix iso_prefix cept_prefix/],
-         fail    =>  [qw /own_prefix/, @wrongs],
+    {    name     =>  'basic',
+         regex    =>  $italy,
+         pass     =>  [qw /no_prefix iso_prefix cept_prefix/],
+         fail     =>  [qw /own_prefix/, @wrongs],
+         sub      =>  \&RE_zip_Italy,
     },
-    {    name    =>  'yes_prefix',
-         regex   =>  $yes_prefix,
-         pass    =>  [qw /iso_prefix cept_prefix/],
-         fail    =>  [qw /no_prefix own_prefix/, @wrongs],
+    {    name     =>  'yes_prefix',
+         regex    =>  $yes_prefix,
+         pass     =>  [qw /iso_prefix cept_prefix/],
+         fail     =>  [qw /no_prefix own_prefix/, @wrongs],
+         sub      =>  \&RE_zip_Italy,
+         sub_args =>  [-prefix  => 'yes'],
     },
-    {    name    =>  'no_prefix',
-         regex   =>  $no_prefix,
-         pass    =>  [qw /no_prefix/],
-         fail    =>  [qw /iso_prefix cept_prefix own_prefix/, @wrongs],
+    {    name     =>  'no_prefix',
+         regex    =>  $no_prefix,
+         pass     =>  [qw /no_prefix/],
+         fail     =>  [qw /iso_prefix cept_prefix own_prefix/, @wrongs],
+         sub      =>  \&RE_zip_Italy,
+         sub_args =>  [-prefix  => 'no'],
     },
-    {    name    =>  'iso_prefix',
-         regex   =>  $iso_prefix,
-         pass    =>  [qw /no_prefix iso_prefix/],
-         fail    =>  [qw /cept_prefix own_prefix/, @wrongs],
+    {    name     =>  'iso_prefix',
+         regex    =>  $iso_prefix,
+         pass     =>  [qw /no_prefix iso_prefix/],
+         fail     =>  [qw /cept_prefix own_prefix/, @wrongs],
+         sub      =>  \&RE_zip_Italy,
+         sub_args =>  [-country  => 'iso'],
     },
-    {    name    =>  'cept_prefix',
-         regex   =>  $cept_prefix,
-         pass    =>  [qw /no_prefix cept_prefix/],
-         fail    =>  [qw /iso_prefix own_prefix/, @wrongs],
+    {    name     =>  'cept_prefix',
+         regex    =>  $cept_prefix,
+         pass     =>  [qw /no_prefix cept_prefix/],
+         fail     =>  [qw /iso_prefix own_prefix/, @wrongs],
+         sub      =>  \&RE_zip_Italy,
+         sub_args =>  [-country  => 'cept'],
     },
-    {    name    =>  'own_prefix',
-         regex   =>  $own_prefix,
-         pass    =>  [qw /no_prefix own_prefix/],
-         fail    =>  [qw /iso_prefix cept_prefix/, @wrongs],
+    {    name     =>  'own_prefix',
+         regex    =>  $own_prefix,
+         pass     =>  [qw /no_prefix own_prefix/],
+         fail     =>  [qw /iso_prefix cept_prefix/, @wrongs],
+         sub      =>  \&RE_zip_Italy,
+         sub_args =>  [-country  => 'it'],
     },
 );
 
-run_new_tests tests   => \@tests,
-              targets => \%targets,
-              version => 'Regexp::Common::zip',
+run_new_tests tests        => \@tests,
+              targets      => \%targets,
+              version_from => 'Regexp::Common::zip',
 ;
 
 __END__
@@ -113,6 +124,12 @@ __END__
 =pod
 
  $Log: italy.t,v $
+ Revision 2.102  2005/01/01 16:36:47  abigail
+ Renamed 'version' option of 'run_new_tests' to 'version_from'
+
+ Revision 2.101  2004/12/28 23:09:15  abigail
+ Testing subs as well
+
  Revision 2.100  2004/06/09 21:32:41  abigail
  Initial checkin
 

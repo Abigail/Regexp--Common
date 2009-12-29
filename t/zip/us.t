@@ -4,251 +4,315 @@ use strict;
 use lib  qw {blib/lib};
 use vars qw /$VERSION/;
 
-use Regexp::Common;
+use Regexp::Common qw /RE_zip_US/;
+use t::Common qw /run_new_tests cross gimme sample pdd/;
 
 $^W = 1;
 
-($VERSION) = q $Revision: 2.104 $ =~ /[\d.]+/;
+($VERSION) = q $Revision: 2.105 $ =~ /[\d.]+/;
 
-BEGIN {
-    if ($] < 5.00503) {
-        print "1..1\n";
-        print "ok 1\n";
-        exit;
-    }
-}
+my $basic   = $RE {zip} {US};
+my $ext_yes = $RE {zip} {US} {-extended => 'yes'};
+my $ext_no  = $RE {zip} {US} {-extended => 'no'};
+my $prf_yes = $RE {zip} {US} {-prefix   => 'yes'};
+my $prf_no  = $RE {zip} {US} {-prefix   => 'no'};
+my $sep_sp  = $basic -> {-sep => " "};
+my $sep_dsh = $basic -> {-sep => "--"};
+my $sep_rg  = $basic -> {-sep => "[- ]"};
+my $iso     = $RE {zip} {US} {-country  => 'iso'};
+my $cept    = $RE {zip} {US} {-country  => 'cept'};
+my $usa     = $RE {zip} {US} {-country  => 'usa'};
+my $iso_py  = $iso  -> {-prefix => 'yes'};
+my $iso_pn  = $iso  -> {-prefix => 'no'};
+my $cept_py = $cept -> {-prefix => 'yes'};
+my $cept_pn = $cept -> {-prefix => 'no'};
+my $all     = $RE {zip} {US} {-country  => 'iso'} {-prefix => 'yes'}
+                             {-extended => 'yes'} {-sep    => '[- ]'};
 
-sub failures;
+my @zips    = ("00000", gimme 10, sub {pdd 5});
+my @ext     = ("0000",  gimme  5, sub {pdd 4});
+my @zip_ext = (["00000", "0000"],
+               cross (["00000"], [gimme 2 => sub {pdd 4}]),
+               cross ([gimme 2 => sub {pdd 5}], ["0000"]),
+               sample 10 => cross [gimme 5 => sub {pdd 5}],
+                                  [gimme 5 => sub {pdd 4}]);
+my @bad_zip = ("0000", "000000",
+                gimme (10 => sub {pdd 2, 4}),   # Too short.
+                gimme (10 => sub {pdd 6, 8}));  # Too long.
+my @bad_ext = ("000", "0000",
+                gimme (10 => sub {pdd 1, 3}),   # Too short.
+                gimme (10 => sub {pdd 5, 8}));  # Too long.
 
-use constant  PASSES  =>   20;
-use constant  FAIL    =>   10;
+my @baddies   =  @bad_zip;    # Basic bad zips.
+push @baddies => map {join "-" => @_} 
+                 sample 10 => cross \@zips, \@bad_ext; # Bad extensions.
+push @baddies => map {join ["\n", qw {_ ! & ---}] -> [rand 5] => @_}
+                 sample 10 => cross \@zips, \@ext;     # Bad separator.
+push @baddies => map {"USS-$_"} @zips;                 # Bad countries.
 
-my $normal        = $RE {zip} {US};
-my $maybe         = $RE {zip} {US} {-extended => 'maybe'};
-my $yes           = $RE {zip} {US} {-extended => 'yes'};
-my $no            = $RE {zip} {US} {-extended => 'no'};
-my $sep           = $RE {zip} {US} {-sep => ' '};
-my $iso           = $RE {zip} {US} {-country => "iso"};
-my $cept          = $RE {zip} {US} {-country => "cept"};
-my $country       = $RE {zip} {US} {-country => "USA"};
-my $prefix        = $RE {zip} {US} {-prefix => 'yes'};
-my $no_prefix     = $RE {zip} {US} {-prefix => 'no'};
+my (@tests, %targets);
 
-my @tests = (
-    [ normal      => $normal      =>  [qw /1 1 1 1 0 0 1 1/]],
-    [ maybe       => $maybe       =>  [qw /1 1 1 1 0 0 1 1/]],
-    [ yes         => $yes         =>  [qw /0 0 1 1 0 0 0 1/]],
-    [ no          => $no          =>  [qw /1 1 0 0 0 0 1 0/]],
-    [ prefix      => $prefix      =>  [qw /0 1 0 1 0 0 1 1/]],
-    [ iso         => $iso         =>  [qw /1 1 1 1 0 0 0 0/]],
-    [ cept        => $cept        =>  [qw /1 0 1 0 0 0 1 1/]],
-    [ country     => $country     =>  [qw /1 0 1 0 0 0 1 1/]],
-    ['no prefix'  => $no_prefix   =>  [qw /1 0 1 0 0 0 0 0/]],
-    [ sep         => $sep         =>  [qw /1 1 0 0 1 1 1 0/]],
-);
+$targets {simple} = {
+    list      =>  \@zips,
+    wanted    =>  sub {$_, undef, join ("-" => @_), $_ [0],
+                       substr ($_ [0], 0, 3), substr ($_ [0], 3, 2),
+                       undef, undef,
+                       undef, undef,},
+};
 
-my @failures = failures;
+$targets {simple_USA} = {
+    list      =>  [@zips [0 .. 4]],
+    query     =>  sub {join "-" => "USA", $_ [0]},
+    wanted    =>  sub {$_, "USA", join ("-" => @_), $_ [0],
+                       substr ($_ [0], 0, 3), substr ($_ [0], 3, 2),
+                       undef, undef,
+                       undef, undef,},
+};
 
-my $count;
+$targets {simple_US} = {
+    list      =>  [@zips [0 .. 4]],
+    query     =>  sub {join "-" => "US", $_ [0]},
+    wanted    =>  sub {$_, "US", join ("-" => @_), $_ [0],
+                       substr ($_ [0], 0, 3), substr ($_ [0], 3, 2),
+                       undef, undef,
+                       undef, undef,},
+};
 
-sub mess {print ++ $count, " - $_ (@_)\n"}
+$targets {simple_usa} = {
+    list      =>  [@zips [0 .. 4]],
+    query     =>  sub {join "-" => "usa", $_ [0]},
+    wanted    =>  sub {$_, "usa", join ("-" => @_), $_ [0],
+                       substr ($_ [0], 0, 3), substr ($_ [0], 3, 2),
+                       undef, undef,
+                       undef, undef,},
+};
 
-sub pass {print     "ok "; &mess}
-sub fail {print "not ok "; &mess}
+$targets {extended} = {
+    list      =>  \@zip_ext,
+    query     =>  sub {join "-" => @_},
+    wanted    =>  sub {$_, undef, join ("-" => @_), $_ [0],
+                       substr ($_ [0], 0, 3), substr ($_ [0], 3, 2),
+                       "-", $_ [1],
+                       substr ($_ [1], 0, 2), substr ($_ [1], 2, 2)},
+};
 
-my $max = 1 + 2 * @tests * @{$tests [0] -> [2]} * PASSES + @failures * @tests;
-print "1..$max\n";
+$targets {extended_USA} = {
+    list      =>  \@zip_ext,
+    query     =>  sub {join "-" => "USA", @_},
+    wanted    =>  sub {$_, "USA", join ("-" => @_), $_ [0],
+                       substr ($_ [0], 0, 3), substr ($_ [0], 3, 2),
+                       "-", $_ [1],
+                       substr ($_ [1], 0, 2), substr ($_ [1], 2, 2)},
+};
 
-print "not " unless defined $Regexp::Common::zip::VERSION;
-print "ok ", ++ $count, " - Regexp::Common::zip::VERSION\n";
+$targets {extended_US} = {
+    list      =>  \@zip_ext,
+    query     =>  sub {join "-" => "US", @_},
+    wanted    =>  sub {$_, "US", join ("-" => @_), $_ [0],
+                       substr ($_ [0], 0, 3), substr ($_ [0], 3, 2),
+                       "-", $_ [1],
+                       substr ($_ [1], 0, 2), substr ($_ [1], 2, 2)},
+};
+
+$targets {extended_US_sp} = {
+    list      =>  \@zip_ext,
+    query     =>  sub {"US-" . $_ [0] . " " . $_ [1]},
+    wanted    =>  sub {$_, "US", join (" " => @_), $_ [0],
+                       substr ($_ [0], 0, 3), substr ($_ [0], 3, 2),
+                       " ", $_ [1],
+                       substr ($_ [1], 0, 2), substr ($_ [1], 2, 2)},
+};
+
+$targets {sep_sp} = {
+    list      =>  \@zip_ext,
+    query     =>  sub {join " " => @_},
+    wanted    =>  sub {$_, undef, join (" " => @_), $_ [0],
+                       substr ($_ [0], 0, 3), substr ($_ [0], 3, 2),
+                       " ", $_ [1],
+                       substr ($_ [1], 0, 2), substr ($_ [1], 2, 2)},
+};
+
+$targets {sep_dashes} = {
+    list      =>  \@zip_ext,
+    query     =>  sub {join "--" => @_},
+    wanted    =>  sub {$_, undef, join ("--" => @_), $_ [0],
+                       substr ($_ [0], 0, 3), substr ($_ [0], 3, 2),
+                       "--", $_ [1],
+                       substr ($_ [1], 0, 2), substr ($_ [1], 2, 2)},
+};
+
+$targets {bad_zip} = {
+    list      =>  \@baddies,
+};
 
 
-sub run_test {
-    my ($name, $re, $should_match) = @_;
-    my $match = /^$re$/;
-    my $line  = $match ? "match" : "no match";
-       $line .= "; $name";
-   ($match xor $should_match) ? fail $line : pass $line
-}
+push @tests   => {
+    name      =>  'basic',
+    regex     =>  $basic,
+    sub       =>  \&RE_zip_US,
+    pass      =>  [qw /simple simple_USA simple_US extended extended_USA
+                       extended_US/],
+    fail      =>  [qw /bad_zip sep_sp sep_dashes simple_usa extended_US_sp/],
+};
 
-sub __ {map {defined () ? $_ : "UNDEF"} @_}
-sub run_keep {
-    my ($name, $re, $should_match) = splice @_ => 0, 3;
-    unless ($should_match) {
-        if (/^$re$/) {fail "match; keep - $name"}
-        else         {pass "no match; keep - $name"}
-        return;
-    }
-    my @exp = ($_, $_ [0], join ("" => grep {defined} @_ [1 .. 3]),
-               @_ [1 .. 3]);
-    if (my @args = /^$re$/) {
-        unshift @_ => $_;
-        unless (@exp == @args) {
-            fail "match; keep - $name [@{[__ @args]}]";
-        }
-        foreach my $n (0 .. $#_) {
-            unless (!defined $exp [$n] && !defined $args [$n] ||
-                     defined $exp [$n] &&  defined $args [$n] &&
-                             $exp [$n] eq          $args [$n]) {
-                fail "match; keep - $name [@{[__ @args]}]";
-                return;
-            }
-        }
-        pass "match; keep - $name";
-        return;
-    }
-    fail "no match; keep - $name";
-}
+push @tests   => {
+    name      =>  'usa',
+    regex     =>  $usa,
+    sub       =>  \&RE_zip_US,
+    sub_args  =>  [-country => 'usa'],
+    pass      =>  [qw /simple simple_usa extended/],
+    fail      =>  [qw /bad_zip sep_sp sep_dashes simple_USA extended_USA
+                       simple_US extended_US extended_US_sp/],
+};
+
+push @tests   => {
+    name      =>  'iso',
+    regex     =>  $iso,
+    sub       =>  \&RE_zip_US,
+    sub_args  =>  [-country => 'iso'],
+    pass      =>  [qw /simple simple_US extended extended_US/],
+    fail      =>  [qw /bad_zip sep_sp sep_dashes simple_USA extended_USA
+                       simple_usa extended_US_sp/],
+};
+
+push @tests   => {
+    name      =>  'iso_py',
+    regex     =>  $iso_py,
+    sub       =>  \&RE_zip_US,
+    sub_args  =>  [-country => 'iso', -prefix => 'yes'],
+    pass      =>  [qw /simple_US extended_US/],
+    fail      =>  [qw /bad_zip sep_sp sep_dashes simple_USA extended_USA
+                       extended_US_sp simple extended simple_usa/],
+};
+
+push @tests   => {
+    name      =>  'iso_pn',
+    regex     =>  $iso_pn,
+    sub       =>  \&RE_zip_US,
+    sub_args  =>  [-country => 'iso', -prefix => 'no'],
+    pass      =>  [qw /simple extended/],
+    fail      =>  [qw /bad_zip sep_sp sep_dashes simple_USA extended_USA
+                       extended_US extended_US_sp simple_US simple_usa/],
+};
+
+push @tests   => {
+    name      =>  'cept_py',
+    regex     =>  $cept_py,
+    sub       =>  \&RE_zip_US,
+    sub_args  =>  [-country => 'cept', -prefix => 'yes'],
+    pass      =>  [qw /simple_USA extended_USA/],
+    fail      =>  [qw /bad_zip sep_sp sep_dashes simple_US simple extended
+                       extended_US extended_US_sp simple_usa/],
+};
+
+push @tests   => {
+    name      =>  'cept_pn',
+    regex     =>  $cept_pn,
+    sub       =>  \&RE_zip_US,
+    sub_args  =>  [-country => 'cept', -prefix => 'no'],
+    pass      =>  [qw /simple extended/],
+    fail      =>  [qw /bad_zip sep_sp sep_dashes simple_USA extended_USA
+                       extended_US extended_US_sp simple_US simple_usa/],
+};
+
+push @tests   => {
+    name      =>  'cept',
+    regex     =>  $cept,
+    sub       =>  \&RE_zip_US,
+    sub_args  =>  [-country => 'cept'],
+    pass      =>  [qw /simple simple_USA extended extended_USA/],
+    fail      =>  [qw /bad_zip sep_sp sep_dashes simple_US simple_usa
+                       extended_US extended_US_sp/],
+};
+
+push @tests   => {
+    name      =>  'ext_yes',
+    regex     =>  $ext_yes,
+    sub       =>  \&RE_zip_US,
+    sub_args  =>  [-extended => 'yes'],
+    pass      =>  [qw /extended extended_USA extended_US/],
+    fail      =>  [qw /simple simple_USA simple_US bad_zip sep_sp sep_dashes
+                       simple_usa extended_USA_sp/],
+};
+
+push @tests   => {
+    name      =>  'ext_no',
+    regex     =>  $ext_no,
+    sub       =>  \&RE_zip_US,
+    sub_args  =>  [-extended => 'no'],
+    pass      =>  [qw /simple simple_USA simple_US/],
+    fail      =>  [qw /extended extended_USA bad_zip sep_sp sep_dashes
+                       simple_usa extended_US_sp extended_US/],
+};
+
+push @tests   => {
+    name      =>  'prf_yes',
+    regex     =>  $prf_yes,
+    sub       =>  \&RE_zip_US,
+    sub_args  =>  [-prefix => 'yes'],
+    pass      =>  [qw /simple_USA simple_US extended_USA extended_US/],
+    fail      =>  [qw /simple extended bad_zip sep_sp sep_dashes simple_usa
+                       extended_US_sp/],
+};
+
+push @tests   => {
+    name      =>  'prf_no',
+    regex     =>  $prf_no,
+    sub       =>  \&RE_zip_US,
+    sub_args  =>  [-prefix => 'no'],
+    pass      =>  [qw /simple extended/],
+    fail      =>  [qw /simple_USA simple_US extended_USA bad_zip sep_sp
+                       extended_US extended_US_sp sep_dashes simple_usa/],
+};
+
+push @tests   => {
+    name      =>  'sep space',
+    regex     =>  $sep_sp,
+    sub       =>  \&RE_zip_US,
+    sub_args  =>  [-sep => ' '],
+    pass      =>  [qw /simple simple_USA simple_US sep_sp extended_US_sp/],
+    fail      =>  [qw /bad_zip sep_dashes extended extended_USA extended_US
+                       simple_usa/],
+};
+
+push @tests   => {
+    name      =>  'sep dashes',
+    regex     =>  $sep_dsh,
+    sub       =>  \&RE_zip_US,
+    sub_args  =>  [-sep => '--'],
+    pass      =>  [qw /simple simple_USA simple_US sep_dashes/],
+    fail      =>  [qw /bad_zip sep_sp extended extended_USA simple_usa 
+                       extended_US extended_US_sp/],
+};
+
+push @tests   => {
+    name      =>  'sep regex',
+    regex     =>  $sep_rg,
+    sub       =>  \&RE_zip_US,
+    sub_args  =>  [-sep => '[- ]'],
+    pass      =>  [qw /simple simple_USA simple_US sep_sp
+                       extended extended_USA extended_US extended_US_sp/],
+    fail      =>  [qw /bad_zip sep_dashes simple_usa/],
+};
+
+push @tests   => {
+    name      =>  'all',
+    regex     =>  $all,
+    sub       =>  \&RE_zip_US,
+    sub_args  =>  [-country  => 'iso', -prefix => 'yes', 
+                   -extended => 'yes', -sep    => '[- ]'],
+    pass      =>  [qw /extended_US extended_US_sp/],
+    fail      =>  [qw /simple simple_USA simple_US bad_zip sep_sp sep_dashes
+                       simple_usa extended extended_USA/],
+};
 
 
-sub _ {
-    my $min = $_ [0];
-    my $max = @_ > 1 ? $_ [1] : $_ [0];
-    my $x  = "";
-       $x .= int rand 10 for 1 .. $_ [0] + int rand (1 + $max - $min);
-       $x;
-}
+run_new_tests tests        => \@tests,
+              targets      => \%targets,
+              version_from => 'Regexp::Common::zip',
+              version      => 5.00503,
+;
 
-my %cache;
-foreach my $d (1 .. PASSES) {
-    my $z = "00000";
-    my $e = "0000";
-
-    $z = _ 5 while $cache {$z} ++;
-    $e = _ 4 while $cache {$e} ++;
-
-    my @t = ([undef, $z, undef, undef],
-             ["US",  $z, undef, undef],
-             [undef, $z, "-",   $e],
-             ["US",  $z, "-",   $e],
-             [undef, $z, " ",   $e],
-             ["US",  $z, " ",   $e],
-             ["USA", $z, undef, undef],
-             ["USA", $z, "-",   $e]);
-
-    my $c = 0;
-    foreach my $t (@t) {
-        local $_  = defined $t -> [0] ? $t -> [0] . "-" : "";
-              $_ .= join "" => grep {defined} @{$t} [1 .. 3];
-        foreach my $test (@tests) {
-            my ($name, $re, $matches) = @$test;
-            run_test $name, $re,            $matches -> [$c];
-            run_keep $name, $re -> {-keep}, $matches -> [$c], @$t;
-        }
-        $c ++;
-    }
-}
-
-foreach (@failures) {
-    foreach my $test (@tests) {
-        my ($name, $re) = @$test;
-        /^$re$/ ? fail "match; $name" : pass "no match; $name";
-    }
-}
-
-sub failures {
-    my @failures = ("", " ");
-
-    # Too short, basic zips.
-    push @failures => 0 .. 9;
-    for (1 .. FAIL) {
-        my $x = _ 2, 4;
-        redo if $cache {$x} ++;
-        push @failures => $x;
-    }
-
-    # Too long, basic zips.
-    for (1 .. FAIL) {
-        my $x = _ 6, 10; 
-        redo if $cache {$x} ++;
-        push @failures => $x;
-    }
-
-    # Too short extensions.
-    for (1 .. FAIL) {
-        my $x = _ 5;
-        my $y = _ 1, 3;
-        redo if $cache {"$x-$y"} ++;
-        push @failures => "$x-$y";
-    }
-
-    # Too long extensions.
-    for (1 .. FAIL) {
-        my $x = _ 5;
-        my $y = _ 5, 10;
-        redo if $cache {"$x-$y"} ++;
-        push @failures => "$x-$y";
-    }
-
-    # Too many extensions.
-    for (1 .. FAIL) {
-        my $x = _ 5;
-        my $y = _ 4;
-        my $z = _ 4;
-        redo if $cache {"$x-$y-$z"} ++;
-        push @failures => "$x-$y-$z";
-    }
-
-    # Wrong separator.
-    for (1 .. FAIL) {
-        my $x = _ 5;
-        my $y = _ 4;
-        my $s = int rand 256;
-        redo if ($s & 0x7F) < 0x20;
-        my $sep = chr $s;
-        redo if $sep eq '-' || $sep eq ' ';
-        redo if $cache {"$x$sep$y"} ++;
-        push @failures => "$x$sep$y";
-    }
-
-    # No separator;
-    for (1 .. FAIL) {
-        my $x = _ 5;
-        my $y = _ 4;
-        redo if $cache {"$x$y"} ++;
-        push @failures => "$x$y";
-    }
-
-    # Same failures, with country in front of it as well.
-    push @failures => map {"US-$_"} @failures;
-
-    # Wrong countries.
-    for (1 .. FAIL) {
-        my $c = join "" => map {('A' .. 'Z') [rand 26]} 1 .. 2;
-        redo if $c eq "US" || $cache {$c} ++;
-        my $x = _ 5;
-        push @failures => "$c-$x";
-    }
-
-    for (1 .. FAIL) {
-        my $c = join "" => map {('A' .. 'Z') [rand 26]} 1 .. 2;
-        redo if $c eq "US" || $cache {$c} ++;
-        my $x = _ 5;
-        my $y = _ 4;
-        push @failures => "$c-$x-$y";
-    }
-
-    for (1 .. FAIL) {
-        my $c = ('A' .. 'Z') [rand 26];
-        redo if $cache {$c} ++;
-        my $x = _ 5;
-        push @failures => "${c}US-$x";
-        push @failures => "US$c-$x" unless $c eq 'A';
-    }
-
-    for (1 .. 1) {
-        my $x = _ 5;
-        push @failures => "us-$x";
-    }
-
-    for (1 .. 1) {
-        my $x = _ 5;
-        my $y = _ 4;
-        push @failures => "us-$x-$y";
-    }
-
-    @failures;
-}
 
 __END__
 
@@ -256,6 +320,9 @@ __END__
 =pod
 
  $Log: us.t,v $
+ Revision 2.105  2005/01/01 16:38:12  abigail
+ Completely rewritten. Now uses run_new_tests, and tests for -keep changes.
+
  Revision 2.104  2003/02/10 21:29:37  abigail
  Cut down on the number of tests
 

@@ -4,11 +4,10 @@ use strict;
 local $^W = 1;
 
 use Regexp::Common qw /pattern clean no_defaults/;
-use Carp;
 
 use vars qw /$VERSION/;
 
-($VERSION) = q $Revision: 2.111 $ =~ /[\d.]+/g;
+($VERSION) = q $Revision: 2.112 $ =~ /[\d.]+/g;
 
 #
 # Prefer '[0-9]' over \d, because the latter may include more
@@ -172,8 +171,10 @@ pattern name    => [qw /zip US -prefix= -country= -extended= -sep=-/],
 
             my $cn  = _c USA => $_ [1] {-country};
             my $pfx = "(?:(?k:$cn)-)";
-            my $zip = "(?k:[0-9]{5})";
-            my $ext = "(?:(?k:$sep)(?k:[0-9]{4}))";
+            # my $zip = "(?k:[0-9]{5})";
+            # my $ext = "(?:(?k:$sep)(?k:[0-9]{4}))";
+            my $zip = "(?k:(?k:[0-9]{3})(?k:[0-9]{2}))";
+            my $ext = "(?:(?k:$sep)(?k:(?k:[0-9]{2})(?k:[0-9]{2})))";
 
             "(?k:$pfx$pt(?k:$zip$ext$et))";
         },
@@ -707,11 +708,33 @@ The first 5 digits of the postal code.
 
 =item $5
 
-The separator between the 5 digit part and the 4 digit part.
+The first three digits of the postal code, indicating a sectional
+center or a large city. New in Regexp::Common 2.119.
 
 =item $6
 
-The 4 digit part of the postal code (if any).
+The last 2 digits of the 5 digit part of the postal code, indicating
+a post office facility or delivery area. New in Regexp::Common 2.119.
+
+=item $7
+
+The separator between the 5 digit part and the 4 digit part. Up to 
+Regexp::Common 2.118, this used to be $5.
+
+=item $8
+
+The 4 digit part of the postal code (if any). Up to Regexp::Common 2.118,
+this used to be $6.
+
+=item $9
+
+The first two digits of the 4 digit part of the postal code, indicating
+a sector, or several blocks. New in Regexp::Common 2.119.
+
+=item $10
+
+The last two digits of the 4 digit part of the postal code, indicating
+a segment or one side of a street. New in Regexp::Common 2.119.
 
 =back
 
@@ -719,9 +742,36 @@ You need at least version 5.005_03 to be able to use US postal codes.
 Older versions contain a bug that let the pattern match invalid US
 postal codes.
 
+=head3 Questions
+
+=over 4
+
+=item
+
+Can the 5 digit part of the zip code (in theory) start with 000?
+
+=item
+
+Can the 5 digit part of the zip code (in theory) end with 00?
+
+=item
+
+Can the 4 digit part of the zip code (in theory) start with 00?
+
+=item
+
+Can the 4 digit part of the zip code (in theory) end with 00?
+
+=back
+
 =head1 HISTORY
 
  $Log: zip.pm,v $
+ Revision 2.112  2005/01/01 16:34:04  abigail
+ - Modified the -keep captures for US zip codes. Both the 5 and 4 digit parts
+   of the zip codes can be dissected into 2 parts.
+ - Updated the copyright notice.
+
  Revision 2.111  2004/12/14 23:15:13  abigail
  Disable '-prefix' for Danish postal codes for pre-5.00503 perls.
 
@@ -812,10 +862,13 @@ Links to Postcode Pages.
 
 Information about Australian postal codes.
 
+=item L<http://hdusps.esecurecare.net/cgi-bin/hdusps.cfg/php/enduser/std_adp.php?p_faqid=1014>
+
+Information about US postal codes.
+
 =item L<http://en.wikipedia.org/wiki/Postal_code>
 
 =back
-
 
 =head1 AUTHORS
 
@@ -833,9 +886,9 @@ Send them in to I<regexp-common@abigail.nl>.
 
 =head1 COPYRIGHT
 
-Copyright (c) 2001 - 2003, Damian Conway and Abigail. All Rights
-Reserved. This module is free software. It may be used, redistributed
-and/or modified under the terms of the Perl Artistic License (see
-L<http://www.perl.com/perl/misc/Artistic.html>)
+   Copyright (c) 2001 - 2005, Damian Conway and Abigail. All Rights
+ Reserved. This module is free software. It may be used, redistributed
+     and/or modified under the terms of the Perl Artistic License
+           (see http://www.perl.com/perl/misc/Artistic.html)
 
 =cut

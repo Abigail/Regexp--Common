@@ -35,8 +35,12 @@ MANIFEST
 Makefile.PL
 README
 TODO
-t/number/decimal.t
 t/Common.pm
+t/comment/delimited.t
+t/comment/html.t
+t/comment/single_line.t
+t/comment/single_or_multiline.t
+t/number/decimal.t
 t/SEN/usa_ssn.t
 t/test___luhn.t
 t/test_balanced.t

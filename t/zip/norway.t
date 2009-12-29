@@ -4,12 +4,12 @@ use strict;
 use lib  qw {blib/lib};
 use vars qw /$VERSION/;
 
-use Regexp::Common;
+use Regexp::Common qw /RE_zip_Norway/;
 use t::Common qw /run_new_tests cross pdd dd a/;
 
 $^W = 1;
 
-($VERSION) = q $Revision: 2.101 $ =~ /[\d.]+/;
+($VERSION) = q $Revision: 2.103 $ =~ /[\d.]+/;
 
 sub create_parts;
 
@@ -32,22 +32,22 @@ my $wrong   = [@$long, @$short, @$letter];
 my %targets = (
     no_prefix    => {
         list     => $valid,
-        wanted   => sub {[$_, undef, $_ [0]]},
+        wanted   => sub {$_, undef, $_ [0]},
     },
     iso_prefix   => {
         list     => $valid,
         query    => sub {"NO-" . $_ [0]},
-        wanted   => sub {[$_, "NO", $_ [0]]},
+        wanted   => sub {$_, "NO", $_ [0]},
     },
     cept_prefix  => {
         list     => $valid,
         query    => sub {"N-" . $_ [0]},
-        wanted   => sub {[$_, "N", $_ [0]]},
+        wanted   => sub {$_, "N", $_ [0]},
     },
     own_prefix   => {
         list     => $valid,
         query    => sub {"no-" . $_ [0]},
-        wanted   => sub {[$_, "no", $_ [0]]},
+        wanted   => sub {$_, "no", $_ [0]},
     },
     wrong1       => {
         list     => $wrong,
@@ -69,41 +69,52 @@ my %targets = (
 my @wrongs = qw /wrong1 wrong2 wrong3 wrong4/;
 
 my @tests = (
-    {    name    =>  'basic',
-         regex   =>  $norway,
-         pass    =>  [qw /no_prefix iso_prefix cept_prefix/],
-         fail    =>  [qw /own_prefix/, @wrongs],
+    {    name     =>  'basic',
+         regex    =>  $norway,
+         sub      =>  \&RE_zip_Norway,
+         pass     =>  [qw /no_prefix iso_prefix cept_prefix/],
+         fail     =>  [qw /own_prefix/, @wrongs],
     },
-    {    name    =>  'yes_prefix',
-         regex   =>  $yes_prefix,
-         pass    =>  [qw /iso_prefix cept_prefix/],
-         fail    =>  [qw /no_prefix own_prefix/, @wrongs],
+    {    name     =>  'yes_prefix',
+         regex    =>  $yes_prefix,
+         sub      =>  \&RE_zip_Norway,
+         sub_args =>  [-prefix  => 'yes'],
+         pass     =>  [qw /iso_prefix cept_prefix/],
+         fail     =>  [qw /no_prefix own_prefix/, @wrongs],
     },
-    {    name    =>  'no_prefix',
-         regex   =>  $no_prefix,
-         pass    =>  [qw /no_prefix/],
-         fail    =>  [qw /iso_prefix cept_prefix own_prefix/, @wrongs],
+    {    name     =>  'no_prefix',
+         regex    =>  $no_prefix,
+         sub      =>  \&RE_zip_Norway,
+         sub_args =>  [-prefix  => 'no'],
+         pass     =>  [qw /no_prefix/],
+         fail     =>  [qw /iso_prefix cept_prefix own_prefix/, @wrongs],
     },
-    {    name    =>  'iso_prefix',
-         regex   =>  $iso_prefix,
-         pass    =>  [qw /no_prefix iso_prefix/],
-         fail    =>  [qw /cept_prefix own_prefix/, @wrongs],
+    {    name     =>  'iso_prefix',
+         regex    =>  $iso_prefix,
+         sub      =>  \&RE_zip_Norway,
+         sub_args =>  [-country  => 'iso'],
+         pass     =>  [qw /no_prefix iso_prefix/],
+         fail     =>  [qw /cept_prefix own_prefix/, @wrongs],
     },
-    {    name    =>  'cept_prefix',
-         regex   =>  $cept_prefix,
-         pass    =>  [qw /no_prefix cept_prefix/],
-         fail    =>  [qw /iso_prefix own_prefix/, @wrongs],
+    {    name     =>  'cept_prefix',
+         regex    =>  $cept_prefix,
+         sub      =>  \&RE_zip_Norway,
+         sub_args =>  [-country  => 'cept'],
+         pass     =>  [qw /no_prefix cept_prefix/],
+         fail     =>  [qw /iso_prefix own_prefix/, @wrongs],
     },
-    {    name    =>  'own_prefix',
-         regex   =>  $own_prefix,
-         pass    =>  [qw /no_prefix own_prefix/],
-         fail    =>  [qw /iso_prefix cept_prefix/, @wrongs],
+    {    name     =>  'own_prefix',
+         regex    =>  $own_prefix,
+         sub      =>  \&RE_zip_Norway,
+         sub_args =>  [-country  => 'no'],
+         pass     =>  [qw /no_prefix own_prefix/],
+         fail     =>  [qw /iso_prefix cept_prefix/, @wrongs],
     },
 );
 
-run_new_tests tests   => \@tests,
-              targets => \%targets,
-              version => 'Regexp::Common::zip',
+run_new_tests tests        => \@tests,
+              targets      => \%targets,
+              version_from => 'Regexp::Common::zip',
 ;
 
 __END__
@@ -111,6 +122,12 @@ __END__
 =pod
 
  $Log: norway.t,v $
+ Revision 2.103  2005/01/01 16:36:47  abigail
+ Renamed 'version' option of 'run_new_tests' to 'version_from'
+
+ Revision 2.102  2004/12/28 23:09:15  abigail
+ Testing subs as well
+
  Revision 2.101  2004/12/14 23:13:17  abigail
  Minor changes because Common.pm got smarter
 

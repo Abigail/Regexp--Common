@@ -8,7 +8,7 @@ local $^W = 1;
 use vars qw /$VERSION %RE %sub_interface/;
 
 
-($VERSION) = q $Revision: 2.118 $ =~ /([\d.]+)/;
+($VERSION) = q $Revision: 2.119 $ =~ /([\d.]+)/;
 
 use Carp;
 
@@ -806,6 +806,9 @@ project, especially: Elijah, Jarkko, Tom, Nat, Ed, and Vivek.
 =head1 HISTORY
 
   $Log: Common.pm,v $
+  Revision 2.119  2005/01/01 16:35:14  abigail
+  - Updated copyright notice. New release.
+
   Revision 2.118  2004/12/14 23:17:57  abigail
   Fixed the generic OO routines.
 
@@ -994,10 +997,9 @@ Bound to be plenty.
 For a start, there are many common regexes missing.
 Send them in to I<regexp-common@abigail.nl>.
 
-
 =head1 COPYRIGHT
 
-         Copyright (c) 2001, Damian Conway. All Rights Reserved.
-       This module is free software. It may be used, redistributed
-      and/or modified under the terms of the Perl Artistic License
-            (see http://www.perl.com/perl/misc/Artistic.html)
+   Copyright (c) 2001 - 2005, Damian Conway and Abigail. All Rights
+ Reserved. This module is free software. It may be used, redistributed
+     and/or modified under the terms of the Perl Artistic License
+           (see http://www.perl.com/perl/misc/Artistic.html)

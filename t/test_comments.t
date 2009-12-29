@@ -1,6 +1,9 @@
-# $Id: test_comments.t,v 2.108 2004/06/09 21:41:04 abigail Exp $
+# $Id: test_comments.t,v 2.109 2004/12/28 23:07:01 abigail Exp $
 #
 # $Log: test_comments.t,v $
+# Revision 2.109  2004/12/28 23:07:01  abigail
+# Moved tests into seperate files in t/comment
+#
 # Revision 2.108  2004/06/09 21:41:04  abigail
 # test_comments.t
 #
@@ -104,54 +107,20 @@ ok;
 ok (defined $Regexp::Common::comment::VERSION &&
             $Regexp::Common::comment::VERSION =~ /^\d+[.]\d+$/);
 
-my @markers  =   (
-   ['\\'     =>  [qw /ABC Forth/]],
-   ['--'     =>  [qw !Ada Alan Eiffel lua PL/SQL SQL!]],
-   ['#'      =>  [qw /Advisor awk fvwm2 Icon mutt Nickle Perl Python QML
-                      Ruby shell Tcl/]],
-   ['//'     =>  [qw /Advisor beta-Juliet Portia/, 'Crystal Report',
-                     [Pascal => 'Delphi'], [Pascal => 'Free'], 
-                     [Pascal => 'GPC']]],
-   [';'      =>  [qw {Advsys Lisp LOGO M MUMPS REBOL PL/B Scheme
-                      SMITH zonefile}]],
-   ['NB'     =>  [qw /ILLGOL/]],
-   ['NB.'    =>  [qw /J/]],
-   ['REM'    =>  [[BASIC => 'mvEnterprise']]],
-   ['!'      =>  [[BASIC => 'mvEnterprise'], 'Fortran']],
-   ['*'      =>  [[BASIC => 'mvEnterprise']]],
-   ['`'      =>  [qw /Q-BAL/]],
-   ['---'    =>  [qw /SQL/]],
-   ['%'      =>  [qw /CLU LaTeX TeX slrn/]],
-   ['\\"'    =>  [qw /troff/]],
-   ['"'      =>  [qw /vi/]],
-   ['.'      =>  [qw {PL/B}]],
-);
-
 my @ids = (
-   [';'      =>  [qw /Befunge-98 Funge-98 Shelta/]],
-   [","      =>  [qw /Haifu/]],
-   ['"'      =>  [qw /Smalltalk/, [Pascal => 'Workshop']]],
+   ['"'      =>  [[Pascal => 'Workshop']]],
 );
 
 my @from_to = (
-   [['Algol 60']                 =>  "comment", ";"],
+   [[[Pascal => 'Workshop']] =>  "/*", "*/"],
 
-   [[qw {ALPACA B C C-- LPC Nickle PL/I PL/SQL}, [Pascal => 'Workshop']]
-                                 =>  "/*", "*/"],
+   [[qw /Pascal/, [Pascal => 'Workshop']] =>  "{",  "}"],
 
-   [[qw /False Pascal/, [Pascal => 'Workshop'], [Pascal => 'Delphi'],
-                        [Pascal => 'Free'],     [Pascal => 'GPC'],
-                        [Pascal => 'Alice']]
-                                 =>  "{",  "}"],
-
-   [[qw /Oberon Pascal/, [Pascal => 'Workshop'], [Pascal => 'Delphi'],
-                         [Pascal => 'Free'],     [Pascal => 'GPC']]
-                                 =>  "(*", "*)"],
+   [[qw /Pascal/, [Pascal => 'Workshop']] =>  "(*", "*)"],
 
    [[qw /Pascal/]                =>  "{", "*)"],
    [[qw /Pascal/]                =>  "(*", "}"],
 
-   [[qw /*W/]                    =>  "||", "!!"],
 );
 
 my @plain_or_nested = (                       
@@ -175,60 +144,6 @@ my @plain_or_nested = (
     nested    =>  ["(*" => "*)"],
    },
 );
-
-
-foreach my $info (@markers) {
-    my ($mark, $languages) = @$info;
-    my $not_a_mark  = $mark eq '//' ? '/*' : '//';
-    my $not_a_mark2 = $mark eq '/*' ? '{-' : '/*';
-    my $not_a_mark3 = $mark eq '/*' ? '-}' : '*/';
-    foreach my $language (@$languages) {
-
-        if (ref $language) {
-            try $RE{comment}{$language -> [0]} {$language -> [1]};
-            $language = join ":" => @$language;
-        }
-        else {
-            try $RE{comment}{$language};
-        }
-
-        $M .= "# $language\n";
-
-        my $not_a_mark  = $language eq 'Advisor' ? '!!' : $not_a_mark;
-        my $not_a_mark2 = $language eq 'PL/SQL' ||
-                          $language eq 'Nickle' ? '(*' : $not_a_mark2;
-        my $not_a_mark3 = $language eq 'PL/SQL' ||
-                          $language eq 'Nickle' ? '*)' : $not_a_mark3;
-
-        pass "${mark}\n";
-        pass "${mark}a comment\n";
-        pass "${mark}${not_a_mark2}a comment ${not_a_mark3}\n";
-        pass "${mark}${not_a_mark2}***********\n";
-        pass "${mark}/////////////\n";
-        fail "${mark}a\n${mark}multiline\n${mark}comment\n";
-        fail "${mark}a comment";
-        fail "${mark}${not_a_mark2}a comment ${not_a_mark3}";
-        fail "${mark}/************";
-        fail "${mark}/////////////";
-        fail "${not_a_mark}a comment\n";
-        fail "${not_a_mark}${mark}a comment\n";
-        fail "${not_a_mark}${not_a_mark2}a comment ${not_a_mark3}\n";
-        fail "${not_a_mark}/************\n";
-        fail "${not_a_mark}/////////////\n";
-        fail "${not_a_mark}a\n${not_a_mark}multiline\n${not_a_mark}comment\n";
-        fail "${not_a_mark}a comment";
-        fail "${not_a_mark}${not_a_mark2}a comment ${not_a_mark3}";
-        fail "${not_a_mark}/************";
-        fail "${not_a_mark}/////////////";
-        fail '${not_a_mark2}a comment ${not_a_mark3}';
-        fail '${not_a_mark2}**********${not_a_mark3}';
-        fail "${not_a_mark2}a\nmultiline\ncomment${not_a_mark3}";
-        fail "${not_a_mark2}a ${not_a_mark2}pretend" .
-             "${not_a_mark3} nested comment${not_a_mark3}";
-        fail "${not_a_mark2}a ${not_a_mark2}pretend${not_a_mark3}";
-        fail "${not_a_mark2}**********";
-    }
-}
 
 
 foreach my $info (@ids) {
@@ -324,136 +239,6 @@ foreach my $info (@from_to) {
     }
 }
     
-
-foreach my $language (qw /C++/, 'C#', qw /Cg FPL ECMAScript Java JavaScript/) {
-    try $RE{comment}{$language};
-
-    $M .= "# $language\n";
-
-    pass "//\n";
-    pass "//a comment\n";
-    pass "///*a comment */\n";
-    pass "///************\n";
-    pass "///////////////\n";
-    fail "//a\n//multiline\n//comment\n";
-    fail "//a comment";
-    fail "///*a comment */";
-    fail "///************";
-    fail "///////////////";
-    pass '/*a comment */';
-    pass '/************/';
-    pass "/*a\nmultiline\ncomment*/";
-    fail "/*a /*pretend*/ nested comment*/";
-    pass "/*a /*pretend*/";
-    fail "/***********";
-    fail "#\n";
-    fail "#a comment\n";
-    fail "#/*a comment */\n";
-    fail "#/************\n";
-    fail "#/////////////\n";
-    fail "#a\n#multiline\n#comment\n";
-    fail "#a comment";
-    fail "#/*a comment */";
-    fail "#/************";
-    fail "#/////////////";
-}
-    
-
-foreach my $language (qw /PEARL/) {
-    try $RE{comment}{$language};
-
-    $M .= "# $language\n";
-
-    pass "!\n";
-    pass "!a comment\n";
-    pass "!/*a comment */\n";
-    pass "!/************\n";
-    pass "!!!!!!!\n";
-    fail "!a\n!multiline\n!comment\n";
-    fail "!a comment";
-    fail "!/*a comment */";
-    fail "!/************";
-    fail "!!!!!!!";
-    pass '/*a comment */';
-    pass '/************/';
-    pass "/*a\nmultiline\ncomment*/";
-    fail "/*a /*pretend*/ nested comment*/";
-    pass "/*a /*pretend*/";
-    fail "/***********";
-    fail "#\n";
-    fail "#a comment\n";
-    fail "#/*a comment */\n";
-    fail "#/************\n";
-    fail "#!!!!!!\n";
-    fail "#a\n#multiline\n#comment\n";
-    fail "#a comment";
-    fail "#/*a comment */";
-    fail "#/************";
-    fail "#!!!!!!";
-}
-
-
-try $RE{comment}{PHP};
-
-$M .= "# PHP\n";
-
-pass "//\n";
-pass "//a comment\n";
-pass "///*a comment */\n";
-pass "///************\n";
-pass "///////////////\n";
-fail "//a\n//multiline\n//comment\n";
-fail "//a comment";
-fail "///*a comment */";
-fail "///************";
-fail "///////////////";
-pass '/*a comment */';
-pass '/************/';
-pass "/*a\nmultiline\ncomment*/";
-fail "/*a /*pretend*/ nested comment*/";
-pass "/*a /*pretend*/";
-fail "/***********";
-pass "#\n";
-pass "#a comment\n";
-pass "#/*a comment */\n";
-pass "#/************\n";
-pass "#/////////////\n";
-fail "#a\n#multiline\n#comment\n";
-fail "#a comment";
-fail "#/*a comment */";
-fail "#/************";
-fail "#/////////////";
-
-
-try $RE{comment}{HTML};
-
-$M .= "# HTML\n";
-
-pass '<!-- A comment -->';
-pass '<!-- A comment with trailing white space --   >';
-pass "<!-- A comment with a new\nline -->";
-pass "<!-- A comment with trailing new lines --\n\n>";
-pass '<!-- Multi comment --  -- This is a comment too -->';
-pass '<!---------------->';
-pass '<!---->';
-pass '<!-- A comment with - two - dashes -->';
-pass '<!-- Multi comments with - two - dashes -- ---- >';
-pass '<!-- -- --> Comment <!-- -- -->';
-pass '<!------><a href = "http://cpan.perl.org">Click here!</a><!------>';
-pass '<!>';   # Empty comment.
-fail '<!->';
-fail '<!-->';
-fail '<!--->';
-fail '<!-- Comment -- Not a comment -->';
-fail '-- No MDO -->';
-fail '<-- No MDO either -->';
-fail '<!-- No MDC --';
-fail '<! No leading COM -->';
-fail '<!- No leading COM either -->';
-fail '<!-- No trailing COM>';
-fail '<!-- No trailing COM either ->';
-fail '<!-- To many dashes --->';
-
 
 try $RE{comment}{SQL}{MySQL};
 
