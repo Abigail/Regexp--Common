@@ -1,4 +1,4 @@
-# $Id: URI.pm,v 1.6 2002/08/06 13:18:03 abigail Exp $
+# $Id: URI.pm,v 1.7 2002/08/06 14:44:07 abigail Exp $
 
 package Regexp::Common::URI; {
 
@@ -9,7 +9,7 @@ use Regexp::Common qw /pattern clean no_defaults/;
 
 use vars qw /$VERSION/;
 
-($VERSION) = q $Revision: 1.6 $ =~ /[\d.]+/g;
+($VERSION) = q $Revision: 1.7 $ =~ /[\d.]+/g;
 
 # RFC 2396, base definitions.
 my $digit             =  '[0-9]';
@@ -171,7 +171,13 @@ my $area_specifier    =  "(?:;$phone_context_tag=$phone_context_ident)";
 my $post_dial         =  "(?:;postd=[0-9\\-.()*#ABCDwp]+)";
 my $isdn_subaddress   =  "(?:;isub=[0-9\\-.()]+)";
 my $local_phone_number=  "(?:[0-9\\-.()*#ABCDwp]+$isdn_subaddress?" .
-                            "$post_dial?$area_specifier)";
+                            "$post_dial?$area_specifier"            .
+                            "(?:$area_specifier|$service_provider|"   .
+                               "$future_extension)*)";
+my $local_phone_number_no_future
+                      =  "(?:[0-9\\-.()*#ABCDwp]+$isdn_subaddress?" .
+                            "$post_dial?$area_specifier"            .
+                            "(?:$area_specifier|$service_provider)*)";
 my $base_phone_number =  "(?:[0-9\\-.()]+)";
 my $global_phone_number
                       =  "(?:[+]$base_phone_number$isdn_subaddress?"  .
@@ -186,7 +192,7 @@ my $telephone_subscriber
                       =  "(?:$global_phone_number|$local_phone_number)";
 my $telephone_subscriber_no_future
                       =  "(?:$global_phone_number_no_future|" .
-                            "$local_phone_number)";
+                            "$local_phone_number_no_future)";
 my $telephone_scheme  =  "(?:tel)";
 my $telephone_url     =  "(?:$telephone_scheme:$telephone_subscriber)";
 my $telephone_url_no_future
@@ -447,6 +453,9 @@ Vaha-Sipila, A.: I<URLs for Telephone Calls>. April 2000.
 =head1 HISTORY
 
     $Log: URI.pm,v $
+    Revision 1.7  2002/08/06 14:44:07  abigail
+    Local phone numbers can have future extensions as well.
+
     Revision 1.6  2002/08/06 13:18:03  abigail
     Cosmetic changes
 

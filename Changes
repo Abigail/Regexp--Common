@@ -1,5 +1,9 @@
 Revision history for Perl extension Regexp::Common.
 
+0.09  Tue Aug  6 16:44:57 CEST 2002
+        - Fixed $RE{URI}{tel}, local phone numbers can have
+          future extensions as well.
+
 0.08  Tue Aug  6 15:50:31 CEST 2002
         - Added tel URI regexes.
 

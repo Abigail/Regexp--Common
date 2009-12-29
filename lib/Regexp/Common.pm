@@ -8,7 +8,7 @@ local $^W = 1;
 use vars qw /$VERSION %RE %sub_interface/;
 
 
-$VERSION = '0.08';
+$VERSION = '0.09';
 
 use Carp;
 
@@ -801,6 +801,9 @@ project, especially: Elijah, Jarkko, Tom, Nat, Ed, and Vivek.
 =head1 HISTORY
 
   $Log: Common.pm,v $
+  Revision 1.19  2002/08/06 14:46:49  abigail
+  Upped version number to 0.09.
+
   Revision 1.18  2002/08/06 13:50:08  abigail
   - Added HISTORY section with CVS log.
   - Upped version number to 0.08.

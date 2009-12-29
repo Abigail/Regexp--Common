@@ -1,6 +1,9 @@
-# $Id: test_uris.t,v 1.10 2002/08/06 13:02:58 abigail Exp $
+# $Id: test_uris.t,v 1.11 2002/08/06 14:43:40 abigail Exp $
 #
 # $Log: test_uris.t,v $
+# Revision 1.11  2002/08/06 14:43:40  abigail
+# Local phone numbers can have "future extensions" as well.
+#
 # Revision 1.10  2002/08/06 13:02:58  abigail
 # Cosmetic changes.
 #
@@ -153,7 +156,7 @@ pass 'tel:+1234;option=%22%5C%22%22';
 pass 'tel:+1234;option=%22%5C!%22';
 pass 'tel:+1234;option=%22bar%22';
 pass 'tel:+456-7890;phone-context=213;phone-context=213';
-fail 'tel:456-7890;phone-context=213;phone-context=213';
+pass 'tel:456-7890;phone-context=213;phone-context=213';
 fail 'tel:456-7890';
 fail 'tel:+1-800-RUN-PERL';
 fail 'tel:+1234;option=%22%22%22';

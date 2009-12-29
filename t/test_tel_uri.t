@@ -1,6 +1,9 @@
-# $Id: test_tel_uri.t,v 1.3 2002/08/06 12:59:38 abigail Exp $
+# $Id: test_tel_uri.t,v 1.4 2002/08/06 14:43:40 abigail Exp $
 #
 # $Log: test_tel_uri.t,v $
+# Revision 1.4  2002/08/06 14:43:40  abigail
+# Local phone numbers can have "future extensions" as well.
+#
 # Revision 1.3  2002/08/06 12:59:38  abigail
 # Added tests for 'tel:' URIs.
 #
@@ -40,7 +43,7 @@ pass 'tel:+1234;option=%22%5C%22%22';
 pass 'tel:+1234;option=%22%5C!%22';
 pass 'tel:+1234;option=%22bar%22';
 pass 'tel:+456-7890;phone-context=213;phone-context=213';
-fail 'tel:456-7890;phone-context=213;phone-context=213';
+pass 'tel:456-7890;phone-context=213;phone-context=213';
 fail 'tel:456-7890';
 fail 'tel:+1-800-RUN-PERL';
 fail 'tel:+1234;option=%22%22%22';
@@ -65,7 +68,7 @@ fail 'tel:+1234;option=%22%5C%22%22';
 fail 'tel:+1234;option=%22%5C!%22';
 fail 'tel:+1234;option=%22bar%22';
 pass 'tel:+456-7890;phone-context=213;phone-context=213';
-fail 'tel:456-7890;phone-context=213;phone-context=213';
+pass 'tel:456-7890;phone-context=213;phone-context=213';
 fail 'tel:456-7890';
 fail 'tel:+1-800-RUN-PERL';
 fail 'tel:+1234;option=%22%22%22';
@@ -75,3 +78,9 @@ pass 'tel:+123-456-789;isub=123(456)';
 fail 'tel:+123-456-789;isub=123(456);isub=123(456)';
 fail 'tel:+123-456-789;isub=A23(456)';
 pass 'tel:+123456;postd=***';
+fail 'tel:1234567890;phone-context=+1234;vnd.company.option=foo';
+fail 'tel:1234567890;phone-context=+1234;vnd.company.option=%22foo%22';
+fail 'tel:1234;option=%22!%22';
+fail 'tel:1234;option=%22%5C%22%22';
+fail 'tel:1234;option=%22%5C!%22';
+fail 'tel:1234;option=%22bar%22';
