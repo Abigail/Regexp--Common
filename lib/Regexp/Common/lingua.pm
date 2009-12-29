@@ -1,4 +1,4 @@
-# $Id: lingua.pm,v 2.104 2003/07/04 13:34:05 abigail Exp $
+# $Id: lingua.pm,v 2.105 2005/03/16 00:23:57 abigail Exp $
 
 package Regexp::Common::lingua;
 
@@ -6,11 +6,10 @@ use strict;
 local $^W = 1;
 
 use Regexp::Common qw /pattern clean no_defaults/;
-use Carp;
 
 use vars qw /$VERSION/;
 
-($VERSION) = q $Revision: 2.104 $ =~ /[\d.]+/g;
+($VERSION) = q $Revision: 2.105 $ =~ /[\d.]+/g;
 
 pattern name    => [qw /lingua palindrome -chars=[A-Za-z]/],
         create  => sub {
@@ -71,6 +70,9 @@ This pattern requires at least perl 5.6.0.
 =head1 HISTORY
 
  $Log: lingua.pm,v $
+ Revision 2.105  2005/03/16 00:23:57  abigail
+ Removed 'use Carp'
+
  Revision 2.104  2003/07/04 13:34:05  abigail
  Fixed assignment to
 

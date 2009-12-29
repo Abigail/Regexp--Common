@@ -24,7 +24,7 @@ sub run_fail;
 
 local $^W = 1;
 
-($VERSION) = q $Revision: 2.112 $ =~ /[\d.]+/;
+($VERSION) = q $Revision: 2.113 $ =~ /[\d.]+/;
 
 my $count;
 
@@ -32,7 +32,7 @@ sub stringify;
 sub stringify {
     my $arg = shift;
 
-    if    (!defined $arg)        {return "UNDEF"}
+    if    (!defined $arg)        {return ""}
     elsif (!ref $arg)            {$arg =~ s/\\/\\\\/g;
                                   $arg =~ s/\n/\\n/g;
                                   $arg =~ s/\t/\\t/g;
@@ -249,7 +249,10 @@ sub array_cmp {
     my ($a1, $a2) = @_;
     return 0 unless @$a1 eq @$a2;
     foreach my $i (0 .. $#$a1) {
-       !defined $$a1 [$i] && !defined $$a2 [$i] ||
+     # !defined $$a1 [$i] && !defined $$a2 [$i] ||
+     #  defined $$a1 [$i] &&  defined $$a2 [$i] && $$a1 [$i] eq $$a2 [$i]
+      (!defined $$a1 [$i] || $$a1 [$i] eq "") &&
+      (!defined $$a2 [$i] || $$a2 [$i] eq "") ||
         defined $$a1 [$i] &&  defined $$a2 [$i] && $$a1 [$i] eq $$a2 [$i]
         or return 0;
     }
@@ -471,10 +474,17 @@ sub run_new_test_set {
 sub run_new_tests {
     my %args = @_;
 
-    my ($tests, $targets, $version, $version_from) =
-        @args {qw /tests targets version version_from/};
-    my  $runs = defined $version_from;  # VERSION test.
+    my ($tests, $targets, $version, $version_from,
+        $extra_runs, $extra_runs_sub) =
+        @args {qw /tests targets version version_from
+                   extra_runs extra_runs_sub/};
+    my  $runs  = defined $version_from;  # VERSION test.
     my  $no_tests;
+
+    if ($extra_runs) {
+        $runs  += $extra_runs;
+        $count += $extra_runs;
+    }
 
     if (defined $version && $version > $]) {
         $no_tests = 1;
@@ -504,6 +514,10 @@ sub run_new_tests {
         no strict 'refs';
         print "not " unless defined ${$version_from . '::VERSION'};
         print "ok    ", ++ $count, " - ", $version_from, "::VERSION\n";
+    }
+
+    if ($extra_runs_sub) {
+        $extra_runs_sub -> (\$count)
     }
 
     unless ($no_tests) {
@@ -597,6 +611,9 @@ sub sample {
 __END__
 
 $Log: Common.pm,v $
+Revision 2.113  2005/03/16 00:00:56  abigail
+Changes
+
 Revision 2.112  2005/01/01 16:40:21  abigail
 - New functions 'sample' and 'gimme'.
 - Renamed 'version' argument of 'run_new_tests' to 'version_from'.

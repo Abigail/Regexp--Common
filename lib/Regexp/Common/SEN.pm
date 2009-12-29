@@ -1,4 +1,4 @@
-# $Id: SEN.pm,v 2.101 2004/06/09 21:52:14 abigail Exp $
+# $Id: SEN.pm,v 2.102 2005/01/02 01:17:48 abigail Exp $
 
 package Regexp::Common::SEN;
 
@@ -6,11 +6,12 @@ use strict;
 local $^W = 1;
 
 use Regexp::Common qw /pattern clean no_defaults/;
-use Carp;
 
 use vars qw /$VERSION @EXPORT_OK @ISA/;
 
-($VERSION) = q $Revision: 2.101 $ =~ /[\d.]+/g;
+($VERSION) = q $Revision: 2.102 $ =~ /[\d.]+/g;
+
+=pod
 
 sub par11 {
     my $string = shift;
@@ -21,6 +22,8 @@ sub par11 {
     }
     !($sum % 11)
 }
+
+=cut
 
 # http://www.ssa.gov/history/ssn/geocard.html
 pattern name   => [qw /SEN USA SSN -sep=-/],
@@ -112,6 +115,10 @@ captures the third group of digits (the serial number).
 =head1 HISTORY
 
  $Log: SEN.pm,v $
+ Revision 2.102  2005/01/02 01:17:48  abigail
+ - Removed 'use Carp', as we aren't using it.
+ - Outcommented unused 'par11' function. Ought to be in _support.pm anyway.
+
  Revision 2.101  2004/06/09 21:52:14  abigail
  Force 2.101 version
 

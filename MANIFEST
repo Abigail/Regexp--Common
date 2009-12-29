@@ -38,9 +38,12 @@ TODO
 t/Common.pm
 t/comment/delimited.t
 t/comment/html.t
+t/comment/nested.t
 t/comment/single_line.t
 t/comment/single_or_multiline.t
 t/number/decimal.t
+t/number/integer.t
+t/number/number.t
 t/SEN/usa_ssn.t
 t/test___luhn.t
 t/test_balanced.t
@@ -51,7 +54,6 @@ t/test_curry.t
 t/test_delimited.t
 t/test_domain.t
 t/test_i.t
-t/test_int.t
 t/test_ip.t
 t/test_keep.t
 t/test_lingua_palindrome.t
@@ -89,4 +91,5 @@ t/zip/norway.t
 t/zip/italy.t
 t/zip/spain.t
 t/zip/us.t
+t/zip/zip.t
 META.yml                                 Module meta-data (added by MakeMaker)

@@ -4,123 +4,128 @@ use strict;
 use lib  qw {blib/lib};
 use vars qw /$VERSION/;
 
-use Regexp::Common;
+use Regexp::Common qw /RE_num_decimal/;
 use t::Common;
 
-$^W = 1;
+my $decimal = $RE {num} {decimal};
 
-($VERSION) = q $Revision: 2.100 $ =~ /[\d.]+/;
-
-sub create_parts;
-
-my $dec    = $RE {num} {decimal};
-my $radix  = $dec -> {-radix => ','};
-my $base16 = $dec -> {-base  => 16};
-
-my @tests = (
-   [decimal => $dec    =>  { decimal   => NORMAL_PASS | FAIL,
-                            'radix=,'  => FAIL}],
-   [radix   => $radix  =>  {'radix=,'  => NORMAL_PASS | FAIL}],
-   [base    => $base16 =>  {decimal    => NORMAL_PASS | FAIL,
-                            'base=16'  => NORMAL_PASS}],
+# The following arrays contain valid numbers in the respective bases -
+# and the numbers aren't valid in the next array.
+my @data = (
+    [36  => [qw /regexp common perl5/]],
+    [16  => [qw /deadbeaf c0c0a c1a0 55b/]],
+    [10  => [qw /81320981536123490812346123 129 9/]],
+    [ 8  => [qw /777 153/]],
+    [ 2  => [qw /0 1 1010101110/]],
 );
 
-my ($good, $bad) = create_parts;
+my (%targets, @tests);
 
-run_tests version      =>   "Regexp::Common::number",
-          tests        =>  \@tests,
-          good         =>   $good,
-          bad          =>   $bad,
-          query        =>  \&decimal,
-          wanted       =>  \&wanted,
-          filter       =>  \&filter,
-          filter_test  =>  \&filter_test,
-          ;
+foreach my $entry (@data) {
+    my ($base, $list) = @$entry;
 
-sub decimal {
-    my ($tag, $sign, $integer, $fraction) = ($_ [0], @{$_ [1]});
+    $targets {"${base}_int"} = {
+        list   => $list,
+        query  => sub {$_ [0]},
+        wanted => sub {$_ [0], "", $_ [0], $_ [0], undef, undef}
+    };
 
-    my $radix    = $tag =~ /radix=(.)/  ? $1 : ".";
-    my $base     = $tag =~ /base=(\d+)/ ? $1 : 10;
+    for my $exp ([dot => "."], [comma => ","]) {
+        my ($name, $punct) = @$exp;
+        $targets {"${base}_int_${name}"} = {
+            list   => $list,
+            query  => sub {$_ [0] . $punct},
+            wanted => sub {$_ [0] . $punct, "",
+                           $_ [0] . $punct, $_ [0], $punct, ""}
+        };
 
-    if ($base == 16) {
-        for ($integer, $fraction) {
-            $_ = sprintf "%x" => $_ if defined $_ && /^\d+$/;
-        }
+        $targets {"${base}_${name}_frac"} = {
+            list   => $list,
+            query  => sub {$_ [0] . $punct},
+            wanted => sub {$_ [0] . $punct, "",
+                           $_ [0] . $punct, $_ [0], $punct, ""}
+        };
+
+        $targets {"${base}_minus_${name}_frac"} = {
+            list   => $list,
+            query  => sub {"-" . $_ [0] . $punct},
+            wanted => sub {"-" . $_ [0] . $punct, "-",
+                                 $_ [0] . $punct, $_ [0], $punct, ""}
+        };
+
+        $targets {"${base}_plus_${name}_frac"} = {
+            list   => $list,
+            query  => sub {"+" . $_ [0] . $punct},
+            wanted => sub {"+" . $_ [0] . $punct, "+",
+                                 $_ [0] . $punct, $_ [0], $punct, ""}
+        };
     }
 
-    my $number   = "";
-       $number  .= $sign               if defined $sign;
-       $number  .= $integer            if defined $integer;
-       $number  .= $radix . $fraction  if defined $fraction;
+    $targets {"${base}_minus_int"} = {
+        list   => $list,
+        query  => sub {"-" . $_ [0]},
+        wanted => sub {"-" . $_ [0], "-", $_ [0], $_ [0], "", ""}
+    };
 
-    $number;
+    $targets {"${base}_plus_int"} = {
+        list   => $list,
+        query  => sub {"+" . $_ [0]},
+        wanted => sub {"+" . $_ [0], "+", $_ [0], $_ [0], "", ""}
+    };
 }
 
-sub wanted {
-    my ($tag, $parts) = @_;
+sub __ {
+    map {;"${_}_int",       "${_}_int_dot",
+          "${_}_minus_int", "${_}_plus_int",
+          "${_}_dot_frac",  "${_}_minus_dot_frac", "${_}_plus_dot_frac",
+    } @_
+}
 
-    my $radix    = $tag =~ /radix=(.)/  ? $1 : ".";
-    my $base     = $tag =~ /base=(\d+)/ ? $1 : 10;
+push @tests => {
+    name    =>  'basic',
+    re      =>  $decimal,
+    sub     =>  \&RE_num_decimal,
+    pass    =>  [__ grep {$_ <= 10} map {$$_ [0]} @data],
+    fail    =>  [__ grep {$_ >  10} map {$$_ [0]} @data],
+};
 
-    if ($base == 16) {
-        for (@$parts [1, 2]) {
-            $_ = sprintf "%x" => $_ if defined $_ && /^\d+$/;
-        }
-    }
+foreach my $base (@data) {
+    my $base = $$base [0];
+    my @passes   = __ grep {$_ <= $base} map {$$_ [0]} @data;
+    my @failures = __ grep {$_ >  $base} map {$$_ [0]} @data;
 
-    my $mantissa = join $radix => grep {defined} @$parts [1, 2];
+    my @commas   = grep {/^${base}_.*comma/} keys %targets;
 
-    my @wanted;
-       $wanted [0] = $_;
-       $wanted [1] = $$parts [0];   # sign
-       $wanted [2] = $mantissa;
-       $wanted [3] = $$parts [1];   # integer part.
-       $wanted [4] = defined $$parts [2] ? $radix : undef;
-       $wanted [5] = $$parts [2];
-
-    \@wanted;
+    push @tests  => {
+        name     => "base_${base}",
+        re       => $RE {num} {decimal} {-base => $base},
+        sub      => \&RE_num_decimal,
+        sub_args => [-base => $base],
+        pass     => [@passes],
+        fail     => [@failures, @commas],
+    };
+    push @tests  => {
+        name     => "base_${base}_comma",
+        re       => $RE {num} {decimal} {-base => $base} {-radix => ","},
+        sub      => \&RE_num_decimal,
+        sub_args => [-base => $base, -radix => ","],
+        pass     => [(grep {!/dot/} @passes), @commas],
+        fail     => [(grep {/^${base}/} @failures)],
+    };
 }
 
 
-sub create_parts {
-    my (@good, @bad);
-
-    # Sign. Both 'undef' and '' will map the same.
-    $good [0] = ["", qw /- +/];
-    $bad  [0] = ['!', '-+'];
-
-    # Integer. No need for both 'undef' and ''.
-    $good [1] = ["", 0, 1, 17, 195, 8489];
-    $bad  [1] = ["1 2", "fnord", "AQ"];
-
-    # Fraction. 'undef' and '' differ (both are ok).
-    $good [2] = [undef, "", 0, 1, 17, 195, 8489];
-    $bad  [2] = ["1 2", "fnord", "AQ"];
-
-
-    return (\@good, \@bad);
-}
-
-
-sub filter {
-    # Need at least an integer, or a fractional part.
-    return defined $_ [0] -> [1] && length $_ [0] -> [1]  ||
-           defined $_ [0] -> [2] && length $_ [0] -> [2];
-}
-
-sub filter_test {
-    my ($match, $name, $chunks) = @_;
-
-    return 0 if $name =~ /^radix/ && !defined $chunks -> [2];
-
-    1;
-}
-
+run_new_tests  targets      => \%targets,
+               tests        => \@tests,
+               version_from => 'Regexp::Common::number',
+;
 
 __END__
 
-$Log: decimal.t,v $
-Revision 2.100  2003/03/12 22:23:54  abigail
-Tests for decimal numbers
+  $Log: decimal.t,v $
+  Revision 2.101  2005/03/15 23:54:45  abigail
+  New form of testing
+
+  Revision 2.100  2003/03/12 22:23:54  abigail
+  Tests for decimal numbers
 

@@ -1,4 +1,4 @@
-# $Id: number.pm,v 2.107 2004/12/28 23:45:51 abigail Exp $
+# $Id: number.pm,v 2.108 2005/03/16 00:25:58 abigail Exp $
 
 package Regexp::Common::number;
 
@@ -7,65 +7,86 @@ use Config;
 local $^W = 1;
 
 use Regexp::Common qw /pattern clean no_defaults/;
-use Carp;
 
 use vars qw /$VERSION @EXPORT_OK @ISA/;
 
-($VERSION) = q $Revision: 2.107 $ =~ /[\d.]+/g;
+($VERSION) = q $Revision: 2.108 $ =~ /[\d.]+/g;
 
-pattern name   => [qw (num int -sep=  -group=3)],
-        create => sub {my $flag = $_[1];
-                       my ($sep, $group) = @{$flag}{-sep, -group};
-                       $sep = ',' if exists $flag->{-sep}
-                                    && !defined $flag->{-sep};
-                       return $sep 
-                              ? qq {(?k:(?k:[+-]?)(?k:[0-9]{1,$group}} .
-                                qq {(?:$sep} . qq {[0-9]{$group})*))}
-                              : qq {(?k:(?k:[+-]?)(?k:[0-9]+))}
-                      }
-        ;
+sub _croak {
+    require Carp;
+    goto &Carp::croak;
+}
+
+my $digits = join ("", 0 .. 9, "A" .. "Z");
+
+sub int_creator {
+    my $flags = $_ [1];
+    my ($sep, $group, $base, $places) =
+            @{$flags} {qw /-sep -group -base -places/};
+
+    # Deal with the bases.
+    _croak "Base must be between 1 and 36" unless $base >=  1 &&
+                                                  $base <= 36;
+    my $chars = substr $digits, 0, $base;
+
+    $sep = ',' if exists $flags -> {-sep} && !defined $flags -> {-sep};
+
+    my $max = $group;
+       $max = $2 if $group =~ /^\s*(\d+)\s*,\s*(\d+)\s*$/;
+
+    my $quant = $places ? "{$places}" : "+";
+
+    return $sep ? qq {(?k:(?k:[+-]?)(?k:[$chars]{1,$max}} .
+                  qq {(?:$sep} . qq {[$chars]{$group})*))}
+                : qq {(?k:(?k:[+-]?)(?k:[$chars]$quant))}
+}
 
 sub real_creator { 
     my ($base, $places, $radix, $sep, $group, $expon) =
             @{$_[1]}{-base, -places, -radix, -sep, -group, -expon};
-    croak "Base must be between 1 and 36"
+    _croak "Base must be between 1 and 36"
            unless $base >= 1 && $base <= 36;
     $sep = ',' if exists $_[1]->{-sep}
                && !defined $_[1]->{-sep};
     if ($base > 14 && $expon =~ /^[Ee]$/) {$expon = 'G'}
     foreach ($radix, $sep, $expon) {$_ = "[$_]" if 1 == length}
-    my $digits = substr (join ("", 0..9, "A".."Z"), 0, $base);
+    my $chars = substr $digits, 0, $base;
     return $sep
-           ? qq {(?k:(?i)(?k:[+-]?)(?k:(?=[$digits]|$radix)}              .
-             qq {(?k:[$digits]{1,$group}(?:(?:$sep)[$digits]{$group})*)}  .
-             qq {(?:(?k:$radix)(?k:[$digits]{$places}))?)}                .
-             qq {(?:(?k:$expon)(?k:(?k:[+-]?)(?k:[$digits]+))|))}
-           : qq {(?k:(?i)(?k:[+-]?)(?k:(?=[$digits]|$radix)}              .
-             qq {(?k:[$digits]*)(?:(?k:$radix)(?k:[$digits]{$places}))?)} .
-             qq {(?:(?k:$expon)(?k:(?k:[+-]?)(?k:[$digits]+))|))};
+           ? qq {(?k:(?i)(?k:[+-]?)(?k:(?=[$chars]|$radix)}              .
+             qq {(?k:[$chars]{1,$group}(?:(?:$sep)[$chars]{$group})*)}  .
+             qq {(?:(?k:$radix)(?k:[$chars]{$places}))?)}                .
+             qq {(?:(?k:$expon)(?k:(?k:[+-]?)(?k:[$chars]+))|))}
+           : qq {(?k:(?i)(?k:[+-]?)(?k:(?=[$chars]|$radix)}              .
+             qq {(?k:[$chars]*)(?:(?k:$radix)(?k:[$chars]{$places}))?)} .
+             qq {(?:(?k:$expon)(?k:(?k:[+-]?)(?k:[$chars]+))|))};
 }
 sub decimal_creator { 
     my ($base, $places, $radix, $sep, $group) =
             @{$_[1]}{-base, -places, -radix, -sep, -group};
-    croak "Base must be between 1 and 36"
+    _croak "Base must be between 1 and 36"
            unless $base >= 1 && $base <= 36;
     $sep = ',' if exists $_[1]->{-sep}
                && !defined $_[1]->{-sep};
     foreach ($radix, $sep) {$_ = "[$_]" if 1 == length}
-    my $digits = substr (join ("", 0..9, "A".."Z"), 0, $base);
+    my $chars = substr $digits, 0, $base;
     return $sep
-           ? qq {(?k:(?i)(?k:[+-]?)(?k:(?=[$digits]|$radix)}               .
-             qq {(?k:[$digits]{1,$group}(?:(?:$sep)[$digits]{$group})*)}   .
-             qq {(?:(?k:$radix)(?k:[$digits]{$places}))?))}
-           : qq {(?k:(?i)(?k:[+-]?)(?k:(?=[$digits]|$radix)}               .
-             qq {(?k:[$digits]*)(?:(?k:$radix)(?k:[$digits]{$places}))?))}
+           ? qq {(?k:(?i)(?k:[+-]?)(?k:(?=[$chars]|$radix)}               .
+             qq {(?k:[$chars]{1,$group}(?:(?:$sep)[$chars]{$group})*)}   .
+             qq {(?:(?k:$radix)(?k:[$chars]{$places}))?))}
+           : qq {(?k:(?i)(?k:[+-]?)(?k:(?=[$chars]|$radix)}               .
+             qq {(?k:[$chars]*)(?:(?k:$radix)(?k:[$chars]{$places}))?))}
 }
 
+
+pattern name   => [qw (num int -sep= -base=10 -group=3)],
+        create => \&int_creator,
+        ;
 
 pattern name   => [qw (num real -base=10), '-places=0,',
                    qw (-radix=[.] -sep= -group=3 -expon=E)],
         create => \&real_creator,
         ;
+
 pattern name   => [qw (num decimal -base=10), '-places=0,',
                    qw (-radix=[.] -sep= -group=3)],
         create => \&decimal_creator,
@@ -143,15 +164,30 @@ of the works of this interface.
 
 Do not use this module directly, but load it via I<Regexp::Common>.
 
-=head2 C<$RE{num}{int}{-sep}{-group}>
+=head2 C<$RE{num}{int}{-base}{-sep}{-group}{-places}>
 
-Returns a pattern that matches a decimal integer.
+Returns a pattern that matches an integer.
 
-If C<-sep=I<P>> is specified, the pattern I<P> is required as a grouping marker
-within the number.
+If C<< -base => I<B> >> is specified, the integer is in base I<B>, with
+C<< 2 <= I<B> <= 36 >>. For bases larger than 10, upper case letters
+are used. The default base is 10.
 
-If C<-group=I<N>> is specified, digits between grouping markers must be
-grouped in sequences of exactly I<N> characters. The default value of I<N> is 3.
+If C<< -sep => I<P> >> is specified, the pattern I<P> is required as a
+grouping marker within the number. If this option is not given, no
+grouping marker is used.
+
+If C<< -group => I<N> >> is specified, digits between grouping markers
+must be grouped in sequences of exactly I<N> digits. The default value
+of I<N> is 3.  If C<< -group => I<N,M> >> is specified, digits between
+grouping markers must be grouped in sequences of at least I<N> digits,
+and at most I<M> digits. This option is ignored unless the C<< -sep >>
+option is used.
+
+If C<< -places => I<N> >> is specified, the integer recognized must be
+exactly I<N> digits wide. If C<< -places => I<N,M> >> is specified, the
+integer must be at least I<N> wide, and at most I<M> characters. There
+is no default, which means that integers are unlimited in size. This
+option is ignored if the C<< -sep >> option is used.
 
 For example:
 
@@ -364,6 +400,9 @@ Under C<-keep>, the number will be captured in $1.
 =head1 HISTORY
 
  $Log: number.pm,v $
+ Revision 2.108  2005/03/16 00:25:58  abigail
+ Added -base, -places for  {num} {int}. Changed -group
+
  Revision 2.107  2004/12/28 23:45:51  abigail
  Perl 5.6.2 parses qq lib/Regexp/Common/number.pm{sep}[0-9]! incorrectly
 

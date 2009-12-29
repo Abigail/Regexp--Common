@@ -1,5 +1,5 @@
 ==============================================================================
-                  Release of version 2.119 of Regexp::Common
+                  Release of version 2.120 of Regexp::Common
 ==============================================================================
 
 WARNINGS:
@@ -108,9 +108,18 @@ COPYRIGHT
 
 ==============================================================================
 
-CHANGES IN VERSION 2.119
+CHANGES IN VERSION 2.120
 
 Revision history for Perl extension Regexp::Common.
+
+2.120 Wed Mar 16 01:39:57 CET 2005
+        - '-base', and '-places' options for $RE {num} {int}. '-group' can
+           now take arguments for the form 'N,M'.
+        - New file: t/number/integer.t
+        - Comments for BML, INTERCAL (JP), and CQL.
+        - Regexp::Common::SEN nits.
+        - Many more tests.
+        - ca. 223k tests in 56 files.
 
 2.119 Sat Jan  1 17:57:01 CET 2005
         - Changed -keep settings of $RE {zip} {US}.

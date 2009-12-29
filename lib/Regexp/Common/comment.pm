@@ -1,4 +1,4 @@
-# $Id: comment.pm,v 2.114 2004/12/18 11:43:06 abigail Exp $
+# $Id: comment.pm,v 2.116 2005/03/16 00:00:02 abigail Exp $
 
 package Regexp::Common::comment;
 
@@ -8,7 +8,7 @@ local $^W = 1;
 use Regexp::Common qw /pattern clean no_defaults/;
 use vars qw /$VERSION/;
 
-($VERSION) = q $Revision: 2.114 $ =~ /[\d.]+/g;
+($VERSION) = q $Revision: 2.116 $ =~ /[\d.]+/g;
 
 my @generic = (
     {languages => [qw /ABC Forth/],
@@ -20,7 +20,8 @@ my @generic = (
     {languages => [qw /Advisor/],
      to_eol    => ['#|//']},
 
-    {languages => [qw /Advsys Lisp LOGO M MUMPS REBOL Scheme SMITH zonefile/],
+    {languages => [qw /Advsys CQL Lisp LOGO M MUMPS REBOL Scheme
+                       SMITH zonefile/],
      to_eol    => [';']},
 
     {languages => ['Algol 60'],
@@ -29,7 +30,7 @@ my @generic = (
     {languages => [qw {ALPACA B C C-- LPC PL/I}],
      from_to   => [[qw {/* */}]]},
 
-    {languages => [qw /awk fvwm2 Icon mutt Perl Python QML Ruby shell Tcl/],
+    {languages => [qw /awk fvwm2 Icon mutt Perl Python QML R Ruby shell Tcl/],
      to_eol    => ['#']},
 
     {languages => [[BASIC => 'mvEnterprise']],
@@ -40,6 +41,10 @@ my @generic = (
 
     {languages => ['beta-Juliet', 'Crystal Report', 'Portia'],
      to_eol    => ['//']},
+
+    {languages => ['BML'],
+     from_to   => [['<?_c', '_c?>']],
+    },
 
     {languages => [qw /C++/, 'C#', qw /Cg ECMAScript FPL Java JavaScript/],
      to_eol    => ['//'],
@@ -59,6 +64,9 @@ my @generic = (
 
     {languages => [qw /ILLGOL/],
      to_eol    => ['NB']},
+
+    {languages => [qw /INTERCAL/],
+     to_eol    => [q{(?:(?:PLEASE(?:\s+DO)?|DO)\s+)?(?:NOT|N'T)}]},
 
     {languages => [qw /J/],
      to_eol    => ['NB[.]']},
@@ -127,7 +135,7 @@ my @plain_or_nested = (
 sub combine      {
     local $_ = join "|", @_;
     if (@_ > 1) {
-        s/\(\?k:/(?:/g if @_ > 1;
+        s/\(\?k:/(?:/g;
         $_ = "(?k:$_)";
     }
     $_
@@ -441,6 +449,12 @@ L<http://www.catseye.mb.ca/esoteric/b-juliet/index.html>.
 The esotoric language I<Befunge-98> uses comments that start and end
 with a C<;>. See L<http://www.catseye.mb.ca/esoteric/befunge/98/spec98.html>.
 
+=item BML                 
+
+I<BML>, or I<Better Markup Language> is an HTML templating language that
+uses comments starting with C<< <?c_ >>, and ending with C<< c_?> >>.
+See L<http://www.livejournal.com/doc/server/bml.index.html>.               
+
 =item Brainfuck
 
 The minimal language I<Brainfuck> uses only eight characters, 
@@ -499,6 +513,11 @@ seventh column. This is what the pattern matches. Modern compiler may
 more lenient though. See L<http://www.csis.ul.ie/cobol/Course/COBOLIntro.htm>,
 and L<http://www.csis.ul.ie/cobol/default.htm>. Due to a bug in the regexp
 engine of perl 5.6.x, this regexp is only available in version 5.8.0 and up.
+
+=item CQL
+
+Comments in the chess query language (I<CQL>) start with a semi colon
+(C<;>) and last till the end of the line. See L<http://www.rbnn.com/cql/>.
 
 =item Crystal Report
 
@@ -642,6 +661,13 @@ L<http://burks.bton.ac.uk/burks/language/icon/index.htm>.
 The esotoric language I<ILLGOL> uses comments starting with I<NB> and lasting
 till the end of the line.
 See L<http://www.catseye.mb.ca/esoteric/illgol/index.html>.
+
+=item INTERCAL
+
+Comments in INTERCAL are single line comments. They start with one of
+the keywords C<NOT> or C<N'T>, and can optionally be preceeded by the
+keywords C<DO> and C<PLEASE>. If both keywords are used, C<PLEASE>
+preceeds C<DO>. Keywords are separated by whitespace.
 
 =item J
 
@@ -820,6 +846,11 @@ contine till the end of the line.
 In C<QML>, comments start with C<#> and last till the end of the line.
 See L<http://www.questionmark.com/uk/qml/overview.doc>.
 
+=item R
+
+The statistical language I<R> uses comments that start with a C<#> and
+end with the following new line. See L<http://www.r-project.org/>.
+
 =item REBOL
 
 Comments for the I<REBOL> language start with C<;> and last till the
@@ -930,6 +961,12 @@ Press. B<1990>. ISBN 0-19-853737-9. Ch. 10.3, pp 390-391.
 =head1 HISTORY
 
  $Log: comment.pm,v $
+ Revision 2.116  2005/03/16 00:00:02  abigail
+ CQL, INTERCAL, R
+
+ Revision 2.115  2005/01/09 23:12:03  abigail
+ BML comments
+
  Revision 2.114  2004/12/18 11:43:06  abigail
  POD: HTML comments end in >, not <
 

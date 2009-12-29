@@ -10,7 +10,7 @@ use t::Common qw /run_new_tests ww/;
 
 $^W = 1;
 
-($VERSION) = q $Revision: 2.102 $ =~ /[\d.]+/;
+($VERSION) = q $Revision: 2.103 $ =~ /[\d.]+/;
 
 BEGIN {$^W = 0}
 
@@ -27,11 +27,12 @@ my @data   =   (
     languages    =>  [qw {Ada Alan Eiffel lua}],
    },
    {start_tokens =>  [qw {;}],
-    languages    =>  [qw {Advsys Lisp LOGO M MUMPS REBOL Scheme
+    languages    =>  [qw {Advsys CQL Lisp LOGO M MUMPS REBOL Scheme
                                  SMITH zonefile}],
    },
    {start_tokens =>  [qw {#}],
-    languages    =>  [qw {awk fvwm2 Icon mutt Perl Python QML Ruby shell Tcl}],
+    languages    =>  [qw {awk fvwm2 Icon mutt Perl Python QML R Ruby
+                          shell Tcl}],
    },
    {start_tokens =>  [qw {* ! REM}],
     languages    =>  [[BASIC => 'mvEnterprise']],
@@ -48,6 +49,10 @@ my @data   =   (
    {start_tokens =>  [qw {NB}],
     languages    =>  [qw {ILLGOL}],
    },
+   {start_tokens =>  ["PLEASE NOT", "PLEASE   NOT", "PLEASE N'T", 
+                      "DO NOT", "DO     N'T", "DO    NOT",
+                      "PLEASE DO NOT", "PLEASE   DO    NOT", "PLEASE  DO  N'T"],
+    languages    =>  [qw {INTERCAL}]},
    {start_tokens =>  [qw {NB.}],
     languages    =>  [qw {J}],
    },
@@ -210,6 +215,9 @@ run_new_tests tests        => \@tests,
 __END__
 
  $Log: single_line.t,v $
+ Revision 2.103  2005/03/16 00:00:02  abigail
+ CQL, INTERCAL, R
+
  Revision 2.102  2005/01/01 16:41:10  abigail
  Renamed 'version' argument of 'run_new_tests' to 'version_from'
 

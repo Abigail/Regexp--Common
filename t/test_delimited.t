@@ -12,6 +12,17 @@ ok;
 ok (defined $Regexp::Common::delimited::VERSION &&
             $Regexp::Common::delimited::VERSION =~ /^\d+[.]\d+$/);
 
+if ($] >= 5.006) {
+    # This gives a 'panic: POPSTACK' in 5.005_*
+    eval {"" =~ $RE {delimited}};
+    ok $@ =~ /Must specify delimiter in \$RE{delimited}/;
+}
+
+try $RE {delimited} {-delim => ' '};
+pass q { a-few-words };
+pass q { a\ few\ words };
+fail q { a few words };
+
 try $RE{delimited}{qq{-delim$;"}};
 
 pass q{"a few words "};

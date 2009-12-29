@@ -5,7 +5,6 @@ local $^W = 1;
 
 use Regexp::Common qw /pattern clean no_defaults/;
 use Regexp::Common::_support qw /luhn/;
-use Carp;
 
 use vars qw /$VERSION/;
 

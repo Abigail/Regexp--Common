@@ -369,3 +369,4 @@ fail 1;
 fail 12;
 fail '12A4C67';
 fail '12345678G';
+

@@ -1,4 +1,4 @@
-# $Id: delimited.pm,v 2.103 2003/07/04 13:34:05 abigail Exp $
+# $Id: delimited.pm,v 2.104 2005/03/16 00:22:45 abigail Exp $
 
 package Regexp::Common::delimited;
 
@@ -8,12 +8,12 @@ local $^W = 1;
 use Regexp::Common qw /pattern clean no_defaults/;
 use vars qw /$VERSION/;
 
-($VERSION) = q $Revision: 2.103 $ =~ /[\d.]+/g;
+($VERSION) = q $Revision: 2.104 $ =~ /[\d.]+/g;
 
 sub gen_delimited {
 
     my ($dels, $escs) = @_;
-    return '(?:\S*)' unless $dels =~ /\S/;
+    # return '(?:\S*)' unless $dels =~ /\S/;
     if (length $escs) {
         $escs .= substr ($escs, -1) x (length ($dels) - length ($escs));
     }
@@ -38,17 +38,14 @@ sub gen_delimited {
     return "(?k:$pat)";
 }
 
-sub local_croak {
-    my $msg = join "", @_;
-    $msg =~ s/\s+$//;
-    die $msg . ' at '
-      . join(" line ", (caller 3)[1,2])
-      . "\n";
+sub _croak {
+    require Carp;
+    goto &Carp::croak;
 }
 
 pattern name   => [qw( delimited -delim= -esc=\\ )],
         create => sub {my $flags = $_[1];
-                       local_croak 'Must specify delimiter in $RE{delimited}'
+                       _croak 'Must specify delimiter in $RE{delimited}'
                              unless length $flags->{-delim};
                        return gen_delimited (@{$flags}{-delim, -esc});
                   },

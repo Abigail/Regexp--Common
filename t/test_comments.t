@@ -1,6 +1,9 @@
-# $Id: test_comments.t,v 2.109 2004/12/28 23:07:01 abigail Exp $
+# $Id: test_comments.t,v 2.110 2005/03/16 00:20:33 abigail Exp $
 #
 # $Log: test_comments.t,v $
+# Revision 2.110  2005/03/16 00:20:33  abigail
+# Moved many comments to t/comment/*.t
+#
 # Revision 2.109  2004/12/28 23:07:01  abigail
 # Moved tests into seperate files in t/comment
 #
@@ -121,28 +124,6 @@ my @from_to = (
    [[qw /Pascal/]                =>  "{", "*)"],
    [[qw /Pascal/]                =>  "(*", "}"],
 
-);
-
-my @plain_or_nested = (                       
-   {language  =>  [qw /Haskell/],
-    single    =>  ["--", "---"],
-    nested    =>  ["{-"  => "-}"],
-   },
-   {language  =>  [qw /Dylan/],
-    single    =>  ["//"],
-    nested    =>  ["/*"  => "*/"],
-   },
-   {language  =>  [qw /Hugo/],
-    single    =>  ["!.", "!!", "!"],
-    nested    =>  ["!\\" => "\\!"],
-   },
-   {language  =>  [qw /SLIDE/],
-    single    =>  ["#"],
-    nested    =>  ["(*" => "*)"],
-   },
-   {language  =>  [qw /Caml/],
-    nested    =>  ["(*" => "*)"],
-   },
 );
 
 
@@ -358,54 +339,6 @@ fail  "     !This is a comment\n";
 pass2 "      !This is a comment\n", "!This is a comment\n";
 
 exit if $] < 5.006;
-
-foreach my $info (@plain_or_nested) {
-    foreach my $language (@{$info -> {language}}) {
-        try $RE{comment}{$language};
-
-        $M .= "# $language\n";
-
-        foreach my $mark (@{$info -> {single}}) {
-            my $half_mark = substr $mark, 0, -1;
-            pass "${mark}\n";
-            pass "${mark} comment\n";
-            fail "${mark} comment";
-            fail "${mark}";
-            unless (grep {$_ eq $half_mark} @{$info -> {single}}) {
-                fail "${half_mark}\n";
-                fail "${half_mark} comment\n";
-            }
-        }
-
-        my ($open, $close) = @{$info -> {nested}};
-
-        my $m  = substr $open,  1;
-        my $lc = substr $close, 1;
-        my $fc = substr $close, 0, -1;
-
-        pass "${open} comment ${close}";
-        pass "${open} comment ${open} nested ${close} comment ${close}";
-        pass "${open}${close}";
-        pass "${open}${open}${open}${open}${close}${close}${close}${close}";
-        pass "${open}${m}${close}";
-        pass "${open} ${m}${m} ${close}";
-        pass "${open}${m}${m}${m}${m}${m}${m}${m}${m}${m}${m}${m}${m}${close}";
-        pass "${open} ${open} ${close}}${close}";
-        pass "${open}${m}${m}${m}${m}${open}${m}${m}${m}${m}${m}${m}${open}"   .
-             "${m}${m}${m}${m}${m}${close}${m}${m}${m}${open}${m}${close}${m}" .
-             "${m}${close}${m}${m}${close}"
-             unless "${m}${open}" =~ /^\Q${close}/;
-
-        fail "${open} comment ${lc}";
-        fail "${open} comment ${fc}";
-        fail "${open}}";
-        fail "${open}${open}${open}${close}${close}";
-        fail "${open} ${close}${open} ${close}";
-        fail "${close} ${open}";
-        fail "${close} ${open} ${close}";
-        fail "${open} ${open} ${close}}";
-    }
-}
 
 exit if $] < 5.008;
 

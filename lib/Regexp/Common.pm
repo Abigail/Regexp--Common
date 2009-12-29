@@ -5,12 +5,20 @@ use strict;
 
 local $^W = 1;
 
-use vars qw /$VERSION %RE %sub_interface/;
+use vars qw /$VERSION %RE %sub_interface $AUTOLOAD/;
+
+($VERSION) = q $Revision: 2.120 $ =~ /([\d.]+)/;
 
 
-($VERSION) = q $Revision: 2.119 $ =~ /([\d.]+)/;
+sub _croak {
+    require Carp;
+    goto &Carp::croak;
+}
 
-use Carp;
+sub _carp {
+    require Carp;
+    goto &Carp::carp;
+}
 
 sub new {
     my ($class, @data) = @_;
@@ -35,6 +43,7 @@ my %imports = map {$_ => "Regexp::Common::$_"}
                   zip/;
 
 sub import {
+    shift;  # Shift off the class.
     tie %RE, __PACKAGE__;
     {
         no strict 'refs';
@@ -102,7 +111,7 @@ sub import {
         }
         else {
             next if $exported {$entry};
-            croak "Can't export unknown subroutine &$entry"
+            _croak "Can't export unknown subroutine &$entry"
                 unless $sub_interface {$entry};
             {
                 no strict 'refs';
@@ -113,8 +122,7 @@ sub import {
     }
 }
 
-use vars '$AUTOLOAD';
-sub AUTOLOAD { croak "Can't $AUTOLOAD" }
+sub AUTOLOAD { _croak "Can't $AUTOLOAD" }
 
 sub DESTROY {}
 
@@ -126,10 +134,10 @@ sub _decache {
         my @args = @{tied %{$_[0]}};
         my @nonflags = grep {!/$fpat/} @args;
         my $cache = get_cache(@nonflags);
-        croak "Can't create unknown regex: \$RE{"
+        _croak "Can't create unknown regex: \$RE{"
             . join("}{",@args) . "}"
                 unless exists $cache->{__VAL__};
-        croak "Perl $] does not support the pattern "
+        _croak "Perl $] does not support the pattern "
             . "\$RE{" . join("}{",@args)
             . "}.\nYou need Perl $cache->{__VAL__}{version} or later"
                 unless ($cache->{__VAL__}{version}||0) <= $];
@@ -159,9 +167,9 @@ sub croak_version {
 
 sub pattern {
         my %spec = @_;
-        croak 'pattern() requires argument: name => [ @list ]'
+        _croak 'pattern() requires argument: name => [ @list ]'
                 unless $spec{name} && ref $spec{name} eq 'ARRAY';
-        croak 'pattern() requires argument: create => $sub_ref_or_string'
+        _croak 'pattern() requires argument: create => $sub_ref_or_string'
                 unless $spec{create};
 
         if (ref $spec{create} ne "CODE") {
@@ -186,7 +194,7 @@ sub pattern {
         my $entry = get_cache(@nonflags);
 
         if ($entry->{__VAL__}) {
-                carp "Overriding \$RE{"
+                _carp "Overriding \$RE{"
                    . join("}{",@nonflags)
                    . "}";
         }
@@ -232,7 +240,7 @@ sub subs {
 
 
 package Regexp::Common::Entry;
-use Carp;
+# use Carp;
 
 local $^W = 1;
 
@@ -806,6 +814,9 @@ project, especially: Elijah, Jarkko, Tom, Nat, Ed, and Vivek.
 =head1 HISTORY
 
   $Log: Common.pm,v $
+  Revision 2.120  2005/03/16 00:24:45  abigail
+  Load Carp only on demand
+
   Revision 2.119  2005/01/01 16:35:14  abigail
   - Updated copyright notice. New release.
 
