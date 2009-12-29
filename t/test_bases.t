@@ -38,7 +38,7 @@ fail "1,2345,6789";
 fail "1.2345.6789";
 
 
-try $RE{num}{real}{'-places=2'};
+try $RE{num}{real}{-places => 2};
 
 pass 0;
 pass 1;
@@ -65,7 +65,7 @@ fail "12,345.6789";
 fail "1,2345,6789";
 fail "1.2345.6789";
 
-try $RE{num}{real}{'-places=3,8'};
+try $RE{num}{real}{-places => '3,8'};
 
 pass 0;
 pass 1;
@@ -120,7 +120,7 @@ fail "1.2345.6789";
 
 # TEST BASE 2
 
-try $RE{num}{real}{'-base=2'};
+try $RE{num}{real}{-base => 2};
 
 pass 0;
 pass 1;
@@ -169,7 +169,7 @@ fail "1.0011.0011";
 
 # TEST BASE 8
 
-try $RE{num}{real}{'-base=8'};
+try $RE{num}{real}{-base => 8};
 
 pass 0;
 pass 1;
@@ -234,7 +234,7 @@ fail "1.234.567";
 
 # TEST BASE 16
 
-try $RE{num}{real}{'-base=16'};
+try $RE{num}{real}{-base => 16};
 
 pass 0;
 pass 1;
@@ -305,7 +305,7 @@ fail "1.234.567";
 
 # TEST BASE 34
 
-try $RE{num}{real}{'-base=34'};
+try $RE{num}{real}{-base => 34};
 
 pass 0;
 pass 1;
@@ -342,7 +342,7 @@ fail "1.234.567";
 
 # TEST BASE 1
 
-try $RE{num}{real}{'-base=1'};
+try $RE{num}{real}{-base => 1};
 
 pass 0;
 pass "00000000000";
@@ -355,7 +355,7 @@ fail '12A4C67';
 fail '12345678G';
 
 
-try $RE{num}{real}{'-base=1'}{'-sep=,'};
+try $RE{num}{real}{-base => 1}{"-sep$;,"};
 
 pass 0;
 fail "00000000000";

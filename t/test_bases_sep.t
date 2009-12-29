@@ -11,7 +11,7 @@ ok;
 
 # TEST BASE 10
 
-try $RE{num}{real}{'-base=10'}{-sep};
+try $RE{num}{real}{-base => '10'}{-sep};
 
 pass 0;
 pass 1;
@@ -44,7 +44,7 @@ fail "1.2345.6789";
 
 # TRY WIERD ORDERING 
 
-try $RE{'-base=10'}{num}{'-sep= '}{real};
+try $RE{-base => '10'}{num}{'-sep' => ' '}{real};
 
 pass 0;
 pass 1;
@@ -136,7 +136,7 @@ fail "1.2345.6789";
 
 # TEST BASE 2
 
-try $RE{num}{real}{'-base=2'}{-sep};
+try $RE{num}{real}{'-base' => '2'}{-sep};
 
 pass 0;
 pass 1;
@@ -186,7 +186,7 @@ fail "1.0011.0011";
 
 # TEST BASE 8
 
-try $RE{num}{real}{'-base=8'}{-sep};
+try $RE{num}{real}{'-base' => '8'}{-sep};
 
 pass 0;
 pass 1;
@@ -251,7 +251,7 @@ fail "1.234.567";
 
 # TEST BASE 16
 
-try $RE{num}{real}{'-base=16'}{-sep};
+try $RE{num}{real}{'-base' => '16'}{-sep};
 
 pass 0;
 pass 1;
@@ -323,7 +323,7 @@ fail "1.234.567";
 
 # TEST BASE 34
 
-try $RE{num}{real}{'-base=34'}{-sep};
+try $RE{num}{real}{'-base' => '34'}{-sep};
 
 pass 0;
 pass 1;

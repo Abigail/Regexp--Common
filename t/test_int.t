@@ -59,7 +59,7 @@ pass "1,234,567";
 fail "1,2345,6789";
 fail "1.2345.6789";
 
-try $RE{num}{int}{-sep}{'-group=4'};
+try $RE{num}{int}{-sep}{'-group' => '4'};
 
 pass 0;
 pass 1;
@@ -83,7 +83,7 @@ fail "1,234,567";
 pass "1,2345,6789";
 fail "1.2345.6789";
 
-try $RE{num}{int}{'-group=4'}{'-sep=[.]'};
+try $RE{num}{int}{'-group' => '4'}{'-sep' => '[.]'};
 
 pass 0;
 pass 1;
@@ -107,7 +107,7 @@ fail "1,234,567";
 fail "1,2345,6789";
 pass "1.2345.6789";
 
-try $RE{num}{int}{'-group=4'}{'-sep=[.,]'};
+try $RE{num}{int}{'-group' => '4'}{'-sep' => '[.,]'};
 
 pass 0;
 pass 1;

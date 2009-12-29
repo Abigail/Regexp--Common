@@ -10,7 +10,7 @@ use Regexp::Common;
 ok;
 
 
-try $RE{delimited}{q{-delim="}};
+try $RE{delimited}{qq{-delim$;"}};
 
 pass q{"a few words "};
 pass q{"a few \"words\" "};
@@ -22,7 +22,7 @@ fail q{'a few "words" '};
 fail q{a "few" words "};
 
 
-try $RE{delimited}{q{-delim="}}{q{-esc="}};
+try $RE{delimited}{qq{-delim$;"}}{qq{-esc$;"}};
 
 pass q{"a few words "};
 fail q{"a few \"words\" "};
@@ -32,7 +32,7 @@ fail q{"a few "words" "};
 fail q{a "few" words "};
 
 
-try $RE{delimited}{q{-delim='}};
+try $RE{delimited}{qq{-delim$;'}};
 
 fail q{"a few words "};
 fail q{"a few \"words\" "};
@@ -56,7 +56,7 @@ pass q{'a few "words" '};
 fail q{a "few" words "};
 
 
-try $RE{quoted}{q{-esc=_!}};
+try $RE{quoted}{qq{-esc$;_!}};
 
 pass q{"a few words "};
 fail q{"a few \"words\" "};
@@ -69,7 +69,7 @@ pass q{'a few !'words!' '};
 pass q{'a few "words" '};
 fail q{a "few" words "};
 
-try $RE{quoted}{q{-esc=}};
+try $RE{quoted}{qq{-esc$;}};
 
 pass q{"a few words "};
 fail q{"a few \"words\" "};

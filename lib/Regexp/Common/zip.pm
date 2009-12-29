@@ -1,4 +1,4 @@
-package Regexp::Common::zip; {
+package Regexp::Common::zip;
 
 use strict;
 local $^W = 1;
@@ -8,7 +8,7 @@ use Carp;
 
 use vars qw /$VERSION/;
 
-($VERSION) = q $Revision: 2.106 $ =~ /[\d.]+/;
+($VERSION) = q $Revision: 2.107 $ =~ /[\d.]+/;
 
 #
 # Prefer '[0-9]' over \d, because the latter may include more
@@ -183,7 +183,6 @@ pattern name    => [qw /zip US -prefix= -country= -extended= -sep=-/],
 #         },
 #         ;
 
-}
 
 1;
 
@@ -579,6 +578,9 @@ postal codes.
 =head1 HISTORY
 
  $Log: zip.pm,v $
+ Revision 2.107  2003/03/25 23:46:58  abigail
+ Added RCS Id: tag
+
  Revision 2.106  2003/02/09 21:31:16  abigail
  Postal codes for Denmark and Greenland
 

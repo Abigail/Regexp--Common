@@ -1,6 +1,20 @@
 ==============================================================================
-                  Release of version 2.112 of Regexp::Common
+                  Release of version 2.113 of Regexp::Common
 ==============================================================================
+
+WARNING: INCOMPATIBLE CHANGE in version 2.113!
+       Regexp::Common used to set $; to '='. This no longer happens,
+       because setting $; breaks Filter::Simple. This means that regexps
+       of the form $RE{foo}{"-flag=value"} no longer work!  They need
+       to be written as $RE{foo}{"-flag$;value"} or as
+       $RE{foo}{-flag => "value"}.
+
+       When defining patterns using the pattern function, a = still
+       needs to be used to separate the flag from its default value.
+       This has not been changed.
+
+       We are very sorry for the inconvenience.
+
 
 NOTE:  The jump to version 2.100 is there for no other reason than that
        CPAN.pm is stupid. The entire world considers version numbers to be
@@ -109,9 +123,24 @@ COPYRIGHT
 
 ==============================================================================
 
-CHANGES IN VERSION 2.112
+CHANGES IN VERSION 2.113
 
 Revision history for Perl extension Regexp::Common.
+
+2.113 Wed Apr  2 22:58:46 2003
+        - INCOMPATIBLE CHANGE!
+          Regexp::Common used to set $; to '='. This no longer happens,
+          because setting $; breaks Filter::Simple. (Report by Tim Maher).
+          This means that regexps of the form $RE{foo}{"-flag=value"} no
+          longer work! They need to be written as $RE{foo}{"-flag$;value"}
+          or as $RE{foo}{-flag => "value"}.
+
+          When defining patterns using the pattern function, a = still
+          needs to be used to separate the flag from its default value.
+          This has not been changed.
+
+          We are very sorry for the inconvenience.
+        - 157762 tests in 44 files.
 
 2.112 Wed Mar 26 00:25:04 2003
         - prospero and pop URIs

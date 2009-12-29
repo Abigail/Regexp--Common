@@ -1,6 +1,9 @@
-# $Id: test_keep.t,v 2.100 2003/01/21 23:19:13 abigail Exp $
+# $Id: test_keep.t,v 2.101 2003/04/02 20:58:02 abigail Exp $
 #
 # $Log: test_keep.t,v $
+# Revision 2.101  2003/04/02 20:58:02  abigail
+# $; is no longer set to '='
+#
 # Revision 2.100  2003/01/21 23:19:13  abigail
 # The whole world understands RCS/CVS version numbers, that 1.9 is an
 # older version than 1.10. Except CPAN. Curse the idiot(s) who think
@@ -97,13 +100,13 @@ pass '-1.234e+567', qw( - 1.234 1 . 234 e +567 + 567 );
 try $RE{num}{dec}{-keep};
 pass '-1.234e+567', qw( - 1.234 1 . 234 e +567 + 567 );
 
-try $RE{num}{real}{'-base=2'}{-expon=>'x2\^'}{-keep};
+try $RE{num}{real}{'-base' => '2'}{-expon=>'x2\^'}{-keep};
 pass '-101.010x2^101010', qw( - 101.010 101 . 010 x2^ 101010 ), "", "101010";
 
 try $RE{num}{bin}{-keep};
 pass '-101.010E101010', qw( - 101.010 101 . 010 E 101010 ), "", "101010";
 
-try $RE{num}{real}{'-base=10'}{-sep}{-keep};
+try $RE{num}{real}{'-base' => '10'}{-sep}{-keep};
 pass '-1,234,567.234e+567', "-", "1,234,567.234", "1,234,567", ".",
                             "234", "e", "+567", "+", "567";
 
@@ -156,10 +159,10 @@ unless ($] < 5.008) {
     pass "whiskers";
 }
 
-try $RE{delimited}{q{-delim=/}}{-keep};
+try $RE{delimited}{qq{-delim$;/}}{-keep};
 pass '/a\/b/', qw( / a\/b / );
 
-try $RE{delimited}{q{-delim=/}}{q{-esc=/}}{-keep};
+try $RE{delimited}{qq{-delim$;/}}{qq{-esc$;/}}{-keep};
 pass '/a//b/', qw( / a//b / );
 
 try $RE{net}{IPv4}{-keep};

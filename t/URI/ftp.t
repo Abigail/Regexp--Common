@@ -111,7 +111,7 @@ fail 'HTTP://ftp.example.com/';
 fail 'FTP://ftp.example.com/';
 fail 'http://ftp.example.com/';
 
-try $RE{URI}{FTP}{"-type=[AIDaid]"};
+try $RE{URI}{FTP}{"-type" => "[AIDaid]"};
 pass 'ftp://ftp.example.com';
 pass 'ftp://ftp.example.com/';
 pass 'ftp://ftp.example.com/some/file/some/where';

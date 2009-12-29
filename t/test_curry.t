@@ -13,7 +13,7 @@ my $num = $RE{num}{real};
 
 # TEST BASE 10
 
-try $num->{'-base=10'}{-sep};
+try $num->{'-base' => '10'}{-sep};
 
 pass 0;
 pass 1;
@@ -46,7 +46,7 @@ fail "1.2345.6789";
 
 # TEST BASE 2
 
-try $num->{'-base=2'}{-sep};
+try $num->{'-base' => '2'}{-sep};
 
 pass 0;
 pass 1;

@@ -27,7 +27,7 @@ fail "a  b  c";
 
 # TEST TAB-SEPARATED
 
-try $RE{list}{"-sep=\t"};
+try $RE{list}{"-sep$;\t"};
 
 fail "a";
 pass "a\tb";
@@ -62,7 +62,7 @@ pass "a, b or c";
 fail "a,b,c";
 fail "a, b, c";
 
-try $RE{list}{conj}{'-word=ou'};
+try $RE{list}{conj}{-word => 'ou'};
 
 fail "a";
 pass "a ou b";
@@ -75,7 +75,7 @@ fail "a, b, c";
 # TRY NESTED PATTERNS
 
 
-try $RE{list}{"-pat=$RE{quoted}"};
+try $RE{list}{"-pat$;$RE{quoted}"};
 
 fail q{a};
 pass q{'a', 'b'};
@@ -84,7 +84,7 @@ pass q{'a', "b", `c`};
 fail q{a, b, c};
 
 
-try $RE{list}{"-pat=$RE{quoted}"}{'-lastsep=\s*(and|or)\s*'};
+try $RE{list}{"-pat$;$RE{quoted}"}{-lastsep => '\s*(and|or)\s*'};
 
 fail q{a};
 pass q{'a' and 'b'};

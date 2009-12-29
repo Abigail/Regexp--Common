@@ -1,4 +1,4 @@
-package Regexp::Common; {
+package Regexp::Common;
 
 use 5.00473;
 use strict;
@@ -8,7 +8,7 @@ local $^W = 1;
 use vars qw /$VERSION %RE %sub_interface/;
 
 
-($VERSION) = q $Revision: 2.112 $ =~ /([\d.]+)/;
+($VERSION) = q $Revision: 2.113 $ =~ /([\d.]+)/;
 
 use Carp;
 
@@ -40,7 +40,6 @@ sub import {
         *{caller() . "::RE"} = \%RE;
     }
 
-    my $saw_clean;
     my $saw_import;
     my $no_defaults;
     my %exclude;
@@ -50,8 +49,9 @@ sub import {
             *{caller() . "::pattern"} = \&pattern;
             next;
         }
+        # This used to prevent $; from being set. We still recognize it,
+        # but we won't do anything.
         if ($entry eq 'clean') {
-            $saw_clean ++;
             next;
         }
         if ($entry eq 'no_defaults') {
@@ -110,8 +110,6 @@ sub import {
             $exported {$entry} ++;
         }
     }
-
-    $; = "=" unless $saw_clean;
 }
 
 use vars '$AUTOLOAD';
@@ -135,9 +133,9 @@ sub _decache {
             . "}.\nYou need Perl $cache->{__VAL__}{version} or later"
                 unless ($cache->{__VAL__}{version}||0) <= $];
         my %flags = ( %{$cache->{__VAL__}{default}},
-                      map { /$fpat=(.*)/ ? ($1 => $2)
-                          : /$fpat/      ? ($1 => undef)
-                          :                ()
+                      map { /$fpat\Q$;\E(.*)/ ? ($1 => $2)
+                          : /$fpat/           ? ($1 => undef)
+                          :                     ()
                           } @args);
         $cache->{__VAL__}->_clone_with(\@args, \%flags);
 }
@@ -231,9 +229,8 @@ sub subs {
         return $str;
 }
 
-}
 
-package Regexp::Common::Entry; {
+package Regexp::Common::Entry;
 use Carp;
 
 local $^W = 1;
@@ -255,8 +252,6 @@ use overload
 sub _clone_with {
     my ($self, $args, $flags) = @_;
     bless { %$self, args=>$args, flags=>$flags }, ref $self;
-}
-
 }
 
 
@@ -363,26 +358,27 @@ and to access the pattern that matches integers:
 
 Deeper layers of the hash are used to specify I<flags>: arguments that
 modify the resulting pattern in some way. The keys used to access these
-layers are prefixed with a minus sign and may include a value that is
-introduced by an equality sign. For example, to access the pattern that
+layers are prefixed with a minus sign and may have a value; if a value
+is given, it's done by using a multidimensional key.
+For example, to access the pattern that
 matches base-2 real numbers with embedded commas separating
 groups of three digits (e.g. 10,101,110.110101101):
 
-        $RE{num}{real}{'-base=2'}{'-sep=,'}{'-group=3'}
+        $RE{num}{real}{-base => 2}{-sep => ','}{-group => 3}
 
 Through the magic of Perl, these flag layers may be specified in any order
 (and even interspersed through the identifier keys!)
 so you could get the same pattern with:
 
-        $RE{num}{real}{'-sep=,'}{'-group=3'}{'-base=2'}
+        $RE{num}{real}{-sep => ','}{-group => 3}{-base => 2}
 
 or:
 
-        $RE{num}{'-base=2'}{real}{'-group=3'}{'-sep=,'}
+        $RE{num}{-base => 2}{real}{-group => 3}{-sep => ','}
 
 or even:
 
-        $RE{'-base=2'}{'-group=3'}{'-sep=,'}{num}{real}
+        $RE{-base => 2}{-group => 3}{-sep => ','}{num}{real}
 
 etc.
 
@@ -395,25 +391,11 @@ would not be the same as:
 
         $RE{set}{list}
 
+=head2 Flag syntax
 
-=head2 Alternative flag syntax
-
-As the examples in the previous section indicate, the syntax for
-specifying flags is somewhat cumbersome, because of the need to quote
-the entire (non-identifier) key-plus-value. To make such specifications
-less ugly, Regexp::Common permanently changes the value of the magical
-C<$;> variable (setting it to the character C<'='>), so that flags can
-also be specified like so:
-
-        $RE{num}{real}{-base=>2}{-group=>3}{-sep=>','}
-
-This syntax is preferred, and is used throughout the rest of this document.
-
-In the unlikely case that the non-standard value of C<$;> breaks your
-program, this behaviour can be disabled by importing the module as:
-
-        use Regexp::Common 'clean';
-
+In versions prior to 2.113, flags could also be written as
+C<{"-flag=value"}>. This no longer works, although C<{"-flag$;value"}> is.
+However, C<< {-flag => 'value'} >> is the preferred syntax.
 
 =head2 Universal flags
 
@@ -823,6 +805,9 @@ project, especially: Elijah, Jarkko, Tom, Nat, Ed, and Vivek.
 =head1 HISTORY
 
   $Log: Common.pm,v $
+  Revision 2.113  2003/04/02 21:23:48  abigail
+  Removed anything related to $; being '='
+
   Revision 2.112  2003/03/25 23:27:27  abigail
   New release
 
