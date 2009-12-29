@@ -1,11 +1,15 @@
-$Id: TODO,v 2.101 2003/01/24 15:50:12 abigail Exp $
+$Id: TODO,v 2.102 2003/02/02 17:42:42 abigail Exp $
 
-- t/test_keep.t causes warnings under 5.005 and 5.6.
 - URIs:
-    + Lots and lots of them.
+    + telnet, mail, rsync, news/nntp, file.
+    + And more.
 - Dates:
+    + localtime dates.
     + ISO Dates.
+    + An inverse of strftime?
 - numbers:
     + Roman numbers >= 4000. Unicode?
     + Prime numbers? Fibonacci? Other special numbers?
     + Ranges of numbers.
+- postal codes.
+    + Lots more, especially British and Canadians.

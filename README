@@ -1,5 +1,5 @@
 ==============================================================================
-                  Release of version 2.105 of Regexp::Common
+                  Release of version 2.106 of Regexp::Common
 ==============================================================================
 
 NOTE:  The jump to version 2.100 is there for no other reason than that
@@ -97,9 +97,12 @@ COPYRIGHT
 
 ==============================================================================
 
-CHANGES IN VERSION 2.105
+CHANGES IN VERSION 2.106
 
 Revision history for Perl extension Regexp::Common.
+
+2.106 Sun Feb  2 18:42:08 2003
+        - Makefile.PL fixes for Windows.
 
 2.105 Sun Feb  2 04:15:54 2003  (In remembrance of the Columbia crew)
         - Australian postal codes.
