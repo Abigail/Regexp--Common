@@ -10,11 +10,11 @@ use t::Common '5.008';
 
 local $^W = 0;
 
-my $MAX = 9000000000000000;
+my $MAX = $Config {use64bitint} ? "9000000000000000" : 0x7FFFFFFF;
 
 local $^W = 1;
 
-($VERSION) = q $Revision: 2.103 $ =~ /[\d.]+/;
+($VERSION) = q $Revision: 2.104 $ =~ /[\d.]+/;
 
 sub create_parts;
 
@@ -52,8 +52,10 @@ sub create_parts {
     my (@good, @bad);
 
     $good [0] = [map {$_ * $_} 0 .. 100];
+    push @{$good [0]} => 2147395600;
     push @{$good [0]} => map {sprintf "%d", _1 () ** 2} 1 .. 400;
     $bad  [0] = [-1, 0.1, "fnord", "f16", map {sprintf "%d" => _2} 1 .. 200];
+    push @{$bad [0]} => 2147483647;
 
   (\@good, \@bad);
 }
@@ -62,6 +64,9 @@ sub create_parts {
 __END__
  
  $Log: test_squares.t,v $
+ Revision 2.104  2004/07/01 10:11:27  abigail
+ Fixed problems with 32bit integer Perls
+
  Revision 2.103  2004/06/30 09:14:59  abigail
  Restricted recognition of square numbers to numbers less than
  9000000000000000 to avoid round-off errors.

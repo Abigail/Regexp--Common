@@ -1,5 +1,5 @@
 ==============================================================================
-                  Release of version 2.116 of Regexp::Common
+                  Release of version 2.117 of Regexp::Common
 ==============================================================================
 
 WARNING: INCOMPATIBLE CHANGE in version 2.113!
@@ -14,28 +14,6 @@ WARNING: INCOMPATIBLE CHANGE in version 2.113!
        This has not been changed.
 
        We are very sorry for the inconvenience.
-
-
-NOTE:  The jump to version 2.100 is there for no other reason than that
-       CPAN.pm is stupid. The entire world considers version numbers to be
-       dot separated *INTEGERS*, except CPAN, which considers them to
-       be *FLOATS*. In which universe there can be more than one dot
-       in a float is of course a mystery.
-
-       CPAN.pm just couldn't deal with the fact one of the files in the
-       distribution was of version 1.10, thinking the older 1.9 version
-       was newer.
-
-       It would be sooo tempting to start using Roman numerals as version
-       numbers.
-
-       Andreas points out that blaming CPAN isn't fair, that CPAN is just
-       following Perls idea of Module version numbers: floats. So, in the
-       rant, read 'Perl' where it says 'CPAN'.
-
-NOTE:  The jump from version 0.09 to 1.20 does not indicate a significant
-       change in the API, or any other significant change. It's just that
-       the version number now follows the revision number from CVS.
 
 NAME
 
@@ -114,7 +92,7 @@ MAINTAINER
 
 COPYRIGHT
 
-       Copyright (c) 1997-2004, Damian Conway. All Rights Reserved.
+ Copyright (c) 1997-2004, Damian Conway and Abigail. All Rights Reserved.
      This module is free software. It may be used, redistributed
      and/or modified under the terms of the Perl Artistic License
           (see http://www.perl.com/perl/misc/Artistic.html)
@@ -123,9 +101,16 @@ COPYRIGHT
 
 ==============================================================================
 
-CHANGES IN VERSION 2.116
+CHANGES IN VERSION 2.117
 
 Revision history for Perl extension Regexp::Common.
+
+2.117 Thu Jul  1 12:11:47 CEST 2004
+        - Fixed problems with squares and 32bit integer Perls.
+        - Pod nits in Regexp::Common (Jim Cromie)
+        - $VERSION fix in Regexp::Common::URI::RFCC2384 (Mike Arms)
+        - Discuss unwanted matching in Regexp::Common::net (Charles Thomas)
+        - 132238 tests in 48 files.
 
 2.116 Wed Jun 30 11:37:45 CEST 2004
         - Restricted recognition of squares to numbers less than

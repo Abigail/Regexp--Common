@@ -1,8 +1,9 @@
-# $Id: number.pm,v 2.104 2004/06/30 09:14:54 abigail Exp $
+# $Id: number.pm,v 2.105 2004/07/01 10:11:27 abigail Exp $
 
 package Regexp::Common::number;
 
 use strict;
+use Config;
 local $^W = 1;
 
 use Regexp::Common qw /pattern clean no_defaults/;
@@ -10,7 +11,7 @@ use Carp;
 
 use vars qw /$VERSION @EXPORT_OK @ISA/;
 
-($VERSION) = q $Revision: 2.104 $ =~ /[\d.]+/g;
+($VERSION) = q $Revision: 2.105 $ =~ /[\d.]+/g;
 
 pattern name   => [qw (num int -sep=  -group=3)],
         create => sub {my $flag = $_[1];
@@ -87,10 +88,21 @@ real_synonym (oct =>  8);
 real_synonym (bin =>  2);
 
 
+# 2147483647
 pattern name    => [qw (num square)],
         create  => sub {
             use re 'eval';
-            qr {(0*[1-8]?\d{1,15})(?(?{sqrt ($^N) == int sqrt ($^N)})|(?!))}
+            my $num = $Config {use64bitint} ? '0*[1-8]?\d{1,15}' :
+                     '0*(?:2(?:[0-0]\d{8}' .
+                         '|1(?:[0-3]\d{7}' .
+                         '|4(?:[0-6]\d{6}' .
+                         '|7(?:[0-3]\d{5}' .
+                         '|4(?:[0-7]\d{4}' .
+                         '|8(?:[0-2]\d{3}' .
+                         '|3(?:[0-5]\d{2}' .
+                         '|6(?:[0-3]\d{1}' .
+                         '|4[0-7])))))))))|1?\d{1,9}';
+            qr {($num)(?(?{sqrt ($^N) == int sqrt ($^N)})|(?!))}
         },
         version => 5.008;
         ;
@@ -330,9 +342,11 @@ captures the fractional portion of the mantissa
 
 Returns a pattern that matches a (decimal) square. Because Perl's
 arithmetic is lossy when using integers over about 53 bits, this pattern
-only recognizes numbers less than 9000000000000000. This restriction
-was introduced in version 2.116 of Regexp::Common.  Regardless whether
-C<-keep> was set, the matched number will be returned in C<$1>.
+only recognizes numbers less than 9000000000000000, if one uses a
+Perl that is configured to use 64 bit integers. Otherwise, the limit
+is 2147483647. These restrictions were introduced in versions 2.116
+and 2.117 of Regexp::Common. Regardless whether C<-keep> was set,
+the matched number will be returned in C<$1>.
 
 This pattern is available for version 5.008 and up.
 
@@ -350,6 +364,9 @@ Under C<-keep>, the number will be captured in $1.
 =head1 HISTORY
 
  $Log: number.pm,v $
+ Revision 2.105  2004/07/01 10:11:27  abigail
+ Fixed problems with 32bit integer Perls
+
  Revision 2.104  2004/06/30 09:14:54  abigail
  Restricted recognition of square numbers to numbers less than
  9000000000000000 to avoid round-off errors.

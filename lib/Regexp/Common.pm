@@ -8,7 +8,7 @@ local $^W = 1;
 use vars qw /$VERSION %RE %sub_interface/;
 
 
-($VERSION) = q $Revision: 2.116 $ =~ /([\d.]+)/;
+($VERSION) = q $Revision: 2.117 $ =~ /([\d.]+)/;
 
 use Carp;
 
@@ -394,8 +394,8 @@ would not be the same as:
 =head2 Flag syntax
 
 In versions prior to 2.113, flags could also be written as
-C<{"-flag=value"}>. This no longer works, although C<{"-flag$;value"}> is.
-However, C<< {-flag => 'value'} >> is the preferred syntax.
+C<{"-flag=value"}>. This no longer works, although C<{"-flag$;value"}>
+still does. However, C<< {-flag => 'value'} >> is the preferred syntax.
 
 =head2 Universal flags
 
@@ -490,7 +490,7 @@ effortlessly interpolated, and because it also allows them to be
 
         my $num = $RE{num}{int};
 
-        my $comma'd    = $num->{-sep=>','}{-group=>3};
+        my $commad     = $num->{-sep=>','}{-group=>3};
         my $duodecimal = $num->{-base=>12};
 
 
@@ -805,6 +805,9 @@ project, especially: Elijah, Jarkko, Tom, Nat, Ed, and Vivek.
 =head1 HISTORY
 
   $Log: Common.pm,v $
+  Revision 2.117  2004/06/30 15:01:35  abigail
+  Pod nits. (Jim Cromie)
+
   Revision 2.116  2004/06/30 09:37:36  abigail
   New version
 

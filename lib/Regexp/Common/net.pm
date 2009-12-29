@@ -7,7 +7,7 @@ use Regexp::Common qw /pattern clean no_defaults/;
 
 use vars qw /$VERSION/;
 
-($VERSION) = q $Revision: 2.103 $ =~ /[\d.]+/g;
+($VERSION) = q $Revision: 2.104 $ =~ /[\d.]+/g;
 
 my %IPunit = (
     dec => q{(?k:25[0-5]|2[0-4]\d|[0-1]?\d{1,2})},
@@ -120,7 +120,11 @@ and MAC (or ethernet) addresses.
 
 =head2 C<$RE{net}{IPv4}>
 
-Returns a pattern that matches a valid IP address in "dotted decimal"
+Returns a pattern that matches a valid IP address in "dotted decimal".
+Note that while C<318.99.183.11> is not a valid IP address, it does
+match C</$RE{net}{IPv4}/>, but this is because C<318.99.183.11> contains
+a valid IP address, namely C<18.99.183.11>. To prevent the unwanted
+matching, one needs to anchor the regexp: C</^$RE{net}{IPv4}$/>.
 
 For this pattern and the next four, under C<-keep> (See L<Regexp::Common>):
 
@@ -290,6 +294,9 @@ L<Regexp::Common> for a general description of how to use this interface.
 =head1 HISTORY
 
  $Log: net.pm,v $
+ Revision 2.104  2004/06/30 15:11:29  abigail
+ Discuss unwanted matching
+
  Revision 2.103  2004/06/09 21:47:01  abigail
  dec/oct greediness
 
@@ -350,7 +357,7 @@ Send them in to I<regexp-common@abigail.nl>.
 
 =head1 COPYRIGHT
 
-     Copyright (c) 2001 - 2003, Damian Conway. All Rights Reserved.
+ Copyright (c) 2001 - 2004, Damian Conway and Abigail. All Rights Reserved.
        This module is free software. It may be used, redistributed
       and/or modified under the terms of the Perl Artistic License
             (see http://www.perl.com/perl/misc/Artistic.html)
