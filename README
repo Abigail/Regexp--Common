@@ -1,5 +1,5 @@
 ==============================================================================
-                  Release of version 2.108 of Regexp::Common
+                  Release of version 2.109 of Regexp::Common
 ==============================================================================
 
 NOTE:  The jump to version 2.100 is there for no other reason than that
@@ -104,14 +104,24 @@ COPYRIGHT
 
 ==============================================================================
 
-CHANGES IN VERSION 2.108
+CHANGES IN VERSION 2.109
 
 Revision history for Perl extension Regexp::Common.
+
+2.109 Mon Feb 10 22:41:45 2003
+        - Split out URI.pm into a myriad of files. There is a
+          separate file for each URI scheme, and a separate file
+          for each RFC that's used. URI.pm requires all the
+          URI scheme files, and constructs the combining URI regexp.
+        - file URIs.
+        - Cut down on the number of tests run for certain classes.
+        - 123810 tests in 35 files.
+        - 95 patterns in 11 classes and 7 subclasses.
 
 2.108 Sun Feb  9 22:58:56 2003
         - Postal codes for Belgium, Denmark and Greenland.
         - Renamed the postal code patterns.
-        - 194125 tests in 34 files.
+        - 194125 tests in 35 files.
         - 94 patterns in 11 classes.
 
 2.107 Fri Feb  7 23:20:35 2003

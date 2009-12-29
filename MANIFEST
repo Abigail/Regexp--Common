@@ -8,6 +8,17 @@ lib/Regexp/Common/net.pm
 lib/Regexp/Common/number.pm
 lib/Regexp/Common/profanity.pm
 lib/Regexp/Common/URI.pm
+lib/Regexp/Common/URI/RFC1035.pm
+lib/Regexp/Common/URI/RFC1738.pm
+lib/Regexp/Common/URI/RFC2396.pm
+lib/Regexp/Common/URI/RFC2806.pm
+lib/Regexp/Common/URI/fax.pm
+lib/Regexp/Common/URI/file.pm
+lib/Regexp/Common/URI/ftp.pm
+lib/Regexp/Common/URI/http.pm
+lib/Regexp/Common/URI/tel.pm
+lib/Regexp/Common/URI/telnet.pm
+lib/Regexp/Common/URI/tv.pm
 lib/Regexp/Common/whitespace.pm
 lib/Regexp/Common/zip.pm
 MANIFEST
@@ -36,6 +47,7 @@ t/test_sub.t
 t/test_sub_named.t
 t/test_ws.t
 t/URI/fax.t
+t/URI/file.t
 t/URI/ftp.t
 t/URI/http.t
 t/URI/tel.t

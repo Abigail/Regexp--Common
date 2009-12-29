@@ -1,10 +1,16 @@
-package Regexp::Common::number; {
+# $Id: number.pm,v 2.102 2003/02/10 21:34:24 abigail Exp $
+
+package Regexp::Common::number;
 
 use strict;
 local $^W = 1;
 
 use Regexp::Common qw /pattern clean no_defaults/;
 use Carp;
+
+use vars qw /$VERSION @EXPORT_OK @ISA/;
+
+($VERSION) = q $Revision: 2.102 $ =~ /[\d.]+/g;
 
 pattern name   => [qw (num int -sep=  -group=3)],
         create => sub {my $flag = $_[1];
@@ -76,8 +82,6 @@ pattern name    => [qw (num roman)],
                             (L?X{0,3}|XL|XC)?
                             (V?I{0,3}|IV|IX)?)'
         ;
-
-}
 
 1;
 
@@ -260,6 +264,9 @@ Under C<-keep>, the number will be captured in $1.
 =head1 HISTORY
 
  $Log: number.pm,v $
+ Revision 2.102  2003/02/10 21:34:24  abigail
+ Added VERSION
+
  Revision 2.101  2003/02/01 22:55:31  abigail
  Changed Copyright years
 

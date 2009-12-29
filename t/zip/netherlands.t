@@ -8,11 +8,11 @@ use Regexp::Common;
 
 $^W = 1;
 
-($VERSION) = q $Revision: 2.106 $ =~ /[\d.]+/;
+($VERSION) = q $Revision: 2.107 $ =~ /[\d.]+/;
 
 sub failures;
 
-use constant  PASSES     =>  50;
+use constant  PASSES     =>  20;
 use constant  FAIL       =>  10;
 
 my $count;
@@ -292,6 +292,9 @@ sub failures {
 =pod
 
  $Log: netherlands.t,v $
+ Revision 2.107  2003/02/10 21:29:37  abigail
+ Cut down on the number of tests
+
  Revision 2.106  2003/02/09 15:13:21  abigail
  'The Netherlands' -> 'Netherlands'
 

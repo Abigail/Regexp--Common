@@ -9,7 +9,7 @@ use t::Common;
 
 $^W = 1;
 
-($VERSION) = q $Revision: 2.105 $ =~ /[\d.]+/;
+($VERSION) = q $Revision: 2.106 $ =~ /[\d.]+/;
 
 sub create_parts;
 
@@ -70,12 +70,12 @@ sub create_parts {
 
     # Hosts.
     $good [0] = [qw /www.abigail.nl www.PERL.com a.b.c.d.e.f.g.h.i.j.k.x
-                     w-w-w.abigail.nl w--w--w.abigail.nl w3.abigail.nl/];
+                     127.0.0.1 w--w--w.abigail.nl w3.abigail.nl/];
     $bad  [0] = ["", qw /www.example..com w+w.example.com w--.example.com
-                     -w.example.com www.example.1com/];
+                         127.0.1 127.0.0.0.1 -w.example.com www.example.1com/];
 
     # Ports.
-    $good [1] = [undef, "", 80, 8080];
+    $good [1] = [undef, "", 80];
     $bad  [1] = [qw /-19 : port/];
 
     # Paths.
@@ -102,6 +102,9 @@ sub filter {
 __END__
 
 $Log: http.t,v $
+Revision 2.106  2003/02/10 21:19:37  abigail
+Cut down on the number of tests
+
 Revision 2.105  2003/02/07 22:19:52  abigail
 Added general filters
 

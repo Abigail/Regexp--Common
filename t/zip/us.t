@@ -8,7 +8,7 @@ use Regexp::Common;
 
 $^W = 1;
 
-($VERSION) = q $Revision: 2.103 $ =~ /[\d.]+/;
+($VERSION) = q $Revision: 2.104 $ =~ /[\d.]+/;
 
 BEGIN {
     if ($] < 5.00503) {
@@ -20,7 +20,7 @@ BEGIN {
 
 sub failures;
 
-use constant  PASSES  =>   50;
+use constant  PASSES  =>   20;
 use constant  FAIL    =>   10;
 
 my $normal        = $RE {zip} {US};
@@ -256,6 +256,9 @@ __END__
 =pod
 
  $Log: us.t,v $
+ Revision 2.104  2003/02/10 21:29:37  abigail
+ Cut down on the number of tests
+
  Revision 2.103  2003/02/08 14:58:57  abigail
  Doc patch
 

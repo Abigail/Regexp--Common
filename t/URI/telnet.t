@@ -9,7 +9,7 @@ use t::Common;
 
 $^W = 1;
 
-($VERSION) = q $Revision: 2.101 $ =~ /[\d.]+/;
+($VERSION) = q $Revision: 2.102 $ =~ /[\d.]+/;
 
 sub create_parts;
 
@@ -85,13 +85,13 @@ sub create_parts {
 
     # Hosts.
     $good [2] = [qw /www.abigail.nl www.PERL.com a.b.c.d.e.f.g.h.i.j.k.x
-                     w-w-w.abigail.nl w--w--w.abigail.nl w3.abigail.nl/];
+                     127.0.0.1 w--w--w.abigail.nl w3.abigail.nl/];
     $bad  [2] = [qw /www.example..com w+w.example.com w--.example.com
-                     -w.example.com www.example.1com/];
+                     127.0.0.0.1 -w.example.com www.example.1com/];
 
     # Ports.
-    $good [3] = [undef, "", 80, 8080];
-    $bad  [3] = [qw /-19 : port/];
+    $good [3] = [undef, 123];
+    $bad  [3] = ["", qw /-19 : port/];
 
     # Trailing /.
     $good [4] = [undef, '/'];
@@ -108,6 +108,9 @@ sub filter {
 __END__
 
 $Log: telnet.t,v $
+Revision 2.102  2003/02/10 21:19:13  abigail
+telnet URI was wrong, adjusted tests
+
 Revision 2.101  2003/02/07 22:19:52  abigail
 Added general filters
 

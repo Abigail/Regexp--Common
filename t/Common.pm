@@ -19,9 +19,9 @@ sub run_test;
 sub run_keep;
 sub run_fail;
 
-$^W = 1;
+local $^W = 1;
 
-($VERSION) = q $Revision: 2.103 $ =~ /[\d.]+/;
+($VERSION) = q $Revision: 2.104 $ =~ /[\d.]+/;
 
 my $count;
 
@@ -29,6 +29,18 @@ sub mess {print ++ $count, " - $_ (@_)\n"}
 
 sub pass {print     "ok "; &mess}
 sub fail {print "not ok "; &mess}
+
+sub import {
+    if (@_ > 1) {
+        my $version = pop;
+        if ($version > $]) {
+            print "1..1\n";
+            print "ok 1\n";
+            exit;
+        }
+    }
+    __PACKAGE__ -> export_to_level (1, @_);
+}
 
 sub cross {
     my @r = [];
@@ -200,6 +212,9 @@ sub run_fail {
 __END__
 
 $Log: Common.pm,v $
+Revision 2.104  2003/02/10 21:33:08  abigail
+import() function
+
 Revision 2.103  2003/02/09 12:43:00  abigail
 Minor changes
 
