@@ -8,7 +8,7 @@ local $^W = 1;
 use vars qw /$VERSION %RE %sub_interface/;
 
 
-$VERSION = '0.09';
+($VERSION) = q $Revision: 1.20 $ =~ /([\d.]+)/;
 
 use Carp;
 
@@ -699,7 +699,7 @@ Provides regexes for strings with balanced parenthesized delimiters.
 
 =item Regexp::Common::comment
 
-Provides regexes for comments of various languages (26 languages
+Provides regexes for comments of various languages (39 languages
 currently).
 
 =item Regexp::Common::delimited
@@ -736,7 +736,7 @@ Future releases of the module will also provide patterns for the following:
         * HTML/XML tags
         * more numerical matchers,
         * mail headers (including multiline ones),
-        * URLS (various genres)
+        * more URLS
         * telephone numbers of various countries
         * currency (universal 3 letter format, Latin-1, currency names)
         * dates
@@ -801,6 +801,9 @@ project, especially: Elijah, Jarkko, Tom, Nat, Ed, and Vivek.
 =head1 HISTORY
 
   $Log: Common.pm,v $
+  Revision 1.20  2002/08/27 17:04:29  abigail
+  VERSION is now extracted from the CVS revision number.
+
   Revision 1.19  2002/08/06 14:46:49  abigail
   Upped version number to 0.09.
 

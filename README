@@ -1,7 +1,10 @@
 ==============================================================================
-                  Release of version 0.02 of Regexp::Common
+                  Release of version 1.20 of Regexp::Common
 ==============================================================================
 
+NOTE:  The jump from version 0.09 to 1.20 does not indicate a significant
+       change in the API, or any other significant change. It's just that
+       the version number now follows the revision number from CVS.
 
 NAME
 
@@ -35,10 +38,11 @@ DESCRIPTION
 	* balanced parentheses and brackets
 	* delimited text (with escapes)
 	* integers and floating-point numbers in any base (up to 36)
-	* comments in C, C++, Perl, and shell
+	* comments in 39 languages
     	* offensive language
 	* lists of any pattern
 	* IPv4 addresses
+        * URIs.
 
     Future releases of the module will also provide patterns for the
     following:
@@ -46,7 +50,7 @@ DESCRIPTION
         * email addresses 
         * HTML/XML tags
         * mail headers (including multiline ones),
-        * URLS (various genres)
+        * more URIs
         * telephone numbers of various countries
         * currency (universal 3 letter format, Latin-1, currency names)
         * dates
@@ -55,7 +59,7 @@ DESCRIPTION
 
 INSTALLATION
 
-    It's all pure Perl, so just put the .pm file in its appropriate
+    It's all pure Perl, so just put the .pm files in their appropriate
     local Perl subdirectory.
 
 
@@ -64,9 +68,14 @@ AUTHOR
     Damian Conway (damian@cs.monash.edu.au)
 
 
+MAINTAINER
+
+    Abigail (regexp-common@abigail.nl)
+
+
 COPYRIGHT
 
-       Copyright (c) 1997-2000, Damian Conway. All Rights Reserved.
+       Copyright (c) 1997-2002, Damian Conway. All Rights Reserved.
      This module is free software. It may be used, redistributed
      and/or modified under the terms of the Perl Artistic License
           (see http://www.perl.com/perl/misc/Artistic.html)
@@ -75,9 +84,15 @@ COPYRIGHT
 
 ==============================================================================
 
-CHANGES IN VERSION 0.06
+CHANGES IN VERSION 1.20
 
 Revision history for Perl extension Regexp::Common.
+
+1.20  Tue Aug 27 19:06:13 CEST 2002
+        - Balanced patterns can now take multiple sets of arbitrary
+          strings as delimiters.
+        - Fax URIs.
+        - More comment patterns.
 
 0.09  Tue Aug  6 16:44:57 CEST 2002
         - Fixed $RE{URI}{tel}, local phone numbers can have

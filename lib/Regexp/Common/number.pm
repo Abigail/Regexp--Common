@@ -1,4 +1,4 @@
-package Regexp::Common::numbers; {
+package Regexp::Common::number; {
 
 use strict;
 local $^W = 1;
@@ -70,16 +70,16 @@ __END__
 
 =head1 NAME
 
-Regexp::Common::numbers -- provide regexes for numbers
+Regexp::Common::number -- provide regexes for numbers
 
 =head1 SYNOPSIS
 
-    use Regexp::Common qw /numbers/;
+    use Regexp::Common qw /number/;
 
     while (<>) {
-        /$RE{num}{int}/                and  print "Integer\n";
-        /$RE{num}{real}/               and  print "Real\n";
-        /$RE{num}{real}{-base => 16}   and  print "Hexadecimal real\n";
+        /^$RE{num}{int}$/                and  print "Integer\n";
+        /^$RE{num}{real}$/               and  print "Real\n";
+        /^$RE{num}{real}{-base => 16}$/  and  print "Hexadecimal real\n";
     }
 
 
@@ -102,10 +102,10 @@ grouped in sequences of exactly I<N> characters. The default value of I<N> is 3.
 
 For example:
 
-      $RE{num}{int}                          # match 1234567
-      $RE{num}{int}{-sep=>','}               # match 1,234,567
-      $RE{num}{int}{-sep=>',?'}              # match 1234567 or 1,234,567
-      $RE{num}{int}{-sep=>'.'}{-group=>4}    # match 1.2345.6789
+ $RE{num}{int}                          # match 1234567
+ $RE{num}{int}{-sep=>','}               # match 1,234,567
+ $RE{num}{int}{-sep=>',?'}              # match 1234567 or 1,234,567
+ $RE{num}{int}{-sep=>'.'}{-group=>4}    # match 1.2345.6789
 
 Under C<-keep> (see L<Regexp::Common>):
 
@@ -154,11 +154,11 @@ marker.  The default value of I<P> is C<qr/[Ee]/>.
 
 For example:
 
-      $RE{num}{real}                  # matches 123.456 or -0.1234567
-      $RE{num}{real}{-places=2}       # matches 123.45 or -0.12
-      $RE{num}{real}{-places='0,3'}   # matches 123.456 or 0 or 9.8
-      $RE{num}{real}{-sep=>'[,.]?'}   # matches 123,456 or 123.456
-      $RE{num}{real}{-base=>3'}       # matches 121.102
+ $RE{num}{real}                  # matches 123.456 or -0.1234567
+ $RE{num}{real}{-places=>2}      # matches 123.45 or -0.12
+ $RE{num}{real}{-places=>'0,3'}  # matches 123.456 or 0 or 9.8
+ $RE{num}{real}{-sep=>'[,.]?'}   # matches 123,456 or 123.456
+ $RE{num}{real}{-base=>3'}       # matches 121.102
 
 Under C<-keep>:
 
@@ -221,6 +221,28 @@ A synonym for C<< $RE{num}{real}{-base=>2}{...} >>
 =head2 C<$RE{num}{hex}{-radix}{-places}{-sep}{-group}{-expon}>
 
 A synonym for C<< $RE{num}{real}{-base=>16}{...} >>
+
+=head1 HISTORY
+
+ $Log: number.pm,v $
+ Revision 1.5  2002/08/23 13:09:13  abigail
+ Cosmetic POD changes.
+
+ Revision 1.4  2002/08/23 12:51:26  abigail
+ + Several occurances of 'numbers' changed to 'number'.
+ + Fixed bugs in documentation.
+ + Made example use anchors to make it more clear.
+  (All due to Christopher Baker)
+
+ Revision 1.3  2002/08/05 12:16:59  abigail
+ Fixed 'Regex::' and 'Rexexp::' typos to 'Regexp::'
+ (Found by Mike Castle).
+
+ Revision 1.2  2002/07/30 16:37:59  abigail
+ Removed outcommented code.
+
+ Revision 1.1  2002/07/28 21:41:07  abigail
+ Split off from Regexp::Common.
 
 =head1 SEE ALSO
 

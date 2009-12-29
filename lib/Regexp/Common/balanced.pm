@@ -3,40 +3,82 @@ package Regexp::Common::balanced; {
 use strict;
 local $^W = 1;
 
+use vars qw /$VERSION/;
+($VERSION) = q $Revision: 1.6 $ =~ /[\d.]+/g;
+
 use Regexp::Common qw /pattern clean no_defaults/;
-use re 'eval';
 
 my %closer = ( '{'=>'}', '('=>')', '['=>']', '<'=>'>' );
-sub balanced {
-   my ($r,$p,$ap,$k) = @_;
-   $r = "(??{\$Regexp::Common::$r})";
-   return if $] < 5.006;
-   return $k
-        ? qr/(?:[$p]((?:(?>[^$ap]+)|$r)*)[$closer{$p}])/
-        : qr/(?:[$p](?:(?>[^$ap]+)|$r)*[$closer{$p}])/
+my $count = -1;
+my %cache;
+
+sub nested {
+    local $^W = 1;
+    my ($start, $finish) = @_;
+
+    return $Regexp::Common::balanced [$cache {$start} {$finish}]
+            if exists $cache {$start} {$finish};
+
+    $count ++;
+    my $r = '(??{$Regexp::Common::balanced ['. $count . ']})';
+
+    my @starts   = map {s/\\(.)/$1/g; $_} grep {length}
+                        $start  =~ /([^|\\]+|\\.)+/gs;
+    my @finishes = map {s/\\(.)/$1/g; $_} grep {length}
+                        $finish =~ /([^|\\]+|\\.)+/gs;
+
+    push @finishes => ($finishes [-1]) x (@starts - @finishes);
+
+    my @re;
+    local $" = "|";
+    foreach my $begin (@starts) {
+        my $end = shift @finishes;
+
+        my $qb  = quotemeta $begin;
+        my $qe  = quotemeta $end;
+        my $fb  = quotemeta substr $begin => 0, 1;
+        my $fe  = quotemeta substr $end   => 0, 1;
+
+        my $tb  = quotemeta substr $begin => 1;
+        my $te  = quotemeta substr $end   => 1;
+
+        use re 'eval';
+
+        my $add;
+        if ($fb eq $fe) {
+            push @re =>
+                   qr /(?:$qb(?:(?>[^$fb]+)|$fb(?!$tb)(?!$te)|$r)*$qe)/;
+        }
+        else {
+            my   @clauses =  "(?>[^$fb$fe]+)";
+            push @clauses => "$fb(?!$tb)" if length $tb;
+            push @clauses => "$fe(?!$te)" if length $te;
+            push @clauses =>  $r;
+            push @re      =>  qr /(?:$qb(?:@clauses)*$qe)/;
+        }
+    }
+
+    $cache {$start} {$finish} = $count;
+    $Regexp::Common::balanced [$count] = qr/@re/;
 }
 
 
-pattern name    => [qw( balanced -parens=() )],
-        create  => sub {my $flag = $_[1];
-                        my @parens = grep {index ($flag->{-parens}, $_) >= 0}
-                                     ('[','(','{','<');
-                        my $parens = join "", map "$closer{$_}$_", @parens;
-                        my $sig = "SIG" . join "", @parens;
-                        $sig =~ tr/[({</1234/;
-                        my $pat = qr/(?!)/;
-                        my $keep = exists $flag->{-keep};
-                        foreach (@parens) {
-                            my $add = balanced("parens{$sig}", $_,
-                                               $parens, $keep);
-                            $pat = qr/$add|$pat/;
-                        }
-                        $pat = $keep ? qr/($pat)/ : $pat;
-                        $Regexp::Common::parens{$sig} = $pat;
-                   },
+pattern name    => [qw /balanced -parens=() -begin= -end=/],
+        create  => sub {
+            my $flag = $_[1];
+            unless (defined $flag -> {-begin} && length $flag -> {-begin} &&
+                    defined $flag -> {-end}   && length $flag -> {-end}) {
+                my @open  = grep {index ($flag->{-parens}, $_) >= 0}
+                             ('[','(','{','<');
+                my @close = map {$closer {$_}} @open;
+                $flag -> {-begin} = join "|" => @open;
+                $flag -> {-end}   = join "|" => @close;
+            }
+            my $pat = nested @$flag {qw /-begin -end/};
+            return exists $flag -> {-keep} ? qr /($pat)/ : $pat;
+        },
         version => 5.006,
         ;
-
 
 }
 
@@ -49,7 +91,7 @@ __END__
 =head1 NAME
 
 Regexp::Common::balanced -- provide regexes for strings with balanced
-parenthesized delimiters.
+parenthesized delimiters or arbitrary delimiters.
 
 =head1 SYNOPSIS
 
@@ -90,6 +132,60 @@ If we are using C{-keep} (See L<Regexp::Common>):
 captures the entire expression
 
 =back
+
+=head2 C<< $RE{balanced}{-begin => "begin"}{-end => "end"} >>
+
+Returns a pattern that matches a string that is properly balanced
+using the I<begin> and I<end> strings as start and end delimiters.
+Multiple sets of begin and end strings can be given by separating
+them by C<|>s (which can be escaped with a backslash).
+
+    qr/$RE{balanced}{-begin => "do|if|case"}{-end => "done|fi|esac"}/
+
+will match properly balanced strings that either start with I<do> and
+end with I<done>, start with I<if> and end with I<fi>, or start with
+I<case> and end with I<esac>.
+
+If I<-end> contains less cases than I<-begin>, the last case of I<-end>
+is repeated. If it contains more cases than I<-begin>, the extra cases
+are ignored. If either of I<-begin> or I<-end> isn't given, or is empty,
+I<< -begin => '(' >> and I<< -end => ')' >> are assumed.
+
+If we are using C{-keep} (See L<Regexp::Common>):
+
+=over 4
+
+=item $1
+
+captures the entire expression
+
+=back
+
+=head1 HISTORY
+
+ $Log: balanced.pm,v $
+ Revision 1.6  2002/08/20 15:20:48  abigail
+ Documented -begin and -end
+
+ Revision 1.5  2002/08/08 23:57:33  abigail
+ Added HISTORY section.
+
+ Revision 1.4  2002/08/08 23:53:54  abigail
+ Reworked and extended $RE{balanced}. It now takes multiple arbitrary
+ length delimiters. -parens is just a short-cut for some of the common,
+ simpler cases.
+
+ Revision 1.3  2002/08/05 12:16:58  abigail
+ Fixed 'Regex::' and 'Rexexp::' typos to 'Regexp::'
+ (Found my Mike Castle).
+
+ Revision 1.2  2002/07/25 22:37:44  abigail
+ Added 'use strict'.
+ Added 'no_defaults' to 'use Regexp::Common' to prevent loaded of all
+ defaults.
+
+ Revision 1.1  2002/07/25 22:14:44  abigail
+ Factored out from Regexp::Common.
 
 =head1 SEE ALSO
 

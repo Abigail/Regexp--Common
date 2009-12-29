@@ -56,6 +56,16 @@ is optimized (but probably still slower than doing the s///g explicitly).
 
 This pattern does not capture under C<-keep>.
 
+=head1 HISTORY
+
+ $Log: whitespace.pm,v $
+ Revision 1.2  2002/08/27 16:59:39  abigail
+ Fix POD
+
+ Revision 1.1  2002/08/27 16:58:59  abigail
+ Initial checkin.
+
+
 =head1 SEE ALSO
 
 L<Regexp::Common> for a general description of how to use this interface.

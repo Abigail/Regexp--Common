@@ -1,4 +1,4 @@
-# $Id: URI.pm,v 1.7 2002/08/06 14:44:07 abigail Exp $
+# $Id: URI.pm,v 1.8 2002/08/27 16:56:27 abigail Exp $
 
 package Regexp::Common::URI; {
 
@@ -9,7 +9,7 @@ use Regexp::Common qw /pattern clean no_defaults/;
 
 use vars qw /$VERSION/;
 
-($VERSION) = q $Revision: 1.7 $ =~ /[\d.]+/g;
+($VERSION) = q $Revision: 1.8 $ =~ /[\d.]+/g;
 
 # RFC 2396, base definitions.
 my $digit             =  '[0-9]';
@@ -170,44 +170,79 @@ my $phone_context_tag =  "(?:phone-context)";
 my $area_specifier    =  "(?:;$phone_context_tag=$phone_context_ident)";
 my $post_dial         =  "(?:;postd=[0-9\\-.()*#ABCDwp]+)";
 my $isdn_subaddress   =  "(?:;isub=[0-9\\-.()]+)";
-my $local_phone_number=  "(?:[0-9\\-.()*#ABCDwp]+$isdn_subaddress?" .
-                            "$post_dial?$area_specifier"            .
-                            "(?:$area_specifier|$service_provider|"   .
+my $t33_subaddress    =  "(?:;tsub=[0-9\\-.()]+)";
+
+my $local_phone_number=  "(?:[0-9\\-.()*#ABCDwp]+$isdn_subaddress?"      .
+                            "$post_dial?$area_specifier"                 .
+                            "(?:$area_specifier|$service_provider|"      .
                                "$future_extension)*)";
 my $local_phone_number_no_future
-                      =  "(?:[0-9\\-.()*#ABCDwp]+$isdn_subaddress?" .
-                            "$post_dial?$area_specifier"            .
+                      =  "(?:[0-9\\-.()*#ABCDwp]+$isdn_subaddress?"      .
+                            "$post_dial?$area_specifier"                 .
+                            "(?:$area_specifier|$service_provider)*)";
+my $fax_local_phone   =  "(?:[0-9\\-.()*#ABCDwp]+$isdn_subaddress?"      .
+                            "$t33_subaddress?$post_dial?$area_specifier" .
+                            "(?:$area_specifier|$service_provider|"      .
+                               "$future_extension)*)";
+my $fax_local_phone_no_future
+                      =  "(?:[0-9\\-.()*#ABCDwp]+$isdn_subaddress?"      .
+                            "$t33_subaddress?$post_dial?$area_specifier" .
                             "(?:$area_specifier|$service_provider)*)";
 my $base_phone_number =  "(?:[0-9\\-.()]+)";
 my $global_phone_number
-                      =  "(?:[+]$base_phone_number$isdn_subaddress?"  .
-                                                 "$post_dial?"        .
-                            "(?:$area_specifier|$service_provider|"   .
+                      =  "(?:[+]$base_phone_number$isdn_subaddress?"     .
+                                                 "$post_dial?"           .
+                            "(?:$area_specifier|$service_provider|"      .
                                "$future_extension)*)";
 my $global_phone_number_no_future
-                      =  "(?:[+]$base_phone_number$isdn_subaddress?"  .
-                                                 "$post_dial?"        .
+                      =  "(?:[+]$base_phone_number$isdn_subaddress?"     .
+                                                 "$post_dial?"           .
+                            "(?:$area_specifier|$service_provider)*)";
+my $fax_global_phone  =  "(?:[+]$base_phone_number$isdn_subaddress?"     .
+                                 "$t33_subaddress?$post_dial?"           .
+                            "(?:$area_specifier|$service_provider|"      .
+                               "$future_extension)*)";
+my $fax_global_phone_no_future
+                      =  "(?:[+]$base_phone_number$isdn_subaddress?"     .
+                                 "$t33_subaddress?$post_dial?"           .
                             "(?:$area_specifier|$service_provider)*)";
 my $telephone_subscriber
                       =  "(?:$global_phone_number|$local_phone_number)";
 my $telephone_subscriber_no_future
                       =  "(?:$global_phone_number_no_future|" .
                             "$local_phone_number_no_future)";
+my $fax_subscriber    =  "(?:$fax_global_phone|$fax_local_phone)";
+my $fax_subscriber_no_future
+                      =  "(?:$fax_global_phone_no_future|"    .
+                            "$fax_local_phone_no_future)";
+
 my $telephone_scheme  =  "(?:tel)";
+my $fax_scheme        =  "(?:fax)";
 my $telephone_url     =  "(?:$telephone_scheme:$telephone_subscriber)";
 my $telephone_url_no_future
                       =  "(?:$telephone_scheme:" .
                             "$telephone_subscriber_no_future)";
+my $fax_url           =  "(?:$fax_scheme:$fax_subscriber)";
+my $fax_url_no_future =  "(?:$fax_scheme:$fax_subscriber_no_future)";
 
 $uri {tel}            =  $telephone_url;
+$uri {fax}            =  $fax_url;
 
 pattern name    => [qw (URI tel)],
-        create  => "(?k:(?k:$telephone_scheme):(?k:$telephone_subscriber))";
+        create  => "(?k:(?k:$telephone_scheme):(?k:$telephone_subscriber))",
         ;
 
 pattern name    => [qw (URI tel nofuture)],
         create  => "(?k:(?k:$telephone_scheme):" .
                        "(?k:$telephone_subscriber_no_future))"
+        ;
+
+pattern name    => [qw (URI fax)],
+        create  => "(?k:(?k:$fax_scheme):(?k:$fax_subscriber))",
+        ;
+
+pattern name    => [qw (URI fax nofuture)],
+        create  => "(?k:(?k:$fax_scheme):(?k:$fax_subscriber_no_future))",
         ;
 
 }
@@ -415,6 +450,12 @@ the correct syntax for post dial, service provider, phone context,
 etc has been used - otherwise the regex could always classify them
 as a I<future extension>.
 
+=head2 $RE{URI}{fax} and $RE{URI}{fax}{nofuture}
+
+Similar to C<$RE{URI}{tel}> and C<$RE{URI}{tel}{nofuture}>, except that
+it will return patterns matching fax URIs, as defined in RFC 2806.
+C<{-keep}> will return the same fragments as for tel URIs.
+
 =head1 REFERENCES
 
 =over 4
@@ -452,29 +493,32 @@ Vaha-Sipila, A.: I<URLs for Telephone Calls>. April 2000.
 
 =head1 HISTORY
 
-    $Log: URI.pm,v $
-    Revision 1.7  2002/08/06 14:44:07  abigail
-    Local phone numbers can have future extensions as well.
+ $Log: URI.pm,v $
+ Revision 1.8  2002/08/27 16:56:27  abigail
+ Support for fax URIs.
 
-    Revision 1.6  2002/08/06 13:18:03  abigail
-    Cosmetic changes
+ Revision 1.7  2002/08/06 14:44:07  abigail
+ Local phone numbers can have future extensions as well.
 
-    Revision 1.5  2002/08/06 13:16:27  abigail
-    Added $RE{URI}{tel}{nofuture}
+ Revision 1.6  2002/08/06 13:18:03  abigail
+ Cosmetic changes
 
-    Revision 1.4  2002/08/06 00:03:30  abigail
-    Added $RE{URI}{tel}
+ Revision 1.5  2002/08/06 13:16:27  abigail
+ Added $RE{URI}{tel}{nofuture}
 
-    Revision 1.3  2002/08/04 22:51:35  abigail
-    Added FTP URIs.
+ Revision 1.4  2002/08/06 00:03:30  abigail
+ Added $RE{URI}{tel}
 
-    Revision 1.2  2002/07/25 22:37:44  abigail
-    Added 'use strict'.
-    Added 'no_defaults' to 'use Regex::Common' to prevent loading of all
-    defaults.
+ Revision 1.3  2002/08/04 22:51:35  abigail
+ Added FTP URIs.
 
-    Revision 1.1  2002/07/25 19:56:07  abigail
-    Modularizing Regexp::Common.
+ Revision 1.2  2002/07/25 22:37:44  abigail
+ Added 'use strict'.
+ Added 'no_defaults' to 'use Regex::Common' to prevent loading of all
+ defaults.
+
+ Revision 1.1  2002/07/25 19:56:07  abigail
+ Modularizing Regexp::Common.
 
 =head1 SEE ALSO
 

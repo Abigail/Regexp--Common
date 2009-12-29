@@ -1,6 +1,15 @@
-# $Id: test_keep.t,v 1.15 2002/08/06 13:02:58 abigail Exp $
+# $Id: test_keep.t,v 1.18 2002/08/27 16:30:29 abigail Exp $
 #
 # $Log: test_keep.t,v $
+# Revision 1.18  2002/08/27 16:30:29  abigail
+# Tests for Beatnik comments.
+#
+# Revision 1.17  2002/08/20 17:04:57  abigail
+# Tests for Hugo
+#
+# Revision 1.16  2002/08/09 15:12:00  abigail
+# Added test for generic balanced strings.
+#
 # Revision 1.15  2002/08/06 13:02:58  abigail
 # Cosmetic changes.
 #
@@ -63,7 +72,10 @@ ok;
 
 if ($] >= 5.006) {
 	try $RE{balanced}{-keep};
-	pass '(a(b))', 'a(b)';
+	pass '(a(b))';
+
+        try $RE{balanced}{-begin => ">>"}{-end => "<<"}{-keep};
+        pass '>>>>>>a<<>>b<<<<>>c<<<<';
 }
 try $RE{num}{real}{-keep};
 pass '-1.234e+567', qw( - 1.234 1 . 234 e +567 + 567 );
@@ -118,6 +130,16 @@ unless ($] < 5.006) {
     try $RE{comment}{Haskell}{-keep};
     pass "--- Comment\n";
     pass "{- Nested {- Comment -} -}";
+
+    try $RE{comment}{Hugo}{-keep};
+    pass "!comment\n";
+    pass "!\\!\\ \\!\\!";
+}
+
+unless ($] < 5.008) {
+    try $RE{comment}{Beatnik}{-keep};
+    pass "is";
+    pass "whiskers";
 }
 
 try $RE{delimited}{q{-delim=/}}{-keep};
