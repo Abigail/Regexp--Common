@@ -9,7 +9,7 @@ use Config;
 
 $^W = 1;
 
-($VERSION) = q $Revision: 1.3 $ =~ /[\d.]+/;
+($VERSION) = q $Revision: 2.100 $ =~ /[\d.]+/;
 
 BEGIN {
     if ($] < 5.006) {
@@ -102,6 +102,14 @@ foreach my $entry (@entries) {
 =pod
 
  $Log: test_lingua_palindrome.t,v $
+ Revision 2.100  2003/01/21 23:19:13  abigail
+ The whole world understands RCS/CVS version numbers, that 1.9 is an
+ older version than 1.10. Except CPAN. Curse the idiot(s) who think
+ that version numbers are floats (in which universe do floats have
+ more than one decimal dot?).
+ Everything is bumped to version 2.100 because CPAN couldn't deal
+ with the fact one file had version 1.10.
+
  Revision 1.3  2003/01/16 11:03:10  abigail
  Added version checks.
 

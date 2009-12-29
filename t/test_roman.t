@@ -74,6 +74,14 @@ foreach (@passes) {
 =pod
  
  $Log: test_roman.t,v $
+ Revision 2.100  2003/01/21 23:19:13  abigail
+ The whole world understands RCS/CVS version numbers, that 1.9 is an
+ older version than 1.10. Except CPAN. Curse the idiot(s) who think
+ that version numbers are floats (in which universe do floats have
+ more than one decimal dot?).
+ Everything is bumped to version 2.100 because CPAN couldn't deal
+ with the fact one file had version 1.10.
+
  Revision 1.2  2002/12/27 23:24:37  abigail
  Make it run standalone
 

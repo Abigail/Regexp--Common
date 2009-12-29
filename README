@@ -1,6 +1,19 @@
 ==============================================================================
-                  Release of version 1.20 of Regexp::Common
+                  Release of version 2.103 of Regexp::Common
 ==============================================================================
+
+NOTE:  The jump to version 2.100 is there for no other reason than that
+       CPAN.pm is stupid. The entire world considers version numbers to be
+       dot separated *INTEGERS*, except CPAN, which considers them to
+       be *FLOATS*. In which universe there can be more than one dot
+       in a float is of course a mystery.
+
+       CPAN.pm just couldn't deal with the fact one of the files in the
+       distribution was of version 1.10, thinking the older 1.9 version
+       was newer.
+
+       It would be sooo tempting to start using Roman numerals as version
+       numbers.
 
 NOTE:  The jump from version 0.09 to 1.20 does not indicate a significant
        change in the API, or any other significant change. It's just that
@@ -84,9 +97,17 @@ COPYRIGHT
 
 ==============================================================================
 
-CHANGES IN VERSION 1.30
+CHANGES IN VERSION 2.103
 
 Revision history for Perl extension Regexp::Common.
+
+2.103 Thu Jan 23 03:21:17 2003
+        - Added German and French postal codes.
+        - Fixed some bugs concerning HTTP URIs.
+        - Complete remake of t/test_uri_http, with 15k+ tests. 
+          Extended testing exposed the now fixed bugs.
+        - 87 patterns in 11 classes.
+        - 156778 tests in 30 files.
 
 1.30  Fri Jan 17 14:20:02 2003
         - Fixed a bug concerning HTTP and FTP URIs.

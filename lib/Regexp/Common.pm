@@ -8,7 +8,7 @@ local $^W = 1;
 use vars qw /$VERSION %RE %sub_interface/;
 
 
-($VERSION) = q $Revision: 1.30 $ =~ /([\d.]+)/;
+($VERSION) = q $Revision: 2.103 $ =~ /([\d.]+)/;
 
 use Carp;
 
@@ -700,7 +700,7 @@ Provides regexes for strings with balanced parenthesized delimiters.
 
 =item Regexp::Common::comment
 
-Provides regexes for comments of various languages (39 languages
+Provides regexes for comments of various languages (43 languages
 currently).
 
 =item Regexp::Common::delimited
@@ -810,6 +810,23 @@ project, especially: Elijah, Jarkko, Tom, Nat, Ed, and Vivek.
 =head1 HISTORY
 
   $Log: Common.pm,v $
+  Revision 2.103  2003/01/23 02:19:01  abigail
+  New release
+
+  Revision 2.102  2003/01/22 17:32:34  abigail
+  New release
+
+  Revision 2.101  2003/01/21 23:52:18  abigail
+  POD fix.
+
+  Revision 2.100  2003/01/21 23:19:40  abigail
+  The whole world understands RCS/CVS version numbers, that 1.9 is an
+  older version than 1.10. Except CPAN. Curse the idiot(s) who think
+  that version numbers are floats (in which universe do floats have
+  more than one decimal dot?).
+  Everything is bumped to version 2.100 because CPAN couldn't deal
+  with the fact one file had version 1.10.
+
   Revision 1.30  2003/01/17 13:19:04  abigail
   New release
 

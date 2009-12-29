@@ -7,7 +7,7 @@ use Regexp::Common qw /pattern clean no_defaults/;
 
 use vars qw /$VERSION/;
 
-($VERSION) = q $Revision: 1.8 $ =~ /[\d.]+/g;
+($VERSION) = q $Revision: 2.100 $ =~ /[\d.]+/g;
 
 my %IPunit = (
     dec => q{(?k:25[0-5]|2[0-4]\d|[0-1]??\d{1,2})},
@@ -273,6 +273,14 @@ L<Regexp::Common> for a general description of how to use this interface.
 =head1 HISTORY
 
  $Log: net.pm,v $
+ Revision 2.100  2003/01/21 23:19:40  abigail
+ The whole world understands RCS/CVS version numbers, that 1.9 is an
+ older version than 1.10. Except CPAN. Curse the idiot(s) who think
+ that version numbers are floats (in which universe do floats have
+ more than one decimal dot?).
+ Everything is bumped to version 2.100 because CPAN couldn't deal
+ with the fact one file had version 1.10.
+
  Revision 1.8  2003/01/10 11:03:28  abigail
  Added complete CVS history.
 

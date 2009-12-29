@@ -1,4 +1,4 @@
-# $Id: URI.pm,v 1.10 2003/01/17 13:17:15 abigail Exp $
+# $Id: URI.pm,v 2.100 2003/01/21 23:19:40 abigail Exp $
 
 package Regexp::Common::URI; {
 
@@ -9,7 +9,7 @@ use Regexp::Common qw /pattern clean no_defaults/;
 
 use vars qw /$VERSION/;
 
-($VERSION) = q $Revision: 1.10 $ =~ /[\d.]+/g;
+($VERSION) = q $Revision: 2.100 $ =~ /[\d.]+/g;
 
 # RFC 2396, base definitions.
 my $digit             =  '[0-9]';
@@ -46,11 +46,11 @@ my $path              =  "(?:(?:$abs_path|$rel_path)?)";
 
 my $port              =  "(?:$digit*)";
 my $IPv4address       =  "(?:$digit+[.]$digit+[.]$digit+[.]$digit+)";
-my $toplabel          =  "(?:$alphanum"."[-a-zA-Z0-9]*$alphanum|$alpha)";
-my $domainlabel       =  "(?:(?:$alphanum"."[-a-zA-Z0-9]*)$alphanum)";
+my $toplabel          =  "(?:$alpha"."[-a-zA-Z0-9]*$alphanum|$alpha)";
+my $domainlabel       =  "(?:(?:$alphanum"."[-a-zA-Z0-9]*)?$alphanum)";
 my $hostname          =  "(?:(?:$domainlabel\[.])*$toplabel\[.]?)";
 my $host              =  "(?:$hostname|$IPv4address)";
-my $hostport          =  "(?:$host(?::$port))";
+my $hostport          =  "(?:$host(?::$port)?)";
 
 my $userinfo          =  "(?:(?:[a-zA-Z0-9\\-_.!~*'();:&=+\$,]+|$escaped)*)";
 my $userinfo_no_colon =  "(?:(?:[a-zA-Z0-9\\-_.!~*'();&=+\$,]+|$escaped)*)";
@@ -516,6 +516,17 @@ Vaha-Sipila, A.: I<URLs for Telephone Calls>. April 2000.
 =head1 HISTORY
 
  $Log: URI.pm,v $
+ Revision 2.100  2003/01/21 23:19:40  abigail
+ The whole world understands RCS/CVS version numbers, that 1.9 is an
+ older version than 1.10. Except CPAN. Curse the idiot(s) who think
+ that version numbers are floats (in which universe do floats have
+ more than one decimal dot?).
+ Everything is bumped to version 2.100 because CPAN couldn't deal
+ with the fact one file had version 1.10.
+
+ Revision 1.11  2003/01/21 22:59:33  abigail
+ Fixed small errors with  and
+
  Revision 1.10  2003/01/17 13:17:15  abigail
  Fixed '$toplabel' and '$domainlabel'; they were both subexpressions
  of the form: A|AB. Which passed the tests because most tests anchor
