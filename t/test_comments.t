@@ -117,3 +117,31 @@ fail "/*a\nmultiline\ncomment*/";
 fail "/*a /*pretend*/ nested comment*/";
 fail "/*a /*pretend*/";
 fail "/***********";
+
+
+try $RE{comment}{HTML};
+
+pass '<!-- A comment -->';
+pass '<!-- A comment with trailing white space --   >';
+pass "<!-- A comment with a new\nline -->";
+pass "<!-- A comment with trailing new lines --\n\n>";
+pass '<!-- Multi comment --  -- This is a comment too -->';
+pass '<!---------------->';
+pass '<!---->';
+pass '<!-- A comment with - two - dashes -->';
+pass '<!-- Multi comments with - two - dashes -- ---- >';
+pass '<!-- -- --> Comment <!-- -- -->';
+pass '<!------><a href = "http://cpan.perl.org">Click here!</a><!------>';
+pass '<!>';   # Empty comment.
+fail '<!->';
+fail '<!-->';
+fail '<!--->';
+fail '<!-- Comment -- Not a comment -->';
+fail '-- No MDO -->';
+fail '<-- No MDO either -->';
+fail '<!-- No MDC --';
+fail '<! No leading COM -->';
+fail '<!- No leading COM either -->';
+fail '<!-- No trailing COM>';
+fail '<!-- No trailing COM either ->';
+fail '<!-- To many dashes --->';

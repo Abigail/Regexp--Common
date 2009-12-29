@@ -44,6 +44,11 @@ pass "# abc\n", "#", " abc", "\n";
 try $RE{comment}{shell}{-keep};
 pass "# abc\n", "#", " abc", "\n";
 
+try $RE{comment}{HTML}{-keep};
+pass "<!-- A comment -->", "<!", "-- A comment --", " A comment ", ">";
+pass "<!---->", "<!", "----", "", ">";
+pass "<!-- A -- -- B -- >", "<!", "-- A -- -- B -- ", " B ", ">";
+
 
 try $RE{delimited}{q{-delim=/}}{-keep};
 pass '/a\/b/', qw( / a\/b / );

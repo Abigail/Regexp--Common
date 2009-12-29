@@ -42,6 +42,9 @@ pass "# abc\n", "#", " abc", "\n";
 try RE_comment_shell;
 pass "# abc\n", "#", " abc", "\n";
 
+try RE_comment_HTML;
+pass "<!-- A comment -->", "<!", "-- A comment --", " A comment ", ">";
+
 
 try RE_delimited(-delim=>'/');
 pass '/a\/b/', qw( / a\/b / );

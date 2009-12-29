@@ -1,5 +1,8 @@
 Revision history for Perl extension Regexp::Common.
 
+0.02  Tue Jul 23 23:18:15 2002
+        - Added $RE{comment}{HTML}
+
 0.01  Thu May 18 14:45:14 2000
 	- original version; created by h2xs 1.18
 

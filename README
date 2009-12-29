@@ -1,5 +1,5 @@
 ==============================================================================
-                  Release of version 0.01 of Regexp::Common
+                  Release of version 0.02 of Regexp::Common
 ==============================================================================
 
 
@@ -15,7 +15,7 @@ SYNOPSIS
      while (<>) {
             /$RE{num}{real}/                
 				and print q{a number\n};
-            /$RE{quoted}                    
+            /$RE{quoted}/                   
 				and print q{a ['"`] quoted string\n};
             /$RE{delimited}{-delim=>'/'}/   
 				and print q{a /.../ sequence\n};
@@ -75,9 +75,16 @@ COPYRIGHT
 
 ==============================================================================
 
-CHANGES IN VERSION 0.01
+CHANGES IN VERSION 0.02
 
-(No changes have been documented for this version)
+Revision history for Perl extension Regexp::Common.
+
+0.02  Tue Jul 23 23:18:15 2002
+        - Added $RE{comment}{HTML}
+
+0.01  Thu May 18 14:45:14 2000
+	- original version; created by h2xs 1.18
+
 
 ==============================================================================
 

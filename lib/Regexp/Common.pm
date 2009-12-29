@@ -1,6 +1,6 @@
 package Regexp::Common;
 
-$VERSION = '0.01';
+$VERSION = '0.02';
 
 sub new {
 	my ($class, @data) = @_;
@@ -730,7 +730,7 @@ must be grouped in sequences of exactly I<N> characters. The default value of
 I<N> is 3.
 
 If C<-expon=I<P>> is specified, the pattern I<P> is used as the exponential
-marker.  The default value of I<P> is C<qr/[Ee]/.
+marker.  The default value of I<P> is C<qr/[Ee]/>.
 
 For example:
 
@@ -806,19 +806,19 @@ sub real_synonym {
 
 =item C<$RE{num}{dec}{-radix}{-places}{-sep}{-group}{-expon}>
 
-A synonym for C<$RE{num}{real}{-base=>10}{...}>
+A synonym for C<< $RE{num}{real}{-base=>10}{...} >>
 
 =item C<$RE{num}{oct}{-radix}{-places}{-sep}{-group}{-expon}>
 
-A synonym for C<$RE{num}{real}{-base=>8}{...}>
+A synonym for C<< $RE{num}{real}{-base=>8}{...} >>
 
 =item C<$RE{num}{bin}{-radix}{-places}{-sep}{-group}{-expon}>
 
-A synonym for C<$RE{num}{real}{-base=>2}{...}>
+A synonym for C<< $RE{num}{real}{-base=>2}{...} >>
 
 =item C<$RE{num}{hex}{-radix}{-places}{-sep}{-group}{-expon}>
 
-A synonym for C<$RE{num}{real}{-base=>16}{...}>
+A synonym for C<< $RE{num}{real}{-base=>16}{...} >>
 
 =cut
 
@@ -842,8 +842,18 @@ Available languages are:
         $RE{comment}{C++}
         $RE{comment}{shell}
         $RE{comment}{Perl}
+        $RE{comment}{HTML}
+
+For HTML, the regular expression captures what's known in SGML as a
+I<comment declaration>. It starts with a C<< <! >>, ends with a C<< > >>
+and contains zero or more comments. Each comment starts and end with
+C<< -- >>. See also S<B<[Go 90]>>.
 
 Under C<-keep>:
+
+=over 4
+
+=item For C, shell and Perl
 
 =over 4
 
@@ -853,15 +863,53 @@ captures the entire match
 
 =item $2
 
-captures the opening comment marker (except for C<$RE{comment}{C++}>)
+captures the opening comment marker
 
 =item $3
 
-captures the contents of the comment (except for C<$RE{comment}{C++}>)
+captures the contents of the comment
 
 =item $4
 
-captures the  closing comment marker (except for C<$RE{comment}{C++}>)
+captures the  closing comment marker
+
+=back
+
+=item For C++
+
+=over 4
+
+=item $1
+
+captures the entire match
+
+=back
+
+=item For HTML
+
+=over 4
+
+=item $1
+
+captures the entire match
+
+=item $2
+
+captures the MDO (C<< <! >>).
+
+=item $3
+
+captures the content between the MDO and the MDC.
+
+=item $4
+
+captures the (last) comment, with the COMs (C<< -- >>).
+
+=item $5
+
+captures the MCD (C<< > >>).
+
+=back
 
 =back
 
@@ -881,6 +929,14 @@ pattern name   => [qw( comment shell )],
 
 pattern name   => [qw( comment Perl )],
         create => q{(?k:(?k:#)(?k:[^\n]*)(?k:\n))},
+        ;
+
+# See rules 91 and 92 of ISO 8879 (SGML).
+# Charles F. Goldfarb: "The SGML Handbook".
+# Oxford: Oxford University Press. 1990. ISBN 0-19-853737-9.
+# Ch. 10.3, pp 390.
+pattern name   => [qw (comment HTML)],
+        create => q{(?k:(?k:<!)(?k:(?:--(?k:[^-]*(?:-[^-]+)*)--\s*)*)(?k:>))},
         ;
 
 ##### PROFANITY #####
@@ -1115,7 +1171,7 @@ captures the last separator
 
 =item C<$RE{list}{conj}{-word=I<PATTERN>}>
 
-An alias for C<$RE{list}{-lastsep=>'\s*,?\s*I<PATTERN>\s*'}>
+An alias for C<< $RE{list}{-lastsep=>'\s*,?\s*I<PATTERN>\s*'} >>
 
 If C<-word> is not specified, the default pattern is C<qr/and|or/>.
 
@@ -1126,11 +1182,11 @@ For example:
 
 =item C<$RE{list}{and}>
 
-An alias for C<$RE{list}{conj}{-word=>'and'}>
+An alias for C<< $RE{list}{conj}{-word=>'and'} >>
 
 =item C<$RE{list}{or}>
 
-An alias for C<$RE{list}{conj}{-word=>'or'}>
+An alias for C<< $RE{list}{conj}{-word=>'or'} >>
 
 =cut
 
@@ -1209,8 +1265,8 @@ By default I<P> is C<qr/[.]/>.
 Returns a pattern that matches a valid IP address in "dotted hexadecimal"
 
 If C<-sep=I<P>> is specified the pattern I<P> is used as the separator.
-By default I<P> is C<qr/[.]/>. C<-sep=>""> and
-C<-sep=>" "> are useful alternatives.
+By default I<P> is C<qr/[.]/>. C<< -sep=>"" >> and
+C<< -sep=>" " >> are useful alternatives.
 
 =item C<$RE{net}{IPv4}{oct}{-sep}>
 
@@ -1309,11 +1365,11 @@ You need Perl %f or later>
 The requested pattern requires advanced regex features (e.g. recursion)
 that not available in your version of Perl. Time to upgrade.
 
-=item C<pattern() requires argument: name => [ @list ]>
+=item C<< pattern() requires argument: name => [ @list ] >>
 
 Every user-defined pattern specification must have a name.
 
-=item C<pattern() requires argument: create => $sub_ref_or_string>
+=item C<< pattern() requires argument: create => $sub_ref_or_string >>
 
 Every user-defined pattern specification must provide a pattern creation
 mechanism: either a pattern string or a reference to a subroutine that
@@ -1321,14 +1377,25 @@ returns the pattern string.
 
 =item C<Base must be between 1 and 36>
 
-The C<$RE{num}{real}{-base=>'I<N>'}> pattern uses the characters [0-9A-Z]
+The C<< $RE{num}{real}{-base=>'I<N>'} >> pattern uses the characters [0-9A-Z]
 to represent the digits of various bases. Hence it only produces
 regular expressions for bases up to hexatricensimal.
 
 =item C<Must specify delimiter in $RE{delimited}>
 
 The pattern has no default delimiter.
-You need to write: C<$RE{delimited}{-delim=>I<X>'}> for some character I<X>
+You need to write: C<< $RE{delimited}{-delim=>I<X>'} >> for some character I<X>
+
+=back
+
+=head1 REFERENCES
+
+=over 4
+
+=item B<[Go 90]>
+
+Charles F. Goldfarb: I<The SGML Handbook>. Oxford: Oxford University
+Press. B<1990>. ISBN 0-19-853737-9. Ch. 10.3, pp 390-391.
 
 =back
 
@@ -1342,13 +1409,16 @@ project, especially: Elijah, Jarkko, Tom, Nat, Ed, and Vivek.
 
 Damian Conway (damian@conway.org)
 
+=head1 MAINTAINANCE
+
+This package is maintained by Abigail S<(I<regex-common@abigail.nl>)>.
 
 =head1 BUGS AND IRRITATIONS
 
 Bound to be plenty.
 
 For a start, there are many common regexes missing.
-Send them in!
+Send them in to I<regex-common@abigail.nl>.
 
 
 =head1 COPYRIGHT

@@ -2,6 +2,6 @@
 use ExtUtils::MakeMaker;
 WriteMakefile(
 		NAME	=> 'Regexp::Common',
-		VERSION => '0.01',
+		VERSION_FROM => 'lib/Regexp/Common.pm',
 
 	     );

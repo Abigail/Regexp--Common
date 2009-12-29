@@ -2,6 +2,7 @@ Changes
 lib/Regexp/Common.pm
 MANIFEST
 Makefile.PL
+README
 t/test_balanced.t
 t/test_bases.t
 t/test_bases_sep.t
