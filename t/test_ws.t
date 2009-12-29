@@ -9,9 +9,6 @@ sub try{$P=qr/$_[0]/}sub fail{ok($S=$_[0]!~$P)}sub pass{ok($S=$_[0]=~$P)}
 use Regexp::Common;
 ok;
 
-ok (defined $Regexp::Common::whitespace::VERSION &&
-            $Regexp::Common::whitespace::VERSION =~ /^\d+[.]\d+$/);
-
 try $RE{ws}{crop};
 
 pass "  a sentence here\t\t";

@@ -10,9 +10,6 @@ use Regexp::Common;
 ok;
 exit unless $] >= 5.006;
 
-ok (defined $Regexp::Common::balanced::VERSION &&
-            $Regexp::Common::balanced::VERSION =~ /^\d+[.]\d+$/);
-
 # SIMPLE BALANCING ACT
 
 try $RE{balanced};

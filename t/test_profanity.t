@@ -10,9 +10,6 @@ sub pass{ok($S=$_[0]=~$P,$_[0])}
 use Regexp::Common;
 ok;
 
-ok (defined $Regexp::Common::profanity::VERSION &&
-            $Regexp::Common::profanity::VERSION =~ /^\d+[.]\d+$/);
-
 # MAKE THEM PROFANE
 
 tr/A-Za-z/N-ZA-Mn-za-m/ foreach (@profanity, @contextual);

@@ -45,9 +45,6 @@ my $total = @good + @bad + 1;
 print "1..$total\n";
 
 my $c = 1;
-print "not " unless defined $Regexp::Common::_support::VERSION &&
-                            $Regexp::Common::_support::VERSION =~ /^\d+\.\d+$/;
-print "ok $c\n";
 
 foreach my $g (@good) {
     print "not " unless luhn $g;

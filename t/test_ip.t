@@ -18,9 +18,6 @@ sub fail {
 use Regexp::Common;
 ok;
 
-ok (defined $Regexp::Common::net::VERSION &&
-            $Regexp::Common::net::VERSION =~ /^\d+[.]\d+$/);
-
 # DOTTED DECIMAL
 
 try $RE{net}{IPv4};

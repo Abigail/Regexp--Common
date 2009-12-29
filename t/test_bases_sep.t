@@ -9,9 +9,6 @@ sub try{$P=qr/^$_[0]$/}sub fail{ok($S=$_[0]!~$P)}sub pass{ok($S=$_[0]=~$P)}
 use Regexp::Common;
 ok;
 
-ok (defined $Regexp::Common::number::VERSION &&
-            $Regexp::Common::number::VERSION =~ /^\d+[.]\d+$/);
-
 # TEST BASE 10
 
 try $RE{num}{real}{-base => '10'}{-sep};

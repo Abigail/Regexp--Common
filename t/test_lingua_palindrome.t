@@ -48,9 +48,6 @@ my $max = 1 + 2 * @failures + 3 * (@passes + 3 * grep {!/^[<>] .*:$/} @entries);
 
 print "1..$max\n";
 
-print "not " unless defined $Regexp::Common::lingua::VERSION;
-print "ok ", ++ $count, ' - $Regexp::Common::lingua::VERSION', "\n";
-
 # print "$fail\n"; exit;
 
 foreach (@passes) {

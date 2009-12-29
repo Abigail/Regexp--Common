@@ -13,9 +13,6 @@ sub fail2 {ok ($S=($_[0] !~ $P || $& ne $_[1]))}
 use Regexp::Common;
 ok;
 
-ok (defined $Regexp::Common::comment::VERSION &&
-            $Regexp::Common::comment::VERSION =~ /^\d+[.]\d+$/);
-
 my @ids = (
    ['"'      =>  [[Pascal => 'Workshop']]],
 );
