@@ -9,7 +9,7 @@ use Config;
 
 $^W = 1;
 
-($VERSION) = q $Revision: 2.100 $ =~ /[\d.]+/;
+($VERSION) = q $Revision: 2.102 $ =~ /[\d.]+/;
 
 sub passes;
 sub failures;
@@ -193,9 +193,10 @@ sub failures {
         push @failures => "DE$c-$x";
     }
 
-    for (1 .. 1) {
+    for (1 .. FAIL) {
         my $x = _ 5;
-        push @failures => "de-$x";
+        redo if $cache {"de-$x"} ++;
+        push @failures => "de-$x", "d-$x";
     }
 
     @failures;
@@ -206,7 +207,13 @@ __END__
 
 =pod
 
- $Log: test_zip_german.t,v $
+ $Log: german.t,v $
+ Revision 2.102  2003/02/02 03:11:20  abigail
+ File moved to t/URI
+
+ Revision 2.101  2003/02/01 22:35:39  abigail
+ Added some tests
+
  Revision 2.100  2003/01/22 17:25:39  abigail
  Initial checkin. Tests for German zip codes.
 

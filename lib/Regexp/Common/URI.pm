@@ -1,4 +1,4 @@
-# $Id: URI.pm,v 2.100 2003/01/21 23:19:40 abigail Exp $
+# $Id: URI.pm,v 2.101 2003/02/01 22:55:31 abigail Exp $
 
 package Regexp::Common::URI; {
 
@@ -9,7 +9,7 @@ use Regexp::Common qw /pattern clean no_defaults/;
 
 use vars qw /$VERSION/;
 
-($VERSION) = q $Revision: 2.100 $ =~ /[\d.]+/g;
+($VERSION) = q $Revision: 2.101 $ =~ /[\d.]+/g;
 
 # RFC 2396, base definitions.
 my $digit             =  '[0-9]';
@@ -516,6 +516,9 @@ Vaha-Sipila, A.: I<URLs for Telephone Calls>. April 2000.
 =head1 HISTORY
 
  $Log: URI.pm,v $
+ Revision 2.101  2003/02/01 22:55:31  abigail
+ Changed Copyright years
+
  Revision 2.100  2003/01/21 23:19:40  abigail
  The whole world understands RCS/CVS version numbers, that 1.9 is an
  older version than 1.10. Except CPAN. Curse the idiot(s) who think
@@ -582,7 +585,7 @@ Send them in to I<regexp-common@abigail.nl>.
 
 =head1 COPYRIGHT
 
-     Copyright (c) 2001 - 2002, Damian Conway. All Rights Reserved.
+     Copyright (c) 2001 - 2003, Damian Conway. All Rights Reserved.
        This module is free software. It may be used, redistributed
       and/or modified under the terms of the Perl Artistic License
             (see http://www.perl.com/perl/misc/Artistic.html)

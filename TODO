@@ -1,4 +1,4 @@
-$Id: TODO,v 2.100 2003/01/21 23:18:40 abigail Exp $
+$Id: TODO,v 2.101 2003/01/24 15:50:12 abigail Exp $
 
 - t/test_keep.t causes warnings under 5.005 and 5.6.
 - URIs:
@@ -6,5 +6,6 @@ $Id: TODO,v 2.100 2003/01/21 23:18:40 abigail Exp $
 - Dates:
     + ISO Dates.
 - numbers:
-    + Roman numbers >= 4000.
+    + Roman numbers >= 4000. Unicode?
     + Prime numbers? Fibonacci? Other special numbers?
+    + Ranges of numbers.

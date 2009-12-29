@@ -9,7 +9,7 @@ use Config;
 
 $^W = 1;
 
-($VERSION) = q $Revision: 2.100 $ =~ /[\d.]+/;
+($VERSION) = q $Revision: 2.102 $ =~ /[\d.]+/;
 
 sub passes;
 sub failures;
@@ -202,9 +202,10 @@ sub failures {
         push @failures => "FR$c-$x";
     }
 
-    for (1 .. 1) {
+    for (1 .. FAIL) {
         my $x = _ 5;
-        push @failures => "fr-$x";
+        redo if $cache {"fr-$x"} ++;
+        push @failures => "fr-$x", "f-$x";
     }
 
     @failures;
@@ -215,7 +216,13 @@ __END__
 
 =pod
 
- $Log: test_zip_french.t,v $
+ $Log: french.t,v $
+ Revision 2.102  2003/02/02 03:11:20  abigail
+ File moved to t/URI
+
+ Revision 2.101  2003/02/01 22:31:16  abigail
+ Added some tests
+
  Revision 2.100  2003/01/23 02:14:22  abigail
  Tests for French postal codes. Initial checkin.
 

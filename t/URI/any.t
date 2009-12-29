@@ -1,6 +1,9 @@
-# $Id: test_uris.t,v 2.100 2003/01/21 23:19:13 abigail Exp $
+# $Id: any.t,v 2.101 2003/02/02 03:09:30 abigail Exp $
 #
-# $Log: test_uris.t,v $
+# $Log: any.t,v $
+# Revision 2.101  2003/02/02 03:09:30  abigail
+# File moved to t/URI
+#
 # Revision 2.100  2003/01/21 23:19:13  abigail
 # The whole world understands RCS/CVS version numbers, that 1.9 is an
 # older version than 1.10. Except CPAN. Curse the idiot(s) who think

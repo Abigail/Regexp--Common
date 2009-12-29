@@ -8,7 +8,7 @@ use Carp;
 
 use vars qw /$VERSION/;
 
-($VERSION) = q $Revision: 2.102 $ =~ /[\d.]+/;
+($VERSION) = q $Revision: 2.104 $ =~ /[\d.]+/;
 
 #
 # Prefer '[0-9]' over \d, because the latter may include more
@@ -16,9 +16,10 @@ use vars qw /$VERSION/;
 #
 
 my %code = (
-    France            =>  [qw /FR?  FR F/],
-    Germany           =>  [qw /DE?  DE D/],
-   "The Netherlands"  =>  [qw /NL   NL NL/],
+    Australian        =>  [qw /AUS? AU AUS/],
+    Dutch             =>  [qw /NL   NL NL/],
+    French            =>  [qw /FR?  FR F/],
+    German            =>  [qw /DE?  DE D/],
     USA               =>  [qw /USA? US USA/],
 );
 
@@ -50,6 +51,38 @@ sub _c {
 }
 
 
+my %zip = (
+    Australian  =>  "(?k:(?k:[1-8][0-9]|9[0-7]|0?[28])(?k:[0-9]{2}))",
+                    # Postal codes of the form 'DDDD', with the first
+                    # two digits 02, 08 or 20-97. Leading 0 may be omitted.
+
+    French      =>  "(?k:(?k:0[1-9]|[1-8][0-9]|9[0-8])(?k:[0-9]{3}))",
+                    # Postal codes of the form: 'DDDDD'. All digits are used.
+                    # First two digits indicate the department, and range
+                    # from 01 to 98.
+
+    German      =>  "(?k:(?k:[0-9])(?k:[0-9])(?k:[0-9]{3}))",
+                    # Postal codes of the form: 'DDDDD'. All digits are used.
+                    # First digit is the distribution zone, second a
+                    # distribution region. Other digits indicate the
+                    # distribution district and postal town.
+);
+
+
+while (my ($country, $zip) = each %zip) {
+    pattern name   => [zip => $country, qw /-prefix= -country=/],
+            create => sub {
+                my $pt  = _t $_ [1] {-prefix};
+
+                my $cn  = _c $country => $_ [1] {-country};
+                my $pfx = "(?:(?k:$cn)-)";
+
+                "(?k:$pfx$pt$zip)";
+            },
+            ;
+}
+
+
 # Postal codes of the form 'DDDD LL', with F, I, O, Q, U and Y not
 # used, SA, SD and SS unused combinations, and the first digit
 # cannot be 0. No specific meaning to the letters or digits.
@@ -64,43 +97,13 @@ pattern name   => [qw /zip Dutch -prefix= -country=/, "-sep= "],
                        'S[BCEGHJ-NPRTVWXZ]';
 
             my $sep = __ $_ [1] {-sep};
-            my $cn  = _c "The Netherlands" => $_ [1] {-country};
+            my $cn  = _c Dutch => $_ [1] {-country};
             my $pfx = "(?:(?k:$cn)-)";
 
             "(?k:$pfx$pt(?k:(?k:$num)(?k:$sep)(?k:$let)))";
         },
         ;
 
-
-# Postal codes of the form: 'DDDDD'. All digits are used.
-# First two digits indicate the department, and range from 01 to 98.
-pattern name   => [qw /zip French -prefix= -country=/],
-        create => sub {
-            my $pt  = _t $_ [1] {-prefix};
-
-            my $cn  = _c France => $_ [1] {-country};
-            my $pfx = "(?:(?k:$cn)-)";
-            my $zip = "(?k:(?k:0[1-9]|[1-8][0-9]|9[0-8])(?k:[0-9]{3}))";
-
-            "(?k:$pfx$pt$zip)";
-        },
-        ;
-
-
-# Postal codes of the form: 'DDDDD'. All digits are used.
-# First digit is the distribution zone, second a distribution region.
-# Other digits indicate the distribution district and postal town.
-pattern name   => [qw /zip German -prefix= -country=/],
-        create => sub {
-            my $pt  = _t $_ [1] {-prefix};
-
-            my $cn  = _c Germany => $_ [1] {-country};
-            my $pfx = "(?:(?k:$cn)-)";
-            my $zip = "(?k:(?k:[0-9])(?k:[0-9])(?k:[0-9]{3}))";
-
-            "(?k:$pfx$pt$zip)";
-        },
-        ;
 
 # Postal codes of the form 'DDDDD' or 'DDDDD-DDDD'. All digits are used,
 # none carry any specific meaning.
@@ -146,10 +149,6 @@ pattern name    => [qw /zip US -prefix= -country= -extended= -sep=-/],
 # 
 #             "(?k:(?k:$left)(?k:$sep)(?k:$right))";
 #         },
-#         ;
-# 
-# pattern name   => [qw /zip Australian/],
-#         create => "(?k:[0-9]{4}|8[0-9]{2})",
 #         ;
 
 }
@@ -236,6 +235,40 @@ Examples:
            # Matches '1234 AB' but not '1234AB'.
  /$RE{zip}{Dutch}{-sep => '\s*'}/;
            # Matches '1234 AB' and '1234AB'.
+
+=head2 C<$RE{zip}{Australian}>
+
+Returns a pattern that recognizes Australian postal codes. Australian
+postal codes consist of four digits; the first two digits, which range
+from '10' to '97', indicate the state. Territories use '02' or '08'
+as starting digits; the leading zero is optional. The (optional) country
+prefixes are I<AU> (ISO country code) and I<AUS> (CEPT code).
+
+If C<{-keep}> is used, the following variables will be set:
+
+=over 4
+
+=item $1
+
+The entire postal code.
+
+=item $2
+
+The country code prefix.
+
+=item $3
+
+The postal code without the country prefix.
+
+=item $4
+
+The state or territory.
+
+=item $5
+
+The last two digits.
+
+=back
 
 =head2 C<$RE{zip}{Dutch}>
 
@@ -399,6 +432,12 @@ postal codes.
 =head1 HISTORY
 
  $Log: zip.pm,v $
+ Revision 2.104  2003/02/01 22:55:31  abigail
+ Changed Copyright years
+
+ Revision 2.103  2003/02/01 22:49:25  abigail
+ Added Australian postal codes
+
  Revision 2.102  2003/01/23 02:18:42  abigail
  Added French postal codes
 
@@ -448,12 +487,9 @@ This package is maintained by Abigail S<(I<regexp-common@abigail.nl>)>.
 Zip codes for most countries are missing.
 Send them in to I<regexp-common@abigail.nl>.
 
-Do Dutch zip code actually allow all letters? Or are I and O omitted?
-What about the Q?
-
 =head1 COPYRIGHT
 
-     Copyright (c) 2001 - 2002, Damian Conway. All Rights Reserved.
+     Copyright (c) 2001 - 2003, Damian Conway. All Rights Reserved.
        This module is free software. It may be used, redistributed
       and/or modified under the terms of the Perl Artistic License
             (see http://www.perl.com/perl/misc/Artistic.html)

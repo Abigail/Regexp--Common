@@ -9,7 +9,7 @@ use Config;
 
 $^W = 1;
 
-($VERSION) = q $Revision: 2.100 $ =~ /[\d.]+/;
+($VERSION) = q $Revision: 2.101 $ =~ /[\d.]+/;
 
 my $count;
 
@@ -60,7 +60,10 @@ foreach (@failures) {
 
 =pod
 
- $Log: test_uri_tv.t,v $
+ $Log: tv.t,v $
+ Revision 2.101  2003/02/02 03:09:30  abigail
+ File moved to t/URI
+
  Revision 2.100  2003/01/21 23:19:13  abigail
  The whole world understands RCS/CVS version numbers, that 1.9 is an
  older version than 1.10. Except CPAN. Curse the idiot(s) who think

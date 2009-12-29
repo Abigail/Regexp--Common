@@ -9,7 +9,7 @@ use Config;
 
 $^W = 1;
 
-($VERSION) = q $Revision: 2.100 $ =~ /[\d.]+/;
+($VERSION) = q $Revision: 2.102 $ =~ /[\d.]+/;
 
 sub failures;
 
@@ -218,7 +218,7 @@ sub failures {
         my $y .= _l 2;
            $y  = _l 2 while $y =~ /[FIOQUY]/ || $y =~ /S[ADS]/;
         my $s  =  int rand 256;
-        redo if $s & 0x7F < 0x20;
+        redo if +($s & 0x7F) < 0x20;
            $s  =  chr $s;
         redo if $s eq ' ' || $s eq '-';
         redo if $cache {"$x$s$y"} ++;
@@ -261,7 +261,7 @@ sub failures {
         my $y .= _l 2;
            $y  = _l 2 while $y =~ /[FIOQUY]/ || $y =~ /S[ADS]/;
         my $c  = _l 2;
-           $c  = _l 2 while $y eq "NL";
+           $c  = _l 2 while $c eq "NL";
         redo if $cache {"$c-$x $y"} ++;
         push @failures => "$c-$x $y";
     }
@@ -281,9 +281,10 @@ sub failures {
         my $y .= _l 2;
            $y  = _l 2 while $y =~ /[FIOQUY]/ || $y =~ /S[ADS]/;
         my $c  = _l 1;
+           $c  = _l 1 while $c eq "D";
         redo if $cache {"${c}NL-$x $y"} ++ || $cache {"NL$c-$x $y"} ++;
         push @failures => "${c}NL-$x $y";
-        push @failures => "NL$c-$x $y" unless $c eq "D";
+        push @failures => "NL$c-$x $y";
     }
 
     @failures;
@@ -291,7 +292,13 @@ sub failures {
 
 =pod
 
- $Log: test_zip_dutch.t,v $
+ $Log: dutch.t,v $
+ Revision 2.102  2003/02/02 03:11:20  abigail
+ File moved to t/URI
+
+ Revision 2.101  2003/02/02 02:56:53  abigail
+ Debugged the test suite
+
  Revision 2.100  2003/01/21 23:19:13  abigail
  The whole world understands RCS/CVS version numbers, that 1.9 is an
  older version than 1.10. Except CPAN. Curse the idiot(s) who think
