@@ -85,10 +85,10 @@ Regexp::Common::numbers -- provide regexes for numbers
 
 =head1 DESCRIPTION
 
-Please consult the manual of L<Regex::Common> for a general description
+Please consult the manual of L<Regexp::Common> for a general description
 of the works of this interface.
 
-Do not use this module directly, but load it via I<Regex::Common>.
+Do not use this module directly, but load it via I<Regexp::Common>.
 
 =head2 C<$RE{num}{int}{-sep}{-group}>
 

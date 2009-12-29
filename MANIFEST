@@ -7,6 +7,7 @@ lib/Regexp/Common/list.pm
 lib/Regexp/Common/net.pm
 lib/Regexp/Common/number.pm
 lib/Regexp/Common/profanity.pm
+lib/Regexp/Common/URI.pm
 lib/Regexp/Common/whitespace.pm
 MANIFEST
 Makefile.PL
@@ -17,6 +18,8 @@ t/test_bases_sep.t
 t/test_comments.t
 t/test_curry.t
 t/test_delimited.t
+t/test_ftp_uri.t
+t/test_http_uri.t
 t/test_int.t
 t/test_ip.t
 t/test_keep.t
@@ -26,4 +29,5 @@ t/test_no_import.t
 t/test_profanity.t
 t/test_sub.t
 t/test_sub_named.t
+t/test_uris.t
 t/test_ws.t

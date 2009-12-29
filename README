@@ -75,9 +75,17 @@ COPYRIGHT
 
 ==============================================================================
 
-CHANGES IN VERSION 0.02
+CHANGES IN VERSION 0.06
 
 Revision history for Perl extension Regexp::Common.
+
+0.07  Mon Aug  5 14:31:17 CEST 2002
+        - Fixed 'Regex::' and 'Rexexp::' typos.
+        - Split t/test_uris.t into t/test_ftp_uri.t, t/test_http_uri.t
+          and t/test_uris.t.
+
+0.06  Mon Aug  5 00:56:19 CEST 2002
+        - URI regexes. Currently only HTTP and FTP. More to come.
 
 0.05  Thu Aug  1 12:01:04 CEST 2002
         - Improved the 'subs' method of MAC addresses.

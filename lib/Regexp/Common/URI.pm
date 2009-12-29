@@ -1,0 +1,341 @@
+package Regexp::Common::URI; {
+
+use strict;
+local $^W = 1;
+
+use Regexp::Common qw /pattern clean no_defaults/;
+
+# RFC 2396, base definitions.
+my $digit          =  '[0-9]';
+my $upalpha        =  '[A-Z]';
+my $lowalpha       =  '[a-z]';
+my $alpha          =  '[a-zA-Z]';                # lowalpha | upalpha
+my $alphanum       =  '[a-zA-Z0-9]';             # alpha    | digit
+my $hex            =  '[a-fA-F0-9]';
+my $escaped        =  "(?:%$hex$hex)";
+my $mark           =  "[\\-_.!~*'()]";
+my $unreserved     =  "[a-zA-Z0-9\\-_.!~*'()]";  # alphanum | mark
+my $reserved       =  "[;/?:@&=+\$,]";
+my $pchar          =  "(?:[a-zA-Z0-9\\-_.!~*'():\@&=+\$,]|$escaped)";
+                                      # unreserved | escaped | [:@&=+$,]
+my $uric           =  "(?:[;/?:\@&=+\$,a-zA-Z0-9\\-_.!~*'()]|$escaped)";
+                                      # reserved | unreserved | escaped
+my $urics          =  "(?:(?:[;/?:\@&=+\$,a-zA-Z0-9\\-_.!~*'()]+|$escaped)*)";
+
+my $query          =  $urics;
+my $fragment       =  $urics;
+my $param          =  "(?:(?:[a-zA-Z0-9\\-_.!~*'():\@&=+\$,]+|$escaped)*)";
+my $segment        =  "(?:$param(?:;$param)*)";
+my $path_segments  =  "(?:$segment(?:/$segment)*)";
+my $ftp_segments   =  "(?:$param(?:/$param)*)";   # NOT from RFC 2396.
+my $rel_segment    =  "(?:(?:[a-zA-Z0-9\\-_.!~*'();\@&=+\$,]*|$escaped)+)";
+my $abs_path       =  "(?:/$path_segments)";
+my $rel_path       =  "(?:$rel_segment(?:$abs_path)?)";
+my $path           =  "(?:(?:$abs_path|$rel_path)?)";
+
+my $port           =  "(?:$digit*)";
+my $IPv4address    =  "(?:$digit+\\.$digit+\\.$digit+\\.$digit+)";
+my $toplabel       =  "(?:$alpha|$alphanum"."[-a-zA-Z0-9]*$alphanum)";
+my $domainlabel    =  "(?:$alphanum|$alphanum"."[-a-zA-Z0-9]*$alphanum)";
+my $hostname       =  "(?:(?:$domainlabel\\.)*$toplabel\\.?)";
+my $host           =  "(?:$hostname|$IPv4address)";
+my $hostport       =  "(?:$host(?::$port))";
+
+my $userinfo       =  "(?:(?:[a-zA-Z0-9\\-_.!~*'();:&=+\$,]+|$escaped)*)";
+my $userinfo_no_colon =
+                      "(?:(?:[a-zA-Z0-9\\-_.!~*'();&=+\$,]+|$escaped)*)";
+my $server         =  "(?:(?:$userinfo\@)?$hostport)";
+
+my $reg_name       =  "(?:(?:[a-zA-Z0-9\\-_.!~*'()\$,;:\@&=+]*|$escaped)+)";
+my $authority      =  "(?:$server|$reg_name)";
+
+my $scheme         =  "(?:$alpha"."[a-zA-Z0-9+\\-.]*)";
+
+my $net_path       =  "(?://$authority$abs_path?)";
+my $uric_no_slash  =  "(?:[a-zA-Z0-9\\-_.!~*'();?:\@&=+\$,]|$escaped)";
+my $opaque_part    =  "(?:$uric_no_slash$urics)";
+my $hier_part      =  "(?:(?:$net_path|$abs_path)(?:?$query)?)";
+
+my $relativeURI    =  "(?:(?:$net_path|$abs_path|$rel_path)(?:?$query)?";
+my $absoluteURI    =  "(?:$scheme:(?:$hier_part|$opaque_part))";
+my $URI_reference  =  "(?:(?:$absoluteURI|$relativeURI)?(?:#$fragment)?)";
+
+
+# The defined schemes, collect them in a hash.
+my %uri;
+
+# HTTP: See RFC 2396 for generic syntax, and RFC 2616 for HTTP.
+# RFC 2616:
+#       http_URI = "http:" "//" host [ ":" port ] [ abs_path [ "?" query ]]
+$uri {HTTP}        =  "(?k:(?k:http)://(?k:$host)(?::(?k:$port))?"             .
+                      "(?k:/(?k:(?k:$path_segments)(?:\\?(?k:$query))?))?)";
+$uri {FTP}         =  "(?k:(?k:ftp)://"                                        .
+                        "(?:(?k:$userinfo)(?k:)\@)?(?k:$host)(?::(?k:$port))?" .
+                        "(?k:/(?k:(?k:$ftp_segments)"                          .
+                        "(?:;type=(?k:[AIai]))?))?)";
+
+
+pattern name    => [qw (URI)],
+        create  => sub {my $uri =  join '|' => values %uri;
+                           $uri =~ s/\(\?k:/(?:/g;
+                      "(?k:$uri)";
+        },
+        ;
+
+pattern name    => [qw (URI HTTP), "-scheme=http"],
+        create  => sub {
+            my $scheme =  $_ [1] -> {-scheme};
+            my $uri    =  $uri {HTTP};
+            $uri       =~ s/http/$scheme/;
+            $uri;
+        }
+        ;
+
+pattern name    => [qw (URI FTP), "-type=[AIai]", "-password="],
+        create  => sub {
+            my $uri    =  $uri {FTP};
+            if (exists $_ [1] -> {-password} &&
+                !defined $_ [1] -> {-password}) {
+                $uri =  "(?k:(?k:ftp)://"                                  .
+                          "(?:(?k:$userinfo_no_colon)"                     .
+                          "(?::(?k:$userinfo_no_colon))?\@)?"              .
+                          "(?k:$host)(?::(?k:$port))?"                     .
+                          "(?k:/(?k:(?k:$ftp_segments)"                    .
+                          "(?:;type=(?k:[AIai]))?))?)";
+            }
+            my $type   =  $_ [1] -> {-type};
+            $uri       =~ s/\[AIai\]/$type/;
+            $uri;
+        }
+        ;
+
+
+}
+
+
+1;
+
+__END__
+
+=pod
+
+=head1 NAME
+
+Regexp::Common::URI -- provide regexes for URIs.
+
+=head1 SYNOPSIS
+
+    use Regexp::Common qw /URI/;
+
+    while (<>) {
+        /$RE{URI}{HTTP}/       and  print "Contains an HTTP URI.\n";
+    }
+
+=head1 DESCRIPTION
+
+Regexes are available for the following URI types:
+
+=head2 $RE{URI}{HTTP}{-scheme}
+
+Provides a regex for an HTTP URI as defined by RFC 2396 (generic syntax)
+and RFC 2616 (HTTP).
+
+If C<< -scheme=I<P> >> is specified the pattern I<P> is used as the scheme.
+By default I<P> is C<qr/http/>. C<https> and C<https?> are reasonable
+alternatives.
+
+The syntax for an HTTP URI is:
+
+    "http:" "//" host [ ":" port ] [ "/" path [ "?" query ]]
+
+Under C<{-keep}>, the following are returned:
+
+=over 4
+
+=item $1
+
+The entire URI.
+
+=item $2
+
+The scheme.
+
+=item $3
+
+The host (name or address).
+
+=item $4
+
+The port (if any).
+
+=item $5
+
+The absolute path, including the query and leading slash.
+
+=item $6
+
+The absolute path, including the query, without the leading slash.
+
+=item $7
+
+The absolute path, without the query or leading slash.
+
+=item $8
+
+The query, without the question mark.
+
+=back
+
+=head2 $RE{URI}{FTP}{-type}{-password};
+
+Returns a regex for FTP URIs. Note: FTP URIs are not formally defined.
+RFC 1738 defines FTP URLs, but parts of that RFC have been obsoleted
+by RFC 2396. However, the differences between RFC 1738 and RFC 2396 
+are such that they aren't applicable straightforwardly to FTP URIs.
+
+There are two main problems:
+
+=over 4
+
+=item Passwords.
+
+RFC 1738 allowed an optional username and an optional password (separated
+by a colon) in the FTP URL. Hence, colons were not allowed in either the
+username or the password. RFC 2396 strongly recommends passwords should
+not be used in URIs. It does allow for I<userinfo> instead. This userinfo
+part may contain colons, and hence contain more than one colon. The regexp
+returned follows the RFC 2396 specification, unless the I<{-password}>
+option is given; then the regex allows for an optional username and
+password, separated by a colon.
+
+=item The ;type specifier.
+
+RFC 1738 does not allow semi-colons in FTP path names, because a semi-colon
+is a reserved character for FTP URIs. The semi-colon is used to separate
+the path from the option I<type> specifier. However, in RFC 2396, paths
+consist of slash separated segments, and each segment is a semi-colon 
+separated group of parameters. Straigthforward application of RFC 2396
+would mean that a trailing I<type> specifier couldn't be distinguished
+from the last segment of the path having a two parameters, the last one
+starting with I<type=>. Therefore we have opted to disallow a semi-colon
+in the path part of an FTP URI.
+
+Furthermore, RFC 1738 allows three values for the type specifier, I<A>,
+I<I> and I<D> (either upper case or lower case). However, the internet
+draft about FTP URIs B<[DRAFT-FTP-URL]> (which expired in May 1997) notes
+the lack of consistent implementation of the I<D> parameter and drops I<D>
+from the set of possible values. We follow this practise; however, RFC 1738
+behaviour can be archieved by using the I<"-type=[ADIadi]"> parameter.
+
+=back
+
+FTP URIs have the following syntax:
+
+    "ftp:" "//" [ userinfo "@" ] host [ ":" port ]
+                [ "/" path [ ";type=" value ]]
+
+When using I<{-password}>, we have the syntax:
+
+    "ftp:" "//" [ user [ ":" password ] "@" ] host [ ":" port ]
+                [ "/" path [ ";type=" value ]]
+
+Under C<{-keep}>, the following are returned:
+
+=over 4
+
+=item $1
+
+The complete URI.
+
+=item $2
+
+The scheme.
+
+=item $3
+
+The userinfo, or if I<{-password}> is used, the username.
+
+=item $4
+
+If I<{-password}> is used, the password, else C<undef>.
+
+=item $5
+
+The hostname or IP address.
+
+=item $6
+
+The port number.
+
+=item $7
+
+The full path and type specification, including the leading slash.
+
+=item $8
+
+The full path and type specification, without the leading slash.
+
+=item $9
+
+The full path, without the type specification nor the leading slash.
+
+=item $10
+
+The value of the type specification.
+
+=back
+
+
+=head1 REFERENCES
+
+=over 4
+
+=item B<[DRAFT-URL-FTP]>
+
+Casey, James: I<A FTP URL Format>. November 1996.
+
+=item B<[RFC 1738]>
+
+Berners-Lee, Tim, Masinter, L., McCahill, M.: I<Uniform Resource
+Locators (URL)>. December 1994.
+
+=item B<[RFC 2396]>
+
+Berners-Lee, Tim, Fielding, R. and Masinter, L.: I<Uniform Resource
+Identifiers (URI): Generic Syntax>. August 1998.
+
+=item B<[RFC 2616]>
+
+Fielding, R., Gettys, J., Mogul, J., Frystyk, H., Masinter, L., 
+Leach, P. and Berners-Lee, Tim: I<Hypertext Transfer Protocol -- HTTP/1.1>.
+June 1999.
+
+=back
+
+=head1 SEE ALSO
+
+L<Regexp::Common> for a general description of how to use this interface.
+
+=head1 AUTHOR
+
+Damian Conway (damian@conway.org)
+
+=head1 MAINTAINANCE
+
+This package is maintained by Abigail S<(I<regexp-common@abigail.nl>)>.
+
+=head1 BUGS AND IRRITATIONS
+
+Bound to be plenty.
+
+For a start, there are many common regexes missing.
+Send them in to I<regexp-common@abigail.nl>.
+
+=head1 COPYRIGHT
+
+     Copyright (c) 2001 - 2002, Damian Conway. All Rights Reserved.
+       This module is free software. It may be used, redistributed
+      and/or modified under the terms of the Perl Artistic License
+            (see http://www.perl.com/perl/misc/Artistic.html)
+
+=cut

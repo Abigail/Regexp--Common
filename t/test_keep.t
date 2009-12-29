@@ -95,3 +95,45 @@ pass $profane;
 
 try $RE{profanity}{contextual}{-keep};
 pass $contextual;
+
+try $RE{URI}{HTTP}{-keep};
+pass 'http://www.example.com:80/some/path?query',
+     'http', 'www.example.com', '80',
+     '/some/path?query', 'some/path?query', 'some/path', 'query';
+pass 'http://www.example.com',
+     'http', 'www.example.com', undef, undef, undef, undef, undef;
+pass 'http://www.example.com/some/path?query',
+     'http', 'www.example.com', undef,
+     '/some/path?query', 'some/path?query', 'some/path', 'query';
+pass 'http://www.example.com/some/path',
+     'http', 'www.example.com', undef,
+     '/some/path', 'some/path', 'some/path', undef;
+
+try $RE{URI}{HTTP}{-keep}{-scheme => "https?"};
+pass 'https://www.example.com:80/some/path?query',
+     'https', 'www.example.com', '80',
+     '/some/path?query', 'some/path?query', 'some/path', 'query';
+pass 'https://www.example.com',
+     'https', 'www.example.com', undef, undef, undef, undef, undef;
+pass 'http://www.example.com/some/path?query',
+     'http', 'www.example.com', undef,
+     '/some/path?query', 'some/path?query', 'some/path', 'query';
+pass 'http://www.example.com/some/path',
+     'http', 'www.example.com', undef,
+     '/some/path', 'some/path', 'some/path', undef;
+
+try $RE{URI}{FTP}{-keep};
+pass 'ftp://ftp.example.com/some/path/somewhere',
+     'ftp', undef, undef, 'ftp.example.com', undef,
+     '/some/path/somewhere', 'some/path/somewhere',
+     'some/path/somewhere', undef;
+pass 'ftp://abigail@ftp.example.com:21/some/path/somewhere;type=a',
+     'ftp', 'abigail', undef, 'ftp.example.com', 21,
+     '/some/path/somewhere;type=a', 'some/path/somewhere;type=a',
+     'some/path/somewhere', 'a';
+
+try $RE{URI}{FTP}{-keep}{-password};
+pass 'ftp://abigail:secret@ftp.example.com:21/some/path/somewhere;type=a',
+     'ftp', 'abigail', 'secret', 'ftp.example.com', 21,
+     '/some/path/somewhere;type=a', 'some/path/somewhere;type=a',
+     'some/path/somewhere', 'a';

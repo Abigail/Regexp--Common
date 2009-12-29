@@ -86,10 +86,10 @@ Regexp::Common::net -- provide regexes for IPv4 addresses.
 
 =head1 DESCRIPTION
 
-Please consult the manual of L<Regex::Common> for a general description
+Please consult the manual of L<Regexp::Common> for a general description
 of the works of this interface.
 
-Do not use this module directly, but load it via I<Regex::Common>.
+Do not use this module directly, but load it via I<Regexp::Common>.
 
 This modules gives you regular expressions for various style IPv4 
 and MAC (or ethernet) addresses.

@@ -6,7 +6,14 @@ use strict;
 local $^W = 1;
 
 use vars qw /$VERSION %RE %sub_interface/;
-$VERSION = '0.05';
+
+# $Revision: 1.17 $
+# $Log: Common.pm,v $
+# Revision 1.17  2002/08/05 12:21:46  abigail
+# Upped version number to 0.07.
+#
+
+$VERSION = '0.07';
 
 use Carp;
 
@@ -29,7 +36,7 @@ sub FETCH {
 
 my %imports = map {$_ => "Regexp::Common::$_"}
               qw /balanced  comment delimited  list net number
-                  profanity whitespace/;
+                  profanity URI     whitespace/;
 
 sub import {
     tie %RE, __PACKAGE__;
@@ -69,7 +76,7 @@ sub import {
         # As a last resort, try to load the argument.
         my $module = $entry =~ /^Regexp::Common/
                             ? $entry
-                            : "Regex::Common::" . $entry;
+                            : "Regexp::Common::" . $entry;
         eval "require $module;";
         die $@ if $@;
     }
