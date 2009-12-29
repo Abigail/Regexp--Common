@@ -6,7 +6,7 @@ sub try{$P=qr/^$_[0]$/}sub fail{ok($S=$_[0]!~$P)}sub pass{ok($S=$_[0]=~$P)}
 
 # LOAD
 
-use Regexp::Common qw( RE_balanced RE_num_real );
+use Regexp::Common qw (RE_balanced RE_num_real);
 ok;
 
 if ($] >= 5.006) {
@@ -19,4 +19,3 @@ pass '-1.234e+567', qw( - 1.234 1 . 234 e +567 + 567 );
 
 try RE_num_real(-base=>2,-expon=>'x2\^');
 pass '-101.010x2^101010', qw( - 101.010 101 . 010 x2^ 101010 ), "", "101010";
-

@@ -9,7 +9,6 @@ sub try{$P=qr/^$_[0]$/}sub fail{ok($S=$_[0]!~$P)}sub pass{ok($S=$_[0]=~$P)}
 use Regexp::Common;
 ok;
 
-
 # DOTTED DECIMAL
 
 try $RE{net}{IPv4};

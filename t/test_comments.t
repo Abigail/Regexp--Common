@@ -11,34 +11,68 @@ ok;
 
 # TEST C COMMENTS
 
-try $RE{comment}{C};
+foreach my $language (qw /C LPC/) {
+    try $RE{comment}{$language};
 
-pass '/*a comment */';
-pass '/************/';
-pass "/*a\nmultiline\ncomment*/";
-fail "/*a /*pretend*/ nested comment*/";
-pass "/*a /*pretend*/";
-fail "/***********";
-fail "#\n";
-fail "#a comment\n";
-fail "#/*a comment */\n";
-fail "#/************\n";
-fail "#/////////////\n";
-fail "#a\n#multiline\n#comment\n/";
-fail "#a comment";
-fail "#/*a comment */";
-fail "#/************";
-fail "#/////////////";
+    pass '/*a comment */';
+    pass '/************/';
+    pass "/*a\nmultiline\ncomment*/";
+    fail "/*a /*pretend*/ nested comment*/";
+    pass "/*a /*pretend*/";
+    fail "/***********";
+    fail "#\n";
+    fail "#a comment\n";
+    fail "#/*a comment */\n";
+    fail "#/************\n";
+    fail "#/////////////\n";
+    fail "#a\n#multiline\n#comment\n";
+    fail "#a comment";
+    fail "#/*a comment */";
+    fail "#/************";
+    fail "#/////////////";
+}
 
 
-try $RE{comment}{'C++'};
+foreach my $language (qw /C++ Java/) {
+    try $RE{comment}{$language};
+
+    pass "//\n";
+    pass "//a comment\n";
+    pass "///*a comment */\n";
+    pass "///************\n";
+    pass "///////////////\n";
+    fail "//a\n//multiline\n//comment\n";
+    fail "//a comment";
+    fail "///*a comment */";
+    fail "///************";
+    fail "///////////////";
+    pass '/*a comment */';
+    pass '/************/';
+    pass "/*a\nmultiline\ncomment*/";
+    fail "/*a /*pretend*/ nested comment*/";
+    pass "/*a /*pretend*/";
+    fail "/***********";
+    fail "#\n";
+    fail "#a comment\n";
+    fail "#/*a comment */\n";
+    fail "#/************\n";
+    fail "#/////////////\n";
+    fail "#a\n#multiline\n#comment\n";
+    fail "#a comment";
+    fail "#/*a comment */";
+    fail "#/************";
+    fail "#/////////////";
+}
+
+
+try $RE{comment}{PHP};
 
 pass "//\n";
 pass "//a comment\n";
 pass "///*a comment */\n";
 pass "///************\n";
 pass "///////////////\n";
-fail "//a\n//multiline\n//comment\n/";
+fail "//a\n//multiline\n//comment\n";
 fail "//a comment";
 fail "///*a comment */";
 fail "///************";
@@ -49,74 +83,183 @@ pass "/*a\nmultiline\ncomment*/";
 fail "/*a /*pretend*/ nested comment*/";
 pass "/*a /*pretend*/";
 fail "/***********";
-fail "#\n";
-fail "#a comment\n";
-fail "#/*a comment */\n";
-fail "#/************\n";
-fail "#/////////////\n";
-fail "#a\n#multiline\n#comment\n/";
-fail "#a comment";
-fail "#/*a comment */";
-fail "#/************";
-fail "#/////////////";
-
-
-try $RE{comment}{Perl};
-
 pass "#\n";
 pass "#a comment\n";
 pass "#/*a comment */\n";
 pass "#/************\n";
 pass "#/////////////\n";
-fail "#a\n#multiline\n#comment\n/";
+fail "#a\n#multiline\n#comment\n";
 fail "#a comment";
 fail "#/*a comment */";
 fail "#/************";
 fail "#/////////////";
-fail "//a comment\n";
-fail "///*a comment */\n";
-fail "///************\n";
-fail "///////////////\n";
-fail "//a\n//multiline\n//comment\n/";
-fail "//a comment";
-fail "///*a comment */";
-fail "///************";
-fail "///////////////";
-fail '/*a comment */';
-fail '/************/';
-fail "/*a\nmultiline\ncomment*/";
-fail "/*a /*pretend*/ nested comment*/";
-fail "/*a /*pretend*/";
-fail "/***********";
+
+foreach my $language (qw /REBOL zonefile/) {
+    try $RE{comment}{$language};
+
+    pass ";\n";
+    pass ";a comment\n";
+    pass ";/*a comment */\n";
+    pass ";/************\n";
+    pass ";/////////////\n";
+    fail ";a\n;multiline\n;comment\n";
+    fail ";a comment";
+    fail ";/*a comment */";
+    fail ";/************";
+    fail ";/////////////";
+    fail "#\n";
+    fail "#a comment\n";
+    fail "#/*a comment */\n";
+    fail "#/************\n";
+    fail "#;////////////\n";
+    fail "//a comment\n";
+    fail "///*a comment */\n";
+    fail "///************\n";
+    fail "///////////////\n";
+    fail "//a\n//multiline\n//comment\n";
+    fail "//a comment";
+    fail "///*a comment */";
+    fail "///************";
+    fail "///////////////";
+    fail '/*a comment */';
+    fail '/************/';
+    fail "/*a\nmultiline\ncomment*/";
+    fail "/*a /*pretend*/ nested comment*/";
+    fail "/*a /*pretend*/";
+    fail "/***********";
+}
+
+foreach my $language (qw /Ada Eiffel SQL/) {
+    try $RE{comment}{$language};
+
+    pass "--\n";
+    pass "--a comment\n";
+    pass "--/*a comment */\n";
+    pass "--/************\n";
+    pass "--/////////////\n";
+    pass "-----\n";
+    pass "-----/////////////\n";
+    fail "--a\n--multiline\n--comment\n";
+    fail "--a comment";
+    fail "--/*a comment */";
+    fail "--/************";
+    fail "--/////////////";
+    fail "#\n";
+    fail "#a comment\n";
+    fail "#/*a comment */\n";
+    fail "#/************\n";
+    fail "#--////////////\n";
+    fail "//a comment\n";
+    fail "///*a comment */\n";
+    fail "///************\n";
+    fail "///////////////\n";
+    fail "//a\n//multiline\n//comment\n";
+    fail "//a comment";
+    fail "///*a comment */";
+    fail "///************";
+    fail "///////////////";
+    fail '/*a comment */';
+    fail '/************/';
+    fail "/*a\nmultiline\ncomment*/";
+    fail "/*a /*pretend*/ nested comment*/";
+    fail "/*a /*pretend*/";
+    fail "/***********";
+}
 
 
-try $RE{comment}{shell};
+try $RE{comment}{vi};
 
-pass "#\n";
-pass "#a comment\n";
-pass "#/*a comment */\n";
-pass "#/************\n";
-pass "#/////////////\n";
-fail "#a\n#multiline\n#comment\n/";
-fail "#a comment";
-fail "#/*a comment */";
-fail "#/************";
-fail "#/////////////";
-fail "//a comment\n";
-fail "///*a comment */\n";
-fail "///************\n";
-fail "///////////////\n";
-fail "//a\n//multiline\n//comment\n/";
-fail "//a comment";
-fail "///*a comment */";
-fail "///************";
-fail "///////////////";
-fail '/*a comment */';
-fail '/************/';
-fail "/*a\nmultiline\ncomment*/";
-fail "/*a /*pretend*/ nested comment*/";
-fail "/*a /*pretend*/";
-fail "/***********";
+pass qq !"\n!;
+pass qq !"a comment\n!;
+pass qq !"/*a comment */\n!;
+pass qq !"/************\n!;
+pass qq !"/////////////\n!;
+fail qq !"a\n"multiline\n"comment\n!;
+fail qq !"a comment!;
+fail qq !"/*a comment */!;
+fail qq !"/************!;
+fail qq !"/////////////!;
+fail qq !#\n!;
+fail qq !#a comment\n!;
+fail qq !#/*a comment */\n!;
+fail qq !#/************\n!;
+fail qq !#"////////////\n!;
+fail qq !//a comment\n!;
+fail qq !///*a comment */\n!;
+fail qq !///************\n!;
+fail qq !///////////////\n!;
+fail qq !//a\n//multiline\n//comment\n!;
+fail qq !//a comment!;
+fail qq !///*a comment */!;
+fail qq !///************!;
+fail qq !///////////////!;
+fail qq !/*a comment */!;
+fail qq !/************/!;
+fail qq !/*a\nmultiline\ncomment*/!;
+fail qq !/*a /*pretend*/ nested comment*/!;
+fail qq !/*a /*pretend*/!;
+fail qq !/***********!;
+
+foreach my $language (qw /shell Perl Python awk Ruby Tcl/) {
+    try $RE{comment}{$language};
+
+    pass "#\n";
+    pass "#a comment\n";
+    pass "#/*a comment */\n";
+    pass "#/************\n";
+    pass "#/////////////\n";
+    fail "#a\n#multiline\n#comment\n";
+    fail "#a comment";
+    fail "#/*a comment */";
+    fail "#/************";
+    fail "#/////////////";
+    fail "//a comment\n";
+    fail "///*a comment */\n";
+    fail "///************\n";
+    fail "///////////////\n";
+    fail "//a\n//multiline\n//comment\n";
+    fail "//a comment";
+    fail "///*a comment */";
+    fail "///************";
+    fail "///////////////";
+    fail '/*a comment */';
+    fail '/************/';
+    fail "/*a\nmultiline\ncomment*/";
+    fail "/*a /*pretend*/ nested comment*/";
+    fail "/*a /*pretend*/";
+    fail "/***********";
+}
+
+foreach my $language (qw /TeX LaTeX/) {
+    try $RE{comment}{$language};
+
+    pass "%\n";
+    pass "%a comment\n";
+    pass "%/*a comment */\n";
+    pass "%/************\n";
+    pass "%/////////////\n";
+    fail "%a\n%multiline\n%comment\n";
+    fail "%a comment";
+    fail "%/*a comment */";
+    fail "%/************";
+    fail "%/////////////";
+    fail "//a comment\n";
+    fail "///*a comment */\n";
+    fail "///************\n";
+    fail "///////////////\n";
+    fail "//a\n//multiline\n//comment\n";
+    fail "//a comment";
+    fail "//%*a comment */";
+    fail "//%************";
+    fail "///////////////";
+    fail '/*a comment */';
+    fail '/************/';
+    fail "/*a\nmultiline\ncomment*/";
+    fail "/*a /*pretend*/ nested comment*/";
+    fail "/*a /*pretend*/";
+    fail "/***********";
+}
+
 
 
 try $RE{comment}{HTML};
@@ -145,3 +288,167 @@ fail '<!- No leading COM either -->';
 fail '<!-- No trailing COM>';
 fail '<!-- No trailing COM either ->';
 fail '<!-- To many dashes --->';
+
+try $RE{comment}{troff};
+
+pass qq !\\"\n!;
+pass qq !\\"a comment\n!;
+pass qq !\\"/*a comment */\n!;
+pass qq !\\"/************\n!;
+pass qq !\\"/////////////\n!;
+fail qq !\\"a\n\\"multiline\n\\"comment\n!;
+fail qq !\\"a comment!;
+fail qq !\\"/*a comment */!;
+fail qq !\\"/************!;
+fail qq !\\"/////////////!;
+fail qq !#\n!;
+fail qq !#a comment\n!;
+fail qq !#/*a comment */\n!;
+fail qq !#/************\n!;
+fail qq !#"////////////\n!;
+fail qq !//a comment\n!;
+fail qq !//\\"*a comment */\n!;
+fail qq !//\\"************\n!;
+fail qq !///////////////\n!;
+fail qq !//a\n//multiline\n//comment\n!;
+fail qq !//a comment!;
+fail qq !//\\"*a comment */!;
+fail qq !//\\"************!;
+fail qq !///////////////!;
+fail qq !/*a comment */!;
+fail qq !/************/!;
+fail qq !/*a\nmultiline\ncomment*/!;
+fail qq !/*a /*pretend*/ nested comment*/!;
+fail qq !/*a /*pretend*/!;
+fail qq !/***********!;
+
+try $RE{comment}{Haskell};
+
+pass "--\n";
+pass "-- comment\n";
+pass "{- comment -}";
+pass "{- comment {- nested -} comment -}";
+pass "{--}";
+pass "{-{-{-{-{-{--}-}-}-}-}-}";
+pass "{---}";
+pass "{- -- -}";
+pass "{---------------}";
+pass "{-----{-------{-------}---{---}---}---}";
+pass "{- {- -}}-}";
+fail "-- comment";
+fail "--";
+fail "-\n";
+fail "- comment\n";
+fail "{- comment }";
+fail "{- comment -";
+fail "{-}";
+fail "{-{-{--}-}";
+fail "{- -}{- -}";
+fail "-} {-";
+fail "-} {- -}";
+fail "{- {- -}}";
+
+try $RE{comment}{Dylan};
+
+pass "//\n";
+pass "// comment\n";
+pass "/* comment */";
+pass "/* comment /* nested */ comment */";
+pass "/**/";
+pass "/*/*/*/*/*/**/*/*/*/*/*/";
+pass "/***/";
+pass "/* // */";
+pass "/***************/";
+pass "/* /***/ */";
+fail "// comment";
+fail "//";
+fail "*\n";
+fail "* comment\n";
+fail "/* comment /";
+fail "/* comment *";
+fail "/*/";
+fail "/*/*/**/*/";
+fail "/* *//* */";
+fail "*/ /*";
+fail "*/ /* */";
+fail "/* /* *//";
+fail "/* /* *//*/";
+fail "/*****/*******/*******/***/***/***/***/";
+
+try $RE{comment}{Smalltalk};
+
+pass qq !""!;
+pass qq !"a comment"!;
+pass qq !"/*a comment */"!;
+pass qq !"/************"!;
+pass qq !"/////////////"!;
+fail qq !"a""multiline""comment"!;
+fail qq !"a comment!;
+fail qq !"/*a comment */!;
+fail qq !"/************!;
+fail qq !"/////////////!;
+fail qq !#"!;
+fail qq !#a comment"!;
+fail qq !#/*a comment */"!;
+fail qq !#/************"!;
+fail qq !#"////////////"!;
+fail qq !//a comment"!;
+fail qq !///*a comment */"!;
+fail qq !///************"!;
+fail qq !///////////////"!;
+fail qq !//a"//multiline"//comment"!;
+fail qq !//a comment!;
+fail qq !///*a comment */!;
+fail qq !///************!;
+fail qq !///////////////!;
+fail qq !/*a comment */!;
+fail qq !/************/!;
+fail qq !/*a"multiline"comment*/!;
+fail qq !/*a /*pretend*/ nested comment*/!;
+fail qq !/*a /*pretend*/!;
+fail qq !/***********!;
+
+try $RE{comment}{SQL}{MySQL};
+
+pass "-- \n";
+pass "-- a comment\n";
+pass "-- /*a comment */\n";
+pass "-- /************\n";
+pass "-- /////////////\n";
+pass "-- ---\n";
+fail "--- --\n";
+fail "--\n";
+pass "-- ---/////////////\n";
+fail "-- a\n-- multiline\n-- comment\n";
+fail "-- a comment";
+fail "-- /*a comment */";
+fail "-- /************";
+fail "-- /////////////";
+pass "#\n";
+pass "#a comment\n";
+pass "#/*a comment */\n";
+pass "#/************\n";
+pass "#--////////////\n";
+fail "//a comment\n";
+fail "///*a comment */\n";
+fail "///************\n";
+fail "///////////////\n";
+fail "//a\n//multiline\n//comment\n";
+fail "//a comment";
+fail "///*a comment */";
+fail "///************";
+fail "///////////////";
+pass '/*a comment */';
+pass '/************/';
+pass "/*a\nmultiline\ncomment*/";
+fail "/*a /*pretend*/ nested comment*/";
+pass "/*a /*pretend*/";
+fail "/***********";
+pass "/* Comment ;";
+fail "/* Comment ; */";
+pass "/* Comment ';' */";
+pass "/* Comment ';' ;";
+pass '/* Comment ";" */';
+pass '/* Comment ";" ;';
+pass "/* Comment '\n;*/' */";
+pass "/* Comment '*/' more comment */";

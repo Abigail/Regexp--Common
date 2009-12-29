@@ -29,7 +29,8 @@ try $RE{num}{bin}{-keep};
 pass '-101.010E101010', qw( - 101.010 101 . 010 E 101010 ), "", "101010";
 
 try $RE{num}{real}{'-base=10'}{-sep}{-keep};
-pass '-1,234,567.234e+567', qw( - 1,234,567.234 1,234,567 . 234 e +567 + 567 );
+pass '-1,234,567.234e+567', "-", "1,234,567.234", "1,234,567", ".",
+                            "234", "e", "+567", "+", "567";
 
 try $RE{comment}{C}{-keep};
 pass '/*abc*/', qw( /* abc */ );
@@ -44,11 +45,29 @@ pass "# abc\n", "#", " abc", "\n";
 try $RE{comment}{shell}{-keep};
 pass "# abc\n", "#", " abc", "\n";
 
+try $RE{comment}{Eiffel}{-keep};
+pass "-- A comment\n", "--", " A comment", "\n";
+pass "---- A comment\n", "--", "-- A comment", "\n";
+
+try $RE{comment}{SQL}{-keep};
+pass "-- A comment\n", "--", " A comment", "\n";
+pass "---- A comment\n", "----", " A comment", "\n";
+
 try $RE{comment}{HTML}{-keep};
 pass "<!-- A comment -->", "<!", "-- A comment --", " A comment ", ">";
 pass "<!---->", "<!", "----", "", ">";
 pass "<!-- A -- -- B -- >", "<!", "-- A -- -- B -- ", " B ", ">";
 
+try $RE{comment}{Smalltalk}{-keep};
+pass '"A comment"', '"', 'A comment', '"';
+
+try $RE{comment}{Dylan}{-keep};
+pass "// Comment\n";
+pass "/* Nested /* Comment */ */";
+
+try $RE{comment}{Haskell}{-keep};
+pass "--- Comment\n";
+pass "{- Nested {- Comment -} -}";
 
 try $RE{delimited}{q{-delim=/}}{-keep};
 pass '/a\/b/', qw( / a\/b / );
