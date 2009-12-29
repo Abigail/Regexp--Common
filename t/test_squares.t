@@ -10,13 +10,11 @@ use t::Common '5.008';
 
 local $^W = 0;
 
-my $MAX_INT32 = 0x7FFFFFFF;
-my $MAX_INT   = $Config {use64bitint} ? eval "0x7FFFFFFFFFFFFFFF" : 0x7FFFFFFF;
+my $MAX = 9000000000000000;
 
 local $^W = 1;
 
-
-($VERSION) = q $Revision: 2.102 $ =~ /[\d.]+/;
+($VERSION) = q $Revision: 2.103 $ =~ /[\d.]+/;
 
 sub create_parts;
 
@@ -37,19 +35,16 @@ run_tests version   =>  "Regexp::Common::number",
 
 my %c;
 sub _1 {{
-    my $x = int rand sqrt $MAX_INT32;
+    my $x = int rand sqrt $MAX;
     redo if $c {$x} ++ || $x <= 100;
-    sprintf "%d" => $x;
-}}
-sub _2 {{
-    my $x = int rand sqrt $MAX_INT;
-    redo if $c {$x} ++ || $x <= 100;
-    sprintf "%d" => $x;
+    $x = sprintf "%d" => $x;
+    $x = ("0" x (1 + int rand 10)) . $x if rand (10) < 1;
+    $x;
 }}
 my %d;
-sub _3 {{
-    my $x = int rand $MAX_INT;
-    redo if $d {$x} ++ || $x != (int sqrt ($x) ** 2);
+sub _2 {{
+    my $x = int rand $MAX;
+    redo if $d {$x} ++ || $x == (int sqrt ($x)) ** 2;
     sprintf "%d" => $x;
 }}
 
@@ -57,9 +52,8 @@ sub create_parts {
     my (@good, @bad);
 
     $good [0] = [map {$_ * $_} 0 .. 100];
-    push @{$good [0]} => map {sprintf "%d", _1 () ** 2} 1 .. 200;
-    push @{$good [0]} => map {sprintf "%d", _2 () ** 2} 1 .. 200;
-    $bad  [0] = [-1, 0.1, "fnord", "f16", map {sprintf "%d" => _3} 1 .. 200];
+    push @{$good [0]} => map {sprintf "%d", _1 () ** 2} 1 .. 400;
+    $bad  [0] = [-1, 0.1, "fnord", "f16", map {sprintf "%d" => _2} 1 .. 200];
 
   (\@good, \@bad);
 }
@@ -68,6 +62,10 @@ sub create_parts {
 __END__
  
  $Log: test_squares.t,v $
+ Revision 2.103  2004/06/30 09:14:59  abigail
+ Restricted recognition of square numbers to numbers less than
+ 9000000000000000 to avoid round-off errors.
+
  Revision 2.102  2003/02/11 09:35:09  abigail
  Wrapped '0x7FFFFFFFFFFFFFFF' inside an eval
 

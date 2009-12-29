@@ -1,4 +1,4 @@
-# $Id: number.pm,v 2.103 2003/03/12 22:24:25 abigail Exp $
+# $Id: number.pm,v 2.104 2004/06/30 09:14:54 abigail Exp $
 
 package Regexp::Common::number;
 
@@ -10,7 +10,7 @@ use Carp;
 
 use vars qw /$VERSION @EXPORT_OK @ISA/;
 
-($VERSION) = q $Revision: 2.103 $ =~ /[\d.]+/g;
+($VERSION) = q $Revision: 2.104 $ =~ /[\d.]+/g;
 
 pattern name   => [qw (num int -sep=  -group=3)],
         create => sub {my $flag = $_[1];
@@ -90,7 +90,7 @@ real_synonym (bin =>  2);
 pattern name    => [qw (num square)],
         create  => sub {
             use re 'eval';
-            qr {(\d+)(?(?{sqrt ($^N) == int sqrt ($^N)})|(?!X)X)}
+            qr {(0*[1-8]?\d{1,15})(?(?{sqrt ($^N) == int sqrt ($^N)})|(?!))}
         },
         version => 5.008;
         ;
@@ -328,7 +328,10 @@ captures the fractional portion of the mantissa
 
 =head2 C<$RE{num}{square}>
 
-Returns a pattern that matches a (decimal) square. Regardless whether
+Returns a pattern that matches a (decimal) square. Because Perl's
+arithmetic is lossy when using integers over about 53 bits, this pattern
+only recognizes numbers less than 9000000000000000. This restriction
+was introduced in version 2.116 of Regexp::Common.  Regardless whether
 C<-keep> was set, the matched number will be returned in C<$1>.
 
 This pattern is available for version 5.008 and up.
@@ -347,6 +350,10 @@ Under C<-keep>, the number will be captured in $1.
 =head1 HISTORY
 
  $Log: number.pm,v $
+ Revision 2.104  2004/06/30 09:14:54  abigail
+ Restricted recognition of square numbers to numbers less than
+ 9000000000000000 to avoid round-off errors.
+
  Revision 2.103  2003/03/12 22:24:25  abigail
  Decimal numbers
 

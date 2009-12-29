@@ -1,5 +1,5 @@
 ==============================================================================
-                  Release of version 2.115 of Regexp::Common
+                  Release of version 2.116 of Regexp::Common
 ==============================================================================
 
 WARNING: INCOMPATIBLE CHANGE in version 2.113!
@@ -123,9 +123,16 @@ COPYRIGHT
 
 ==============================================================================
 
-CHANGES IN VERSION 2.115
+CHANGES IN VERSION 2.116
 
 Revision history for Perl extension Regexp::Common.
+
+2.116 Wed Jun 30 11:37:45 CEST 2004
+        - Restricted recognition of squares to numbers less than
+          9000000000000000, to avoid problems with round-off errors.
+        - Fixed an off-by-one error in t/zip/spain.t which caused some
+          test to fail when they shouldn't.
+        - 132235 tests in 48 files.
 
 2.115 Wed Jun  9 23:59:13 2004
         - Patterns for comments of ABC, Caml, CLU, COBOL, ECMAScript,

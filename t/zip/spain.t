@@ -8,7 +8,7 @@ use Regexp::Common;
 
 $^W = 1;
 
-($VERSION) = q $Revision: 2.100 $ =~ /[\d.]+/;
+($VERSION) = q $Revision: 2.101 $ =~ /[\d.]+/;
 
 sub passes;
 sub failures;
@@ -175,7 +175,7 @@ sub failures {
 
     # Wrong provinces.
     for (1 .. FAIL) {
-        my $x = _ 2; redo if $x < 52;
+        my $x = _ 2; redo if $x <= 52;
         my $y = _ 3;
         redo if $cache {"$x$y"};
         push @failures => "$x$y";
@@ -217,6 +217,9 @@ __END__
 =pod
 
  $Log: spain.t,v $
+ Revision 2.101  2004/06/30 09:26:20  abigail
+ Fixed off-by-one error
+
  Revision 2.100  2004/06/09 21:32:28  abigail
  Initial checkin
 
