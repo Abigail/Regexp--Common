@@ -8,7 +8,7 @@ local $^W = 1;
 use vars qw /$VERSION %RE %sub_interface/;
 
 
-($VERSION) = q $Revision: 1.20 $ =~ /([\d.]+)/;
+($VERSION) = q $Revision: 1.29 $ =~ /([\d.]+)/;
 
 use Carp;
 
@@ -30,8 +30,8 @@ sub FETCH {
 }
 
 my %imports = map {$_ => "Regexp::Common::$_"}
-              qw /balanced  comment delimited  list net number
-                  profanity URI     whitespace/;
+              qw /balanced  comment delimited  lingua list net number
+                  profanity URI     whitespace zip/;
 
 sub import {
     tie %RE, __PACKAGE__;
@@ -258,6 +258,7 @@ sub _clone_with {
 
 }
 
+
 =pod
 
 =head1 NAME
@@ -294,7 +295,7 @@ Regexp::Common - Provide commonly requested regular expressions
 
  # IN-LINE MATCHING...
 
- if ( $RE{num}{int}->matches($text} ) {...}
+ if ( $RE{num}{int}->matches($text) ) {...}
 
 
  # ...AND SUBSTITUTION
@@ -706,13 +707,17 @@ currently).
 
 Provides regexes for delimited strings.
 
+=item Regexp::Common::lingua
+
+Provides regexes for palindromes.
+
 =item Regexp::Common::list
 
 Provides regexes for lists.
 
 =item Regexp::Common::net
 
-Provides regexes for IPv4 addresses.
+Provides regexes for IPv4 addresses and MAC addresses.
 
 =item Regexp::Common::number
 
@@ -725,6 +730,10 @@ Provides regexes for profanity.
 =item Regexp::Common::whitespace
 
 Provides regexes for leading and trailing whitespace.
+
+=item Regexp::Common::zip
+
+Provides regexes for zip codes.
 
 =back
 
@@ -801,6 +810,33 @@ project, especially: Elijah, Jarkko, Tom, Nat, Ed, and Vivek.
 =head1 HISTORY
 
   $Log: Common.pm,v $
+  Revision 1.29  2003/01/16 11:08:41  abigail
+  New release
+
+  Revision 1.28  2003/01/01 23:03:53  abigail
+  New distribution
+
+  Revision 1.27  2003/01/01 17:09:07  abigail
+  lingua class added
+
+  Revision 1.26  2002/12/30 23:08:28  abigail
+  New module Regexp::Common::zip
+
+  Revision 1.25  2002/12/27 23:34:44  abigail
+  New release
+
+  Revision 1.24  2002/12/24 00:00:04  abigail
+  New release
+
+  Revision 1.23  2002/11/06 13:50:23  abigail
+  Minor POD changes.
+
+  Revision 1.22  2002/10/01 18:25:46  abigail
+  POD buglets.
+
+  Revision 1.21  2002/09/18 17:46:11  abigail
+  POD Typo fix (Douglas Hunter)
+
   Revision 1.20  2002/08/27 17:04:29  abigail
   VERSION is now extracted from the CVS revision number.
 

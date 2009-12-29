@@ -1,6 +1,9 @@
-# $Id: test_comments.t,v 1.14 2002/08/27 16:31:31 abigail Exp $
+# $Id: test_comments.t,v 1.15 2002/09/04 17:04:28 abigail Exp $
 #
 # $Log: test_comments.t,v $
+# Revision 1.15  2002/09/04 17:04:28  abigail
+# Q-BAL
+#
 # Revision 1.14  2002/08/27 16:31:31  abigail
 # Beatnik requires 5.008.
 #
@@ -65,6 +68,7 @@ my @markers  =   (
    ['//'     =>  [qw /beta-Juliet Portia/]],
    ['NB'     =>  [qw /ILLGOL/]],
    [';'      =>  [qw /LOGO REBOL SMITH zonefile/]],
+   ['`'      =>  [qw /Q-BAL/]],
    ['--'     =>  [qw /SQL/]],
    ['---'    =>  [qw /SQL/]],
    ['%'      =>  [qw /TeX LaTeX/]],
@@ -80,6 +84,7 @@ my @ids = (
 
 my @from_to = (
    [[qw /ALPACA C LPC/]   =>  "/*", "*/"],
+   [[qw /False/]          =>  "{",  "}"],
    [[qw /*W/]             =>  "||", "!!"],
 );
 

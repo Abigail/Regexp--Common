@@ -7,7 +7,7 @@ use Regexp::Common qw /pattern clean no_defaults/;
 
 use vars qw /$VERSION/;
 
-($VERSION) = q $Revision: 1.7 $ =~ /[\d.]+/g;
+($VERSION) = q $Revision: 1.8 $ =~ /[\d.]+/g;
 
 my %IPunit = (
     dec => q{(?k:25[0-5]|2[0-4]\d|[0-1]??\d{1,2})},
@@ -272,17 +272,36 @@ L<Regexp::Common> for a general description of how to use this interface.
 
 =head1 HISTORY
 
-    $Log: net.pm,v $
-    Revision 1.7  2002/08/05 22:02:06  abigail
-    Typo fix.
+ $Log: net.pm,v $
+ Revision 1.8  2003/01/10 11:03:28  abigail
+ Added complete CVS history.
 
-    Revision 1.6  2002/08/05 20:36:10  abigail
-    Added $RE{net}{domain}
+ Revision 1.7  2002/08/05 22:02:06  abigail
+ Typo fix.
 
+ Revision 1.6  2002/08/05 20:36:10  abigail
+ Added $RE{net}{domain}
+
+ Revision 1.5  2002/08/05 12:16:59  abigail
+ Fixed 'Regex::' and 'Rexexp::' typos to 'Regexp::' (Found my Mike Castle).
+
+ Revision 1.4  2002/08/01 10:00:01  abigail
+ Got rid of the split // in the "subs" method of MAC addresses with
+ configurable seperator, as this may lead to incorrect results (for
+ instance, if the separator is the empty string).
+
+ Revision 1.3  2002/07/31 23:27:57  abigail
+ Added regexes for MAC addresses.
+
+ Revision 1.2  2002/07/28 22:57:59  abigail
+ Tests to pinpoint a bug in Regexp::Common's _decache.
+
+ Revision 1.1  2002/07/25 23:53:38  abigail
+ Factored out of Regexp::Common.
 
 =head1 AUTHOR
 
-Damian Conway (damian@conway.org)
+Damian Conway I<damian@conway.org>.
 
 =head1 MAINTAINANCE
 

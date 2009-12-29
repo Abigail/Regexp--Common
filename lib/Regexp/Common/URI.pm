@@ -1,4 +1,4 @@
-# $Id: URI.pm,v 1.8 2002/08/27 16:56:27 abigail Exp $
+# $Id: URI.pm,v 1.9 2003/01/01 23:00:54 abigail Exp $
 
 package Regexp::Common::URI; {
 
@@ -9,7 +9,7 @@ use Regexp::Common qw /pattern clean no_defaults/;
 
 use vars qw /$VERSION/;
 
-($VERSION) = q $Revision: 1.8 $ =~ /[\d.]+/g;
+($VERSION) = q $Revision: 1.9 $ =~ /[\d.]+/g;
 
 # RFC 2396, base definitions.
 my $digit             =  '[0-9]';
@@ -245,6 +245,18 @@ pattern name    => [qw (URI fax nofuture)],
         create  => "(?k:(?k:$fax_scheme):(?k:$fax_subscriber_no_future))",
         ;
 
+
+# TV URLs. 
+# Internet draft: draft-zigmond-tv-url-03.txt
+my $tv_scheme         = 'tv';
+my $tv_url            = "$tv_scheme:$hostname?";
+
+$uri {tv}             =  $tv_url;
+
+pattern name    => [qw (URI tv)],
+        create  => "(?k:(?k:$tv_scheme):(?k:$hostname)?)",
+        ;
+
 }
 
 1;
@@ -441,7 +453,7 @@ a post dial part, area specifier, service provider, etc.
 
 =back
 
-=head2 $RE{URI}{tel}{nofuture}
+=head2 C<$RE{URI}{tel}{nofuture}>
 
 As above (including what's returned by C<{-keep}>), with the exception
 that I<future extensions> are not allowed. Without allowing 
@@ -450,15 +462,25 @@ the correct syntax for post dial, service provider, phone context,
 etc has been used - otherwise the regex could always classify them
 as a I<future extension>.
 
-=head2 $RE{URI}{fax} and $RE{URI}{fax}{nofuture}
+=head2 C<$RE{URI}{fax}> and C<$RE{URI}{fax}{nofuture}>
 
 Similar to C<$RE{URI}{tel}> and C<$RE{URI}{tel}{nofuture}>, except that
 it will return patterns matching fax URIs, as defined in RFC 2806.
 C<{-keep}> will return the same fragments as for tel URIs.
 
+=head2 C<$RE{URI}{tv}>
+
+Returns a pattern that recognizes TV uris as per an Internet draft
+[DRAFT-URI-TV].
+
 =head1 REFERENCES
 
 =over 4
+
+=item B<[DRAFT-URI-TV]>
+
+Zigmond, D. and Vickers, M: I<Uniform Resource Identifiers for
+Television Broadcasts>. December 2000.
 
 =item B<[DRAFT-URL-FTP]>
 
@@ -494,6 +516,9 @@ Vaha-Sipila, A.: I<URLs for Telephone Calls>. April 2000.
 =head1 HISTORY
 
  $Log: URI.pm,v $
+ Revision 1.9  2003/01/01 23:00:54  abigail
+ TV URIs
+
  Revision 1.8  2002/08/27 16:56:27  abigail
  Support for fax URIs.
 

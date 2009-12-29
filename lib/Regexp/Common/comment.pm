@@ -18,6 +18,7 @@ my @markers  =   (
    ['NB'     =>  [qw /ILLGOL/]],
                  # http://www.catseye.mb.ca/esoteric/smith/index.html
    [';'      =>  [qw /LOGO REBOL SMITH zonefile/]],
+   ['`'      =>  [qw /Q-BAL/]],
    ['-{2,}'  =>  [qw /SQL/]],
    ['%'      =>  [qw /TeX LaTeX/]],
    ['\\\"'   =>  [qw /troff/]],
@@ -35,6 +36,8 @@ my @ids = (
 
 my @from_to = (
    [[qw /ALPACA C LPC/]   =>  "/*", "*/"],
+   # http://wouter.fov120.com/false/false.txt
+   [[qw /False/]          =>  "{",  "}"],
    [[qw /*W/]             =>  "||", "!!"],
 );
 
@@ -185,8 +188,9 @@ pattern name    => [qw /comment Brainfuck/],
 pattern name    =>  [qw /comment Beatnik/],
         create  =>  sub {
             use re 'eval';
+            my ($s, $x);
             my $re = qr {\b([A-Za-z]+)\b
-                         (?(?{local ($s, $x) = (0, lc $^N);
+                         (?(?{($s, $x) = (0, lc $^N);
                               $s += $Regexp::Common::comment::scores
                                     [ord (chop $x) - ord ('a')] while length $x;
                               $s  >= 5 && $s < 18})XXX|)}x;
@@ -268,6 +272,7 @@ Available languages are:
         $RE{comment}{PHP}
         $RE{comment}{Portia}
         $RE{comment}{Python}
+        $RE{comment}{'Q-BAL'}
         $RE{comment}{REBOL}
         $RE{comment}{Ruby}
         $RE{comment}{shell}
@@ -300,9 +305,9 @@ If we are using C{-keep} (See L<Regexp::Common>):
 =over 4
 
 =item For Ada, ALPACA, awk, beta-Juliet, Befunge-98, C, Eiffel, Funge-98,
-          Haifu, ILLGOL, LaTeX, LOGO, LPC, Perl, Portia, Python, REBOL, Ruby,
-          shell, Shelta, Smalltalk, SMITH, SQL, TeX, Tcl, troff, vi, *W,
-          and zonefile:
+          Haifu, ILLGOL, LaTeX, LOGO, LPC, Perl, Portia, Python, Q-BAL,
+          REBOL, Ruby, shell, Shelta, Smalltalk, SMITH, SQL, TeX, Tcl,
+          troff, vi, *W, and zonefile:
 
 =over 4
 
@@ -377,6 +382,15 @@ Press. B<1990>. ISBN 0-19-853737-9. Ch. 10.3, pp 390-391.
 =head1 HISTORY
 
  $Log: comment.pm,v $
+ Revision 1.19  2002/11/06 13:51:34  abigail
+ Minor POD changes.
+
+ Revision 1.18  2002/09/18 18:13:01  abigail
+ Fixes for 5.005
+
+ Revision 1.17  2002/09/04 17:04:24  abigail
+ Q-BAL
+
  Revision 1.16  2002/08/27 16:50:50  abigail
  Patterns for Beatnik, Befunge-98, Funge-98 and W*.
 

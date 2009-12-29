@@ -60,6 +60,23 @@ real_synonym (dec => 10);
 real_synonym (oct =>  8);
 real_synonym (bin =>  2);
 
+
+pattern name    => [qw (num square)],
+        create  => sub {
+            use re 'eval';
+            qr {(\d+)(?(?{sqrt ($^N) == int sqrt ($^N)})|(?!X)X)}
+        },
+        version => 5.008;
+        ;
+
+pattern name    => [qw (num roman)],
+        create  => '(?xi)(?=[MDCLXVI])
+                         (?k:M{0,3}
+                            (D?C{0,3}|CD|CM)?
+                            (L?X{0,3}|XL|XC)?
+                            (V?I{0,3}|IV|IX)?)'
+        ;
+
 }
 
 1;
@@ -222,9 +239,30 @@ A synonym for C<< $RE{num}{real}{-base=>2}{...} >>
 
 A synonym for C<< $RE{num}{real}{-base=>16}{...} >>
 
+=head2 C<$RE{num}{square}>
+
+Returns a pattern that matches a (decimal) square. Regardless whether
+C<-keep> was set, the matched number will be returned in C<$1>.
+
+This pattern is available for version 5.008 and up.
+
+=head2 C<$RE{num}{roman}>
+
+Returns a pattern that matches an integer written in Roman numbers.
+Case doesn't matter. Only the more modern style, that is, no more
+than three repetitions of a letter, is recognized. The largest number
+matched is I<MMMCMXCIX>, or 3999. Larger numbers cannot be expressed
+using ASCII characters. A future version will be able to deal with 
+the Unicode symbols to match larger Roman numbers.
+
+Under C<-keep>, the number will be captured in $1.
+
 =head1 HISTORY
 
  $Log: number.pm,v $
+ Revision 1.6  2002/12/27 23:33:15  abigail
+ Roman numbers.
+
  Revision 1.5  2002/08/23 13:09:13  abigail
  Cosmetic POD changes.
 

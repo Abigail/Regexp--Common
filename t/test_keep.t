@@ -1,6 +1,9 @@
-# $Id: test_keep.t,v 1.18 2002/08/27 16:30:29 abigail Exp $
+# $Id: test_keep.t,v 1.19 2002/09/18 18:12:39 abigail Exp $
 #
 # $Log: test_keep.t,v $
+# Revision 1.19  2002/09/18 18:12:39  abigail
+# Ignore warnings for 5.005
+#
 # Revision 1.18  2002/08/27 16:30:29  abigail
 # Tests for Beatnik comments.
 #
@@ -64,6 +67,9 @@ sub try{$P=qr/^$_[0]$/}sub fail{my($S,@M)=@_;my $C=0;unshift@M,$S;
 print"wanted\t[",join('][',@M),"]\n";print"got\t[",join('][',$S=~$P),"]\n";}
 sub pass{my($S,@M)=@_;my$C=0;unshift@M,$S;foreach($S=~$P){++$C and next
 if(shift()eq$_);ok(0)&&return;}ok($C>0);}
+
+# Shut up some warnings for 5.005.
+$SIG{__WARN__} = sub { };
 
 # LOAD
 
