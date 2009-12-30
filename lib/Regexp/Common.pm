@@ -574,7 +574,8 @@ flags it may take, via a reference to a list of strings. For example:
 This specifies an entry C<$RE{line}{of}>, which may take a C<-char> flag.
 
 Flags may also be specified with a default value, which is then used whenever
-the flag is omitted, or specified without an explicit value. For example:
+the flag is specified without an explicit value (but not when the flag is
+omitted). For example:
 
          pattern name => [qw( line of -char=_ )],
                  # default char is '_'
