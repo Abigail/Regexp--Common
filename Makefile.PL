@@ -6,7 +6,9 @@ use strict;
 
 use ExtUtils::MakeMaker;
 
-my %args = (
+my @tests = qw [t/*.t t/*/*.t];
+
+my %args  = (
     NAME                 => 'Regexp::Common',
     VERSION_FROM         => 'lib/Regexp/Common.pm',
     ABSTRACT_FROM        => 'lib/Regexp/Common.pm',
@@ -25,6 +27,10 @@ my %args = (
             repository   => 'git://github.com/Abigail/Regexp-Common.git',
         },
         keywords         => ['regular expression', 'pattern'],
+    },
+    test                 => {
+        TESTS                => $^O eq 'MSWin32'
+                                ? "@{[map {glob} @tests]}" : "@tests"
     },
 );
 
