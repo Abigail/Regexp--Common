@@ -56,7 +56,7 @@ Regexp::Common::CC -- provide patterns for credit card numbers.
     use Regexp::Common qw /CC/;
 
     while (<>) {
-        /^$RE{zip}{Visa}$/   and  print "Visa card number\n";
+        /^$RE{CC}{Mastercard}$/   and  print "Mastercard card number\n";
     }
 
 =head1 DESCRIPTION
@@ -67,7 +67,8 @@ of the works of this interface.
 Do not use this module directly, but load it via I<Regexp::Common>.
 
 This module offers patterns for credit card numbers of several major
-credit card types.
+credit card types. Currently, the supported cards are: I<Mastercard>,
+I<Amex>, I<Diners Club>, and I<Discover>.
 
 
 =head1 SEE ALSO
