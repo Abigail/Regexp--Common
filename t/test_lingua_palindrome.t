@@ -44,7 +44,7 @@ while (<DATA>) {
 }
 push @failures => " ", "";
 
-my $max = 1 + 2 * @failures + 3 * (@passes + 3 * grep {!/^[<>] .*:$/} @entries);
+my $max = 2 * @failures + 3 * (@passes + 3 * grep {!/^[<>] .*:$/} @entries);
 
 print "1..$max\n";
 
