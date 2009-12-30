@@ -1,13 +1,14 @@
 #!/usr/bin/perl
 
-use Test::More;
-
 use strict;
-use warnings;
-no  warnings 'syntax';
+
+eval "use Test::More; 1" or do {
+    print "1..0 # SKIP Test::More required\n";
+    exit;
+};
 
 eval "use Test::Pod::Coverage 1.00; 1" or
-      plan skip_all => "Test::Pod::Coverage required for testing POD coverage";
+    plan (skip_all => "Test::Pod::Coverage required for testing POD coverage");
 
 all_pod_coverage_ok ({private => [qr /^/]});
 
