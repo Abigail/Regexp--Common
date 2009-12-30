@@ -1,7 +1,17 @@
 package Regexp::Common::_support;
 
+BEGIN {
+    # This makes sure 'use warnings' doesn't bomb out on 5.005_*;
+    # warnings won't be enabled on those old versions though.
+    if ($] < 5.006 && !exists $INC {"warnings.pm"}) {
+        $INC {"warnings.pm"} = 1;
+        no strict 'refs';
+        *{"warnings::unimport"} = sub {0};
+    }
+}
+
 use strict;
-local $^W = 1;
+use warnings;
 
 #
 # Returns true/false, depending whether the given the argument

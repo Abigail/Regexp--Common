@@ -1,12 +1,12 @@
 package Regexp::Common::URI::gopher;
 
-use strict;
-local $^W = 1;
-
 use Regexp::Common               qw /pattern clean no_defaults/;
 use Regexp::Common::URI          qw /register_uri/;
 use Regexp::Common::URI::RFC1738 qw /$host $port $uchars/;
 use Regexp::Common::URI::RFC1808 qw /$pchars $pchar_range/;
+
+use strict;
+use warnings;
 
 
 my $pchars_notab      = "(?:(?:[$pchar_range]+|" . 

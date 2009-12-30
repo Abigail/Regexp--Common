@@ -1,9 +1,9 @@
 package Regexp::Common::lingua;
 
-use strict;
-local $^W = 1;
-
 use Regexp::Common qw /pattern clean no_defaults/;
+
+use strict;
+use warnings;
 
 
 pattern name    => [qw /lingua palindrome -chars=[A-Za-z]/],

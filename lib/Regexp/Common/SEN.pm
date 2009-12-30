@@ -1,9 +1,9 @@
 package Regexp::Common::SEN;
 
-use strict;
-local $^W = 1;
-
 use Regexp::Common qw /pattern clean no_defaults/;
+
+use strict;
+use warnings;
 
 =begin does_not_exist
 

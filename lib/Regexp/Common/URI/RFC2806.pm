@@ -1,10 +1,10 @@
 package Regexp::Common::URI::RFC2806;
 
-use strict;
-local $^W = 1;
-
 use Regexp::Common::URI::RFC1035 qw /$domain/;
 use Regexp::Common::URI::RFC2396 qw /$unreserved $escaped $hex/;
+
+use strict;
+use warnings;
 
 use vars qw /@EXPORT @EXPORT_OK %EXPORT_TAGS @ISA/;
 

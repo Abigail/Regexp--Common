@@ -1,9 +1,9 @@
 package Regexp::Common::zip;
 
-use strict;
-local $^W = 1;
-
 use Regexp::Common qw /pattern clean no_defaults/;
+
+use strict;
+use warnings;
 
 
 #

@@ -1,9 +1,9 @@
 package Regexp::Common::comment;
 
+use Regexp::Common qw /pattern clean no_defaults/;
+
 use strict;
 use warnings;
-
-use Regexp::Common qw /pattern clean no_defaults/;
 
 my @generic = (
     {languages => [qw /ABC Forth/],

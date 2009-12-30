@@ -1,11 +1,11 @@
 package Regexp::Common::URI::telnet;
 
-use strict;
-local $^W = 1;
-
 use Regexp::Common               qw /pattern clean no_defaults/;
 use Regexp::Common::URI          qw /register_uri/;
 use Regexp::Common::URI::RFC1738 qw /$user $password $host $port/;
+
+use strict;
+use warnings;
 
 
 my $telnet_uri = "(?k:(?k:telnet)://(?:(?k:(?k:$user)(?::(?k:$password))?)\@)?" 

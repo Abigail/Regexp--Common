@@ -1,10 +1,10 @@
 package Regexp::Common::number;
 
-use strict;
 use Config;
-local $^W = 1;
-
 use Regexp::Common qw /pattern clean no_defaults/;
+
+use strict;
+use warnings;
 
 
 sub _croak {

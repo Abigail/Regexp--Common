@@ -1,10 +1,10 @@
 package Regexp::Common::CC;
 
-use strict;
-local $^W = 1;
-
 use Regexp::Common qw /pattern clean no_defaults/;
 use Regexp::Common::_support qw /luhn/;
+
+use strict;
+use warnings;
 
 my @cards = (
     # Name           Prefix                    Length           mod 10

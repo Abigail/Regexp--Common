@@ -1,12 +1,12 @@
 package Regexp::Common::URI::pop;
 
-use strict;
-local $^W = 1;
-
 use Regexp::Common               qw /pattern clean no_defaults/;
 use Regexp::Common::URI          qw /register_uri/;
 use Regexp::Common::URI::RFC1738 qw /$host $port/;
 use Regexp::Common::URI::RFC2384 qw /$enc_user $enc_auth_type/;
+
+use strict;
+use warnings;
 
 
 my $scheme = "pop";

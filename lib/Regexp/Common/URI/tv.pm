@@ -3,12 +3,12 @@
 
 package Regexp::Common::URI::tv;
 
-use strict;
-local $^W = 1;
-
 use Regexp::Common               qw /pattern clean no_defaults/;
 use Regexp::Common::URI          qw /register_uri/;
 use Regexp::Common::URI::RFC2396 qw /$hostname/;
+
+use strict;
+use warnings;
 
 
 my $tv_scheme = 'tv';

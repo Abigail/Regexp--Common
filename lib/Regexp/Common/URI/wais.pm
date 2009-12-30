@@ -1,12 +1,12 @@
 package Regexp::Common::URI::wais;
 
-use strict;
-local $^W = 1;
-
 use Regexp::Common               qw /pattern clean no_defaults/;
 use Regexp::Common::URI          qw /register_uri/;
 use Regexp::Common::URI::RFC1738 qw /$host $port
                                      $search $database $wtype $wpath/;
+
+use strict;
+use warnings;
 
 
 my $scheme = 'wais';
