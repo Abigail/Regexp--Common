@@ -418,7 +418,7 @@ Bound to be plenty.
 For a start, there are many common regexes missing.
 Send them in to I<regexp-common@abigail.be>.
 
-=head1 COPYRIGHT
+=head1 LICENSE and COPYRIGHT
 
 This software is Copyright (c) 2001 - 2009, Damian Conway and Abigail.
 

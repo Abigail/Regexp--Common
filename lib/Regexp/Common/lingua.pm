@@ -79,7 +79,7 @@ This package is maintained by Abigail S<(I<regexp-common@abigail.be>)>.
 Many regexes are missing.
 Send them in to I<regexp-common@abigail.be>.
 
-=head1 COPYRIGHT
+=head1 LICENSE and COPYRIGHT
 
 This software is Copyright (c) 2001 - 2009, Damian Conway and Abigail.
 

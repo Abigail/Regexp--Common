@@ -77,7 +77,7 @@ Abigail S<(I<regexp-common@abigail.be>)>.
 
 Bound to be plenty.
 
-=head1 COPYRIGHT
+=head1 LICENSE and COPYRIGHT
 
 This software is Copyright (c) 2001 - 2009, Damian Conway and Abigail.
 
