@@ -18,6 +18,7 @@ sub par11 {
 }
 
 =end does_not_exist
+=cut
 
 # http://www.ssa.gov/history/ssn/geocard.html
 pattern name   => [qw /SEN USA SSN -sep=-/],
@@ -45,6 +46,7 @@ pattern name   => [qw /SEN Netherlands SoFi/],
         ;
 
 =end does_not_exist
+=cut
 
 1;
 
