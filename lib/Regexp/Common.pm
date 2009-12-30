@@ -824,7 +824,8 @@ project, especially: Elijah, Jarkko, Tom, Nat, Ed, and Vivek.
 
 Further thanks go to: Alexandr Ciornii, Blair Zajac, Bob Stockdale,
 Charles Thomas, Chris Vertonghen, the CPAN Testers, Fany, Geoffrey Leach,
-Hermann-Marcus Behrens, Jim Cromie, Mike Arms, Mike Castle, Murat Uenalan,
+Hermann-Marcus Behrens, Jim Cromie, Mike Arms, Mike Castle, Mikko,
+Murat Uenalan,
 Rafael Garcia Suarez, Ron Savage, Sam Vilain, Slaven Rezic, Smylers,
 Tim Maher, and all the others I've forgotten.
 
