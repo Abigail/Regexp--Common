@@ -4,7 +4,7 @@ Version
 + Modernize Makefile.PL
 + POD tests
 + Work around a Darwin 9.0 on 5.8.8 issue. (RT #43786)
-+ Fix POD issues. (RT #34886)
++ Fix POD issues. (RT #34886) (RT #48974)
 + Fail faster on some URI subpatterns (RT #52309)
 
 Version 2.122
