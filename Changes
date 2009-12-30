@@ -13,7 +13,7 @@ Version 2.122
 Version 2.121
 + Removed spurious '=head1' from README. (Smylers)
 + Comments for 'm4', 'Modula-2', 'Modula-3', 'Ubercode', and 'ZZT-OOP'.
-+ Fix for French zip codes; addes Swiss zip codes (Rafael)
++ Fix for French zip codes; added Swiss zip codes (Rafael)
 
 Version 2.120 Wed Mar 16 01:39:57 CET 2005
 + '-base', and '-places' options for $RE {num} {int}. '-group' can
