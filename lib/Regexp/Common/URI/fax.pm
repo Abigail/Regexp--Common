@@ -83,8 +83,6 @@ as a I<future extension>.
 Mockapetris, P.: I<DOMAIN NAMES - IMPLEMENTATION AND SPECIFICATION>.
 November 1987.
 
-=back
-
 =item B<[RFC 2396]>
 
 Berners-Lee, Tim, Fielding, R., and Masinter, L.: I<Uniform Resource
@@ -93,6 +91,8 @@ Identifiers (URI): Generic Syntax>. August 1998.
 =item B<[RFC 2806]>
 
 Vaha-Sipila, A.: I<URLs for Telephone Calls>. April 2000.
+
+=back
 
 =head1 SEE ALSO
 
