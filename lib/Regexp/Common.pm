@@ -452,6 +452,8 @@ functional interface is used, one does not have this option. The
 C<-i> switch solves this problem; by using it, the pattern will do
 case insensitive matching.
 
+=back
+
 =head2 OO interface and inline matching/substitution
 
 The patterns returned from C<%RE> are objects, so rather than writing:
