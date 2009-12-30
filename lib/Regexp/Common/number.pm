@@ -108,7 +108,14 @@ real_synonym (bin =>  2);
 pattern name    => [qw (num square)],
         create  => sub {
             use re 'eval';
-            my $num = $Config {use64bitint} ? '0*[1-8]?[0-9]{1,15}' :
+            my $sixty_four_bits = $Config {use64bitint};
+            #
+            # CPAN testers claim it fails on 5.8.8 and darwin 9.0.
+            #
+            $sixty_four_bits = 0 if $Config {osname} eq 'darwin' &&
+                                    $Config {osvers} eq '9.0'    &&
+                                    $] == 5.008008;
+            my $num = $sixty_four_bits ? '0*[1-8]?[0-9]{1,15}' :
                      '0*(?:2(?:[0-0][0-9]{8}' .
                          '|1(?:[0-3][0-9]{7}' .
                          '|4(?:[0-6][0-9]{6}' .
