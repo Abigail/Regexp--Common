@@ -9,11 +9,10 @@ use warnings;
 pattern name    => [qw /lingua palindrome -chars=[A-Za-z]/],
         create  => sub {
             use re 'eval';
-            local $^W = 1;
-            my $keep  = exists $_ [1] -> {-keep};
-            my $ch  = $_ [1] -> {-chars};
-            my $idx = $keep ? "1:$ch" : "0:$ch";
-            my $r   = "(??{\$Regexp::Common::lingua::pd{'" . $idx . "'}})";
+            my $keep = exists $_ [1] -> {-keep};
+            my $ch   = $_ [1] -> {-chars};
+            my $idx  = $keep ? "1:$ch" : "0:$ch";
+            my $r    = "(??{\$Regexp::Common::lingua::pd{'" . $idx . "'}})";
             $Regexp::Common::lingua::pd {$idx} = 
                     $keep ? qr /($ch|($ch)($r)?\2)/ : qr  /$ch|($ch)($r)?\1/;
         #   print "[$ch]: ", $Regexp::Common::lingua::pd {$idx}, "\n";

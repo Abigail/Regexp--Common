@@ -10,7 +10,6 @@ my $count = -1;
 my %cache;
 
 sub nested {
-    local $^W = 1;
     my ($start, $finish) = @_;
 
     return $Regexp::Common::balanced [$cache {$start} {$finish}]
