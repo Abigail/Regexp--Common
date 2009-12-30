@@ -1,5 +1,5 @@
 ==============================================================================
-                  Release of version 2.122 of Regexp::Common
+               Release of version 2009123101 of Regexp::Common
 ==============================================================================
 
 The main reason for version 2.122 is a change in the license. You now
@@ -104,7 +104,7 @@ MAINTAINER
 
 COPYRIGHT and LICENSE
 
-    This software is Copyright (c) 2001 - 2008, Damian Conway and Abigail.
+    This software is Copyright (c) 2001 - 2009, Damian Conway and Abigail.
 
     This module is free software, and maybe used under any of the following
     licences:
@@ -119,9 +119,8 @@ COPYRIGHT and LICENSE
 
 AVAILABILITY
 
-Regexp::Common has been uploaded to the CPAN
-and is also available from:
+Regexp::Common has been uploaded to the CPAN and is also available from:
 
-	http://perl.abigail.nl/Modules/Regexp-Common/latest.tar.gz
+    http://github.com/Abigail/Regexp--Common.git
 
 ==============================================================================
