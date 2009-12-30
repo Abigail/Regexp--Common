@@ -2,6 +2,7 @@ Version
 + Added Changes file, removed them from README.
 + Remove CVS traces.
 + Modernize Makefile.PL
++ POD tests
 
 Version 2.122
 + Added various licences

@@ -98,4 +98,6 @@ t/zip/italy.t
 t/zip/spain.t
 t/zip/us.t
 t/zip/zip.t
+t/zzz_50_pod.t
+t/zzz_60_pod_coverage.t
 META.yml                                 Module meta-data (added by MakeMaker)
