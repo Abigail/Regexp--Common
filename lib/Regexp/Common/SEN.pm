@@ -5,7 +5,7 @@ local $^W = 1;
 
 use Regexp::Common qw /pattern clean no_defaults/;
 
-=pod
+=begin does_not_exist
 
 sub par11 {
     my $string = shift;
@@ -17,7 +17,7 @@ sub par11 {
     !($sum % 11)
 }
 
-=cut
+=end does_not_exist
 
 # http://www.ssa.gov/history/ssn/geocard.html
 pattern name   => [qw /SEN USA SSN -sep=-/],
@@ -30,7 +30,7 @@ pattern name   => [qw /SEN USA SSN -sep=-/],
         },
         ;
 
-=for nobody
+=begin does_not_exist
 
 It's not clear whether this is the right checksum.
 
@@ -44,7 +44,7 @@ pattern name   => [qw /SEN Netherlands SoFi/],
         }
         ;
 
-=cut
+=end does_not_exist
 
 1;
 
