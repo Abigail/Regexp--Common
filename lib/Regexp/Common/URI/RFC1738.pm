@@ -52,9 +52,9 @@ $reserved          =  '[;/?:@&=]';
 $hex               =  '[a-fA-F0-9]';
 $escape            =  "(?:%$hex$hex)";
 $uchar             =  "(?:$unreserved|$escape)";
-$uchars            =  "(?:(?:$unreserved+|$escape)*)";
+$uchars            =  "(?:(?:$unreserved|$escape)*)";
 $xchar             =  "(?:[$unreserved_range;/?:\@&=]|$escape)";
-$xchars            =  "(?:(?:[$unreserved_range;/?:\@&=]+|$escape)*)";
+$xchars            =  "(?:(?:[$unreserved_range;/?:\@&=]|$escape)*)";
 
 # Connection related stuff.
 $port              =  "(?:$digits)";
@@ -65,37 +65,41 @@ $hostname          =  "(?:(?:$domainlabel\[.])*$toplabel)";
 $host              =  "(?:$hostname|$hostnumber)";
 $hostport          =  "(?:$host(?::$port)?)";
 
-$user              =  "(?:(?:[$unreserved_range;?&=]+|$escape)*)";
-$password          =  "(?:(?:[$unreserved_range;?&=]+|$escape)*)";
+$user              =  "(?:(?:[$unreserved_range;?&=]|$escape)*)";
+$password          =  "(?:(?:[$unreserved_range;?&=]|$escape)*)";
 $login             =  "(?:(?:$user(?::$password)?\@)?$hostport)";
 
 # Parts (might require more if we add more URIs).
 
 # FTP/file
-$fsegment          =  "(?:(?:[$unreserved_range:\@&=]+|$escape)*)";
+$fsegment          =  "(?:(?:[$unreserved_range:\@&=]|$escape)*)";
 $fpath             =  "(?:$fsegment(?:/$fsegment)*)";
 
 # NNTP/news.
 $group             =  "(?:$alpha\[-A-Za-z0-9.+_]*)";
-$article           =  "(?:(?:[$unreserved_range;/?:&=]+|$escape)+" .
+$article           =  "(?:(?:[$unreserved_range;/?:&=]|$escape)+" .
                       '@' . "$host)";
 $grouppart         =  "(?:[*]|$article|$group)"; # It's important that
                                                  # $article goes before
                                                  # $group.
 
 # WAIS.
-$search            =  "(?:(?:[$unreserved_range;:\@&=]+|$escape)*)";
+$search            =  "(?:(?:[$unreserved_range;:\@&=]|$escape)*)";
 $database          =  $uchars;
 $wtype             =  $uchars;
 $wpath             =  $uchars;
 
 # prospero
-$psegment          =  "(?:(?:[$unreserved_range?:\@&=]+|$escape)*)";
-$fieldname         =  "(?:(?:[$unreserved_range?:\@&]+|$escape)*)";
-$fieldvalue        =  "(?:(?:[$unreserved_range?:\@&]+|$escape)*)";
+$psegment          =  "(?:(?:[$unreserved_range?:\@&=]|$escape)*)";
+$fieldname         =  "(?:(?:[$unreserved_range?:\@&]|$escape)*)";
+$fieldvalue        =  "(?:(?:[$unreserved_range?:\@&]|$escape)*)";
 $fieldspec         =  "(?:;$fieldname=$fieldvalue)";
 $ppath             =  "(?:$psegment(?:/$psegment)*)";
 
+#
+# The various '(?:(?:[$unreserved_range ...]|$escape)*)' above need
+# some loop unrolling to speed up the match.
+#
 
 1;
 

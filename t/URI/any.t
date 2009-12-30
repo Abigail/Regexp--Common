@@ -126,3 +126,6 @@ fail 'tel:+1234;option=%22%22%22';
 fail 'tel:+1234;option=%22%5C%22';
 pass 'tel:+123-456-789;isub=123(456)';
 pass 'tel:+123456;postd=***';
+
+# RT 52309 This 'hangs'
+pass 'news:comp.infosystems.www.servers.unix';
