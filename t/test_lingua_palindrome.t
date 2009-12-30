@@ -93,8 +93,6 @@ foreach my $entry (@entries) {
 
 
 
-=pod
-
 __DATA__
 aha
 ara
