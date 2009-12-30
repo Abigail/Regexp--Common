@@ -40,11 +40,11 @@ foreach (1 .. $TESTS) {
 
 
 
-my $total = @good + @bad + 1;
+my $total = @good + @bad;
 
 print "1..$total\n";
 
-my $c = 1;
+my $c = 0;
 
 foreach my $g (@good) {
     print "not " unless luhn $g;
