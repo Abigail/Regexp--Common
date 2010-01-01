@@ -5,6 +5,9 @@ use Regexp::Common qw /pattern clean no_defaults/;
 use strict;
 use warnings;
 
+use vars qw /$VERSION/;
+$VERSION = '2009123002';
+
 sub gen_list_pattern {
     my ($pat, $sep, $lsep) = @_;
     $lsep = $sep unless defined $lsep;

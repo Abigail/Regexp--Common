@@ -8,6 +8,9 @@ use Regexp::Common::URI::RFC1738 qw /$host $port
 use strict;
 use warnings;
 
+use vars qw /$VERSION/;
+$VERSION = '2009123002';
+
 
 my $scheme = 'wais';
 my $uri    = "(?k:(?k:$scheme)://(?k:$host)(?::(?k:$port))?/(?k:(?k:$database)" 

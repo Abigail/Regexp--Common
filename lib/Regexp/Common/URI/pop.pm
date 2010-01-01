@@ -8,6 +8,9 @@ use Regexp::Common::URI::RFC2384 qw /$enc_user $enc_auth_type/;
 use strict;
 use warnings;
 
+use vars qw /$VERSION/;
+$VERSION = '2009123002';
+
 
 my $scheme = "pop";
 my $uri    = "(?k:(?k:$scheme)://(?:(?k:$enc_user)"     .  

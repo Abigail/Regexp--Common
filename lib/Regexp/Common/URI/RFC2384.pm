@@ -7,6 +7,9 @@ use Regexp::Common::URI::RFC1738 qw /$unreserved_range $escape $hostport/;
 use strict;
 use warnings;
 
+use vars qw /$VERSION/;
+$VERSION = '2009123002';
+
 use vars qw /@EXPORT @EXPORT_OK %EXPORT_TAGS @ISA/;
 
 use Exporter ();

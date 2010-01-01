@@ -5,6 +5,9 @@ use Regexp::Common qw /pattern clean no_defaults/;
 use strict;
 use warnings;
 
+use vars qw /$VERSION/;
+$VERSION = '2009123002';
+
 use vars qw /@EXPORT @EXPORT_OK %EXPORT_TAGS @ISA/;
 
 use Exporter ();

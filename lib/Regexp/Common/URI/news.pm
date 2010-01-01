@@ -8,6 +8,9 @@ use Regexp::Common::URI::RFC1738 qw /$grouppart $group $article
 use strict;
 use warnings;
 
+use vars qw /$VERSION/;
+$VERSION = '2009123002';
+
 
 my $news_scheme = 'news';
 my $news_uri    = "(?k:(?k:$news_scheme):(?k:$grouppart))";

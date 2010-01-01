@@ -10,6 +10,9 @@ use Regexp::Common::URI::RFC2396 qw /$hostname/;
 use strict;
 use warnings;
 
+use vars qw /$VERSION/;
+$VERSION = '2009123002';
+
 
 my $tv_scheme = 'tv';
 my $tv_url    = "(?k:(?k:$tv_scheme):(?k:$hostname)?)";

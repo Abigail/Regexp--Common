@@ -8,6 +8,9 @@ use Regexp::Common::URI::RFC1808 qw /$pchars $pchar_range/;
 use strict;
 use warnings;
 
+use vars qw /$VERSION/;
+$VERSION = '2009123002';
+
 
 my $pchars_notab      = "(?:(?:[$pchar_range]+|" . 
                         "%(?:[1-9a-fA-F][0-9a-fA-F]|0[0-8a-fA-F]))*)";

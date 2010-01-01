@@ -6,6 +6,9 @@ use Regexp::Common::_support qw /luhn/;
 use strict;
 use warnings;
 
+use vars qw /$VERSION/;
+$VERSION = '2009123002';
+
 my @cards = (
     # Name           Prefix                    Length           mod 10
     [Mastercard   =>   '5[1-5]',                16,                1],

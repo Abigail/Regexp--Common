@@ -8,6 +8,9 @@ use Regexp::Common::URI::RFC2806 qw /$fax_subscriber
 use strict;
 use warnings;
 
+use vars qw /$VERSION/;
+$VERSION = '2009123002';
+
 
 my $fax_scheme  = 'fax';
 my $fax_uri     = "(?k:(?k:$fax_scheme):(?k:$fax_subscriber))";

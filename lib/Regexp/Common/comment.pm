@@ -5,6 +5,9 @@ use Regexp::Common qw /pattern clean no_defaults/;
 use strict;
 use warnings;
 
+use vars qw /$VERSION/;
+$VERSION = '2009123002';
+
 my @generic = (
     {languages => [qw /ABC Forth/],
      to_eol    => ['\\\\']},   # This is for just a *single* backslash.

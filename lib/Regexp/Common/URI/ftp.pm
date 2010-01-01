@@ -8,6 +8,9 @@ use Regexp::Common::URI::RFC2396 qw /$host $port $ftp_segments $userinfo
 use strict;
 use warnings;
 
+use vars qw /$VERSION/;
+$VERSION = '2009123002';
+
 
 my $ftp_uri = "(?k:(?k:ftp)://(?:(?k:$userinfo)(?k:)\@)?(?k:$host)" .
               "(?::(?k:$port))?(?k:/(?k:(?k:$ftp_segments)"         .

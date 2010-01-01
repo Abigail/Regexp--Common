@@ -7,6 +7,9 @@ use Regexp::Common::URI::RFC2396 qw /$host $port $path_segments $query/;
 use strict;
 use warnings;
 
+use vars qw /$VERSION/;
+$VERSION = '2009123002';
+
 
 my $http_uri = "(?k:(?k:http)://(?k:$host)(?::(?k:$port))?"           .
                "(?k:/(?k:(?k:$path_segments)(?:[?](?k:$query))?))?)";

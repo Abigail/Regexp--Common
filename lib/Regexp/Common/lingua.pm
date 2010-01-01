@@ -5,6 +5,9 @@ use Regexp::Common qw /pattern clean no_defaults/;
 use strict;
 use warnings;
 
+use vars qw /$VERSION/;
+$VERSION = '2009123002';
+
 
 pattern name    => [qw /lingua palindrome -chars=[A-Za-z]/],
         create  => sub {

@@ -5,6 +5,9 @@ use Regexp::Common qw /pattern clean no_defaults/;
 use strict;
 use warnings;
 
+use vars qw /$VERSION/;
+$VERSION = '2009123002';
+
 
 #
 # Prefer '[0-9]' over \d, because the latter may include more

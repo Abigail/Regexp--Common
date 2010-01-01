@@ -13,6 +13,9 @@ BEGIN {
 use strict;
 use warnings;
 
+use vars qw /$VERSION/;
+$VERSION = '2009123002';
+
 #
 # Returns true/false, depending whether the given the argument
 # satisfies the LUHN checksum.
