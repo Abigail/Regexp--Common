@@ -2,4 +2,5 @@
 .gitignore
 MANIFEST.SKIP
 Releases
+fix_versions
 t/zzz_90_kwalitee.t
