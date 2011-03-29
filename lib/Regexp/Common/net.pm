@@ -203,6 +203,10 @@ Returns a pattern that matches a valid IP address in "dotted binary"
 If C<< -sep=I<P> >> is specified the pattern I<P> is used as the separator.
 By default I<P> is C<qr/[.]/>.
 
+=head2 C<$RE{net}{IPv6}>
+
+Returns a pattern that matches a valid B<IPv6> address.
+
 =head2 C<$RE{net}{MAC}>
 
 Returns a pattern that matches a valid MAC or ethernet address as
