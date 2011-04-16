@@ -24,7 +24,7 @@ my %args  = (
             'strict'     => 0,
         },
         resources        => {
-            repository   => 'git://github.com/Abigail/Regexp-Common.git',
+            repository   => 'git://github.com/Abigail/Regexp--Common.git',
         },
         keywords         => ['regular expression', 'pattern'],
     },

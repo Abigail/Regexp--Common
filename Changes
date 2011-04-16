@@ -1,3 +1,6 @@
+Version 2011041602 Sat Apr 16 17:06:28 CEST 2011
++ Fix typo in repository (avar@cpan.org)
+
 Version 2011041601 Sat Apr 16 16:07:29 CEST 2011
 + Fix bugs 61712 & 6940: $RE {num} {decimal} and $RE {num} {real} no longer
   match a single dot.
