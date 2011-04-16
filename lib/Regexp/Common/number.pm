@@ -50,12 +50,12 @@ sub real_creator {
     foreach ($radix, $sep, $expon) {$_ = "[$_]" if 1 == length}
     my $chars = substr $digits, 0, $base;
     return $sep
-           ? qq {(?k:(?i)(?k:[+-]?)(?k:(?=[$chars]|$radix)}              .
-             qq {(?k:[$chars]{1,$group}(?:(?:$sep)[$chars]{$group})*)}  .
+           ? qq {(?k:(?i)(?k:[+-]?)(?k:(?=$radix?[$chars])}              .
+             qq {(?k:[$chars]{1,$group}(?:(?:$sep)[$chars]{$group})*)}   .
              qq {(?:(?k:$radix)(?k:[$chars]{$places}))?)}                .
              qq {(?:(?k:$expon)(?k:(?k:[+-]?)(?k:[$chars]+))|))}
-           : qq {(?k:(?i)(?k:[+-]?)(?k:(?=[$chars]|$radix)}              .
-             qq {(?k:[$chars]*)(?:(?k:$radix)(?k:[$chars]{$places}))?)} .
+           : qq {(?k:(?i)(?k:[+-]?)(?k:(?=$radix?[$chars])}              .
+             qq {(?k:[$chars]*)(?:(?k:$radix)(?k:[$chars]{$places}))?)}  .
              qq {(?:(?k:$expon)(?k:(?k:[+-]?)(?k:[$chars]+))|))};
 }
 sub decimal_creator { 
@@ -68,10 +68,10 @@ sub decimal_creator {
     foreach ($radix, $sep) {$_ = "[$_]" if 1 == length}
     my $chars = substr $digits, 0, $base;
     return $sep
-           ? qq {(?k:(?i)(?k:[+-]?)(?k:(?=[$chars]|$radix)}               .
-             qq {(?k:[$chars]{1,$group}(?:(?:$sep)[$chars]{$group})*)}   .
+           ? qq {(?k:(?i)(?k:[+-]?)(?k:(?=$radix?[$chars])}               .
+             qq {(?k:[$chars]{1,$group}(?:(?:$sep)[$chars]{$group})*)}    .
              qq {(?:(?k:$radix)(?k:[$chars]{$places}))?))}
-           : qq {(?k:(?i)(?k:[+-]?)(?k:(?=[$chars]|$radix)}               .
+           : qq {(?k:(?i)(?k:[+-]?)(?k:(?=$radix?[$chars])}               .
              qq {(?k:[$chars]*)(?:(?k:$radix)(?k:[$chars]{$places}))?))}
 }
 

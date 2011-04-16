@@ -18,7 +18,7 @@ BEGIN {
 use warnings;
 use vars qw /$VERSION %RE %sub_interface $AUTOLOAD/;
 
-$VERSION = '2010010201';
+$VERSION = '2011041601';
 
 
 sub _croak {

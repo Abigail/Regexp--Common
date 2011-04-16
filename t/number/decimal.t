@@ -73,6 +73,11 @@ foreach my $entry (@data) {
     };
 }
 
+$targets {dot} = {
+    list   => ['.'],
+    query  => sub {$_ [0]},
+};
+
 sub __ {
     map {;"${_}_int",       "${_}_int_dot",
           "${_}_minus_int", "${_}_plus_int",
@@ -84,8 +89,8 @@ push @tests => {
     name    =>  'basic',
     re      =>  $decimal,
     sub     =>  \&RE_num_decimal,
-    pass    =>  [__ grep {$_ <= 10} map {$$_ [0]} @data],
-    fail    =>  [__ grep {$_ >  10} map {$$_ [0]} @data],
+    pass    =>  [__ (grep {$_ <= 10} map {$$_ [0]} @data)],
+    fail    =>  [__ (grep {$_ >  10} map {$$_ [0]} @data), "dot"],
 };
 
 foreach my $data (@data) {
@@ -101,7 +106,7 @@ foreach my $data (@data) {
         sub      => \&RE_num_decimal,
         sub_args => [-base => $base],
         pass     => [@passes],
-        fail     => [@failures, @commas],
+        fail     => [@failures, @commas, "dot"],
     };
     push @tests  => {
         name     => "base_${base}_comma",
@@ -112,6 +117,7 @@ foreach my $data (@data) {
         fail     => [(grep {/^${base}/} @failures)],
     };
 }
+
 
 
 run_new_tests  targets      => \%targets,
