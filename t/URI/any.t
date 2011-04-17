@@ -13,47 +13,50 @@ ok;
 
 try $RE{URI};
 
-pass 'http://www.example.com';
-pass 'http://www.example.com/';
-pass 'http://www.example.com/some/file/some/where';
-pass 'http://www.example.com/some/directory/some/where';
-pass 'http://www.example.com:80/some/file';
-pass 'http://127.0.0.1';
-pass 'http://127.0.0.1/';
-pass 'http://127.0.0.1:12345/some/file';
-pass 'http://www.example.com:80/some/path?query';
-pass 'http://www.example.com/%7Eabigail/';
-# Test "safe" chars.
-pass 'http://www.example.com/--_$.+++';
-pass 'http://www.example.com/.';
-# Test "extra" chars.
-pass "http://www.example.com/**!(),,''";
-# Test HTTP additional chars.
-pass 'http://www.example.com/:;@=&=;';
-pass 'http://www.example.com/some/path?query';
-pass 'http://www.example.com/some/path?funny**!(),,:;@=&=';
-pass 'http://www.example.com/some/?';
-pass 'http://www.example.com/?';
-pass 'http://www.example.com//////////////';
-# Usernames/passwords are NOT allowed in http URIs.
-fail 'http://abigail@www.example.com';
-fail 'http://abigail@www.example.com:80/some/file';
-fail 'http://abigail:secret@www.example.com:80/some/file';
-fail 'http://abigail:secret@127.0.0.1:80/some/file';
-# ~ was NOT allowed by RFC 1738, but currently is.
-pass 'http://www.example.com/~abigail/';
-# Fail on "national" characters.
-fail 'http://www.example.com/nope|nope';
-fail 'http://www.example.com/`';
-# Fail on "punctation" characters.
-fail 'http://www.example.com/some/file#target';
-# Two question marks used to be failure, but is now allowed.
-pass 'http://www.example.com/some/path?query1?query2';
-pass 'http://www.example.com/some/??';
-# Can have slashes in query.
-pass 'http://www.example.com/some/path?query/path';
+for my $scheme (qw [http https]) {
+  pass "$scheme://www.example.com";
+  pass "$scheme://www.example.com/";
+  pass "$scheme://www.example.com/some/file/some/where";
+  pass "$scheme://www.example.com/some/directory/some/where";
+  pass "$scheme://www.example.com:80/some/file";
+  pass "$scheme://127.0.0.1";
+  pass "$scheme://127.0.0.1/";
+  pass "$scheme://127.0.0.1:12345/some/file";
+  pass "$scheme://www.example.com:80/some/path?query";
+  pass "$scheme://www.example.com/%7Eabigail/";
+  # Test "safe" chars.
+  pass "$scheme://www.example.com/--_\$.+++";
+  pass "$scheme://www.example.com/.";
+  # Test "extra" chars.
+  pass "$scheme://www.example.com/**!(),,''";
+  # Test HTTP additional chars.
+  pass "$scheme://www.example.com/:;\@=&=;";
+  pass "$scheme://www.example.com/some/path?query";
+  pass "$scheme://www.example.com/some/path?funny**!(),,:;\@=&=";
+  pass "$scheme://www.example.com/some/?";
+  pass "$scheme://www.example.com/?";
+  pass "$scheme://www.example.com//////////////";
+  # Usernames/passwords are NOT allowed in http URIs.
+  fail "$scheme://abigail\@www.example.com";
+  fail "$scheme://abigail\@www.example.com:80/some/file";
+  fail "$scheme://abigail:secret\@www.example.com:80/some/file";
+  fail "$scheme://abigail:secret\@127.0.0.1:80/some/file";
+  # ~ was NOT allowed by RFC 1738, but currently is.
+  pass "$scheme://www.example.com/~abigail/";
+  # Fail on "national" characters.
+  fail "$scheme://www.example.com/nope|nope";
+  fail "$scheme://www.example.com/`";
+  # Fail on "punctation" characters.
+  fail "$scheme://www.example.com/some/file#target";
+  # Two question marks used to be failure, but is now allowed.
+  pass "$scheme://www.example.com/some/path?query1?query2";
+  pass "$scheme://www.example.com/some/??";
+  # Can have slashes in query.
+  pass "$scheme://www.example.com/some/path?query/path";
+}
 # Scheme must be lower case, and correct.
 fail 'HTTP://www.example.com/';
+fail 'HTTPS://www.example.com/';
 
 pass 'ftp://ftp.example.com';
 pass 'ftp://ftp.example.com/';

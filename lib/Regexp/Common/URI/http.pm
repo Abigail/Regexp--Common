@@ -14,7 +14,9 @@ $VERSION = '2010010201';
 my $http_uri = "(?k:(?k:http)://(?k:$host)(?::(?k:$port))?"           .
                "(?k:/(?k:(?k:$path_segments)(?:[?](?k:$query))?))?)";
 
-register_uri HTTP => $http_uri;
+my $https_uri = $http_uri; $https_uri =~ s/http/https?/;
+
+register_uri HTTP => $https_uri;
 
 pattern name    => [qw (URI HTTP), "-scheme=http"],
         create  => sub {
