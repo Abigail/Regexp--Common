@@ -17,6 +17,8 @@ use warnings;
 
 my @STATES = qw /pass fail/;
 
+our $SKIP;
+
 use constant   NORMAL_PASS =>  0x01;   # Normal test, should pass.
 use constant   NORMAL_FAIL =>  0x02;   # Normal test, should fail.
 use constant   NORMAL      =>  NORMAL_PASS | NORMAL_FAIL;
@@ -50,11 +52,13 @@ sub stringify {
 sub mess {
     my $str = stringify $_;
     my $com = join " " => map {stringify $_} @_;
-    printf qq !%4d - %-40s (%s)\n! => ++ $count, qq !"$str"!, $com;
+    $count ++;
+    if ($SKIP) {printf qq !%4d # SKIP: %s\n! => $count, $SKIP;}
+    else       {printf qq !%4d - %-40s (%s)\n! => $count, qq !"$str"!, $com;}
 }
 
-sub pass {print     "ok "; &mess}
-sub fail {print "not ok "; &mess}
+sub pass {print          "ok ";             &mess}
+sub fail {print +$SKIP ? "ok " : "not ok "; &mess}
 
 sub Fail {
     my $mess = shift;
@@ -453,6 +457,8 @@ sub run_new_test_set {
     my $pass     = $$test_set {pass};
     my $fail     = $$test_set {fail};
 
+    my $skip_sub = $$test_set {skip_sub};
+
     #
     # Run the passes.
     #
@@ -487,6 +493,11 @@ sub run_new_test_set {
             my @qargs   =  get_args query_args => $target_info, $test_set;
             local $_    =  $query     ? $query -> (@qargs, @args)  :
                            ref $parts ? join "" => @$parts : $parts;
+
+            #
+            # See whether we want to skip the test
+            #
+            local $SKIP = $skip_sub && $skip_sub -> (pass => $_);
 
             #
             # Find out the things {-keep} should return.
@@ -538,6 +549,8 @@ sub run_new_test_set {
             my @qargs = get_args query_args => $target_info, $test_set;
             local $_  = $query     ? $query -> (@qargs, @args) 
                       : ref $parts ? join "" => @$parts : $parts;
+
+            local $SKIP = $skip_sub && $skip_sub -> (fail => $_);
 
             my %skips;
             foreach my $skip (qw /RE SB/) {
