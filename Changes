@@ -1,3 +1,7 @@
+Version
++ Fix documentation (matches should be match). Reported by cogent@cpan.org
+  in RT ticket 2833.
+
 Version 2011041602 Sat Apr 16 17:06:28 CEST 2011
 + Fix typo in repository (avar@cpan.org)
 

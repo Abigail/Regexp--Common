@@ -333,7 +333,7 @@ Regexp::Common - Provide commonly requested regular expressions
                         my $char = quotemeta $flags->{-char};
                         return '(?:^$char+$)';
                     },
-         matches => sub {
+         match   => sub {
                         my ($self, $str) = @_;
                         return $str !~ /[^$self->{flags}{-char}]/;
                     },
@@ -619,7 +619,7 @@ It is a Regexp::Common convention that the outermost capturing parentheses
 always capture the entire pattern, but this is not enforced.
 
 
-=item C<matches =E<gt> $sub_ref>
+=item C<match =E<gt> $sub_ref>
 
 An optional argument that specifies a subroutine that is to be called when
 the C<$RE{...}-E<gt>matches(...)> method of this pattern is invoked.
@@ -631,7 +631,7 @@ It should return the same types of values as a C<m/.../> does.
 
      pattern name    => [qw( line of -char )],
              create  => sub {...},
-             matches => sub {
+             match   => sub {
                              my ($self, $str) = @_;
                              $str !~ /[^$self->{flags}{-char}]/;
                         },
