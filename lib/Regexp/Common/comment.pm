@@ -793,7 +793,7 @@ C<(*>, and end with C<}> or C<*)>. This means that C<{*)> and C<(*}>
 are considered to be comments. Many Pascal applications don't allow this.
 See L<http://www.pascal-central.com/docs/iso10206.txt>
 
-=item C<$RE{comment}{Alice}>
+=item C<$RE{comment}{Pascal}{Alice}>
 
 The I<Alice Pascal> compiler accepts comments that start with C<{>
 and end with C<}>. Comments are not allowed to contain newlines.
