@@ -867,7 +867,7 @@ bug. If you want the pattern to be anchored, use something like:
 
 =head1 LICENSE and COPYRIGHT
 
-This software is Copyright (c) 2001 - 2009, Damian Conway and Abigail.
+This software is Copyright (c) 2001 - 2011, Damian Conway and Abigail.
 
 This module is free software, and maybe used under any of the following
 licenses:
