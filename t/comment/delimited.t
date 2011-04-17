@@ -19,6 +19,7 @@ my @delimited = do {
         [qw {<?_c  _c?>} => [qw {BML}]],
         [qw !{        }! => [qw {False}]],
         [qw {,        ,} => [qw {Haifu}]],
+        [qw {/**     */} => [qw {JavaDoc}]],
         [qw {(*      *)} => [qw {Oberon}]],
         [qw {"        "} => [qw {Smalltalk}]],
         [qw {||      !!} => [qw {*W}]],
@@ -82,11 +83,13 @@ foreach my $entry (@delimited) {
         $langX =~ s/\W/X/g;
         no strict 'refs';
         push @tests => {
-            name    => $lang,
-            regex   => $RE {comment} {$lang},
-            sub     => \&{"RE_comment_$langX"},
-            pass    => [$pass_key],
-            fail    => [$fail_key],
+            name     => $lang,
+            regex    => $RE {comment} {$lang},
+            sub      => \&{"RE_comment_$langX"},
+            pass     => [$pass_key],
+            fail     => [$fail_key],
+            skip_sub => sub {$lang eq 'JavaDoc' && $_ [0] eq 'fail' &&
+                                                   $_ [1] eq '/***/'},
         }
     }
 }

@@ -70,6 +70,9 @@ my @generic = (
     {languages => [qw /J/],
      to_eol    => ['NB[.]']},
 
+    {languages => [qw /JavaDoc/],
+     from_to   => [[qw {/** */}]]},
+
     {languages => [qw /Nickle/],
      to_eol    => ['#'],
      from_to   => [[qw {/* */}]]},
@@ -683,6 +686,14 @@ The I<Java> language has two forms of comments. Comments that start with
 C<//> and last till the end of the line, and comments that start with
 C</*>, and end with C<*/>. If C<{-keep}> is used, only C<$1> will be
 set, and set to the entire comment.
+
+=item JavaDoc
+
+The I<Javadoc> documentation syntax is demarked with a subset of
+ordinary Java comments to separate it from code.  Comments start with
+C</**> end with C<*/>.  If C<{-keep}> is used, only C<$1> will be set,
+and set to the entire comment. See
+L<http://www.oracle.com/technetwork/java/javase/documentation/index-137868.html#format>.
 
 =item JavaScript
 
