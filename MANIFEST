@@ -45,6 +45,7 @@ t/Common.pm
 t/comment/delimited.t
 t/comment/html.t
 t/comment/nested.t
+t/comment/pascal.t
 t/comment/single_line.t
 t/comment/single_or_multiline.t
 t/number/decimal.t

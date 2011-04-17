@@ -1,3 +1,6 @@
+Version
++ Created tests for Pascal comments. 
+
 Version 2011041701 Sun Apr 17 14:22:58 CEST 2011
 + Fix documentation (matches should be match). Reported by cogent@cpan.org
   in RT ticket 2833.
