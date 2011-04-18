@@ -669,9 +669,9 @@ See L<http://www.catseye.mb.ca/esoteric/illgol/index.html>.
 =item INTERCAL
 
 Comments in INTERCAL are single line comments. They start with one of
-the keywords C<NOT> or C<N'T>, and can optionally be preceeded by the
+the keywords C<NOT> or C<N'T>, and can optionally be preceded by the
 keywords C<DO> and C<PLEASE>. If both keywords are used, C<PLEASE>
-preceeds C<DO>. Keywords are separated by whitespace.
+precedes C<DO>. Keywords are separated by whitespace.
 
 =item J
 
@@ -733,9 +733,9 @@ of the line. See also L<http://www.lua.org/manual/manual.html>.
 
 In C<M> (aka C<MUMPS>), comments start with a semi-colon, and last
 till the end of a line. The language specification requires the 
-semi-colon to be preceeded by one or more I<linestart character>s.
+semi-colon to be preceded by one or more I<linestart character>s.
 Those characters default to a space, but that's configurable. This
-requirement, of preceeding the comment with linestart characters is
+requirement, of preceding the comment with linestart characters is
 B<not> tested for. See
 L<ftp://ftp.intersys.com/pub/openm/ism/ism64docs.zip>,
 L<http://mtechnology.intersys.com/mproducts/openm/index.html>, and

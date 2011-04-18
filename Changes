@@ -2,6 +2,7 @@ Version
 + Created tests for Pascal comments. 
 + https schemes are now included in $RE {URI}
 + Document non-anchoring (RT 55549)
++ Fix POD typos (RT 67549 by Salvatore Bonaccorso <carnil@debian.org>)
 
 Version 2011041701 Sun Apr 17 14:22:58 CEST 2011
 + Fix documentation (matches should be match). Reported by cogent@cpan.org
