@@ -272,6 +272,9 @@ sub _clone_with {
     bless { %$self, args=>$args, flags=>$flags }, ref $self;
 }
 
+1;
+
+__END__
 
 =pod
 

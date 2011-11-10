@@ -1,5 +1,7 @@
 Version
 + Typo fix in docs (P Ramakers <pramakers@gmail.com>)
++ Add an explicite 1 to end the main module; otherwise it may fail under Mason
+  (Luciano Rocha <luciano.rocha@booking.com>)
 
 Version 2011041801 Mon Apr 18 11:18:19 CEST 2011
 + Created tests for Pascal comments. 
