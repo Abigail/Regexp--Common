@@ -1,4 +1,6 @@
-Version
+Version 2011121001 Sat Dec 10 21:32:49 CET 2011
++ Fixed a few cases where $[ was used instead of $].
+  (RT 73033 by Father Chrysostomos <sprout@cpan.org>)
 + Typo fix in docs (P Ramakers <pramakers@gmail.com>)
 + Add an explicite 1 to end the main module; otherwise it may fail under Mason
   (Luciano Rocha <luciano.rocha@booking.com>)

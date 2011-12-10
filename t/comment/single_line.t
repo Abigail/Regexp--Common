@@ -6,7 +6,7 @@ use lib "blib/lib";
 use Regexp::Common qw /RE_comment_ALL/;
 use t::Common qw /run_new_tests ww/;
 
-BEGIN {$^W = 0 if $[ < 5.006};
+BEGIN {$^W = 0 if $] < 5.006};
 
 use warnings;
 

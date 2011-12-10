@@ -252,7 +252,7 @@ foreach my $i (1 .. $#bases) {
         next if $i == $#bases;
         my $next_base = $bases [$i + 1];
         push @{$tests [-1] {fail}} => "sep-$next_base-$group" 
-               unless $[ < 5.00503;
+               unless $] < 5.00503;
     }
 
     push @tests  => {

@@ -8,7 +8,7 @@ use t::Common qw /run_new_tests ww/;
 
 use warnings;
 
-BEGIN {$^W = 0 if $[ < 5.006;}
+BEGIN {$^W = 0 if $] < 5.006;}
 
 
 
