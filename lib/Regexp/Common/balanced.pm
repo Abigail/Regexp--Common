@@ -28,6 +28,8 @@ sub nested {
 
     push @finishes => ($finishes [-1]) x (@starts - @finishes);
 
+    use re 'eval';
+
     my @re;
     local $" = "|";
     foreach my $begin (@starts) {
@@ -40,8 +42,6 @@ sub nested {
 
         my $tb  = quotemeta substr $begin => 1;
         my $te  = quotemeta substr $end   => 1;
-
-        use re 'eval';
 
         my $add;
         if ($fb eq $fe) {
