@@ -57,6 +57,7 @@ foreach my $data (@data) {
 
     foreach my $str (@$queries) {
         local $" = "}{";
+        use re 'eval';
         eval "\$str =~ /^\$RE{@$name}{-i}\$/
                     ? pass \$str, '\$RE{@$name}{-i}'
                     : fail \$str, '\$RE{@$name}{-i}'";
