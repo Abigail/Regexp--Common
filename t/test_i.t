@@ -25,7 +25,7 @@ my @data = (
     [[qw /num roman/]           => [qw /I i II ii XvIiI CXxxVIiI MmclXXviI/]],
 );
 
-if ($] >= 5.006) {
+if ($] >= 5.010) {
     push @data => (
         [[qw /balanced/] => ["()", "(a( )b)"]],
     );

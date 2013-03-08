@@ -9,7 +9,7 @@ sub try{$P=qr/^$_[0]$/}sub fail{ok($S=$_[0]!~$P)}sub pass{ok($S=$_[0]=~$P)}
 use Regexp::Common 'RE_ALL';
 ok;
 
-if ($] >= 5.006) {
+if ($] >= 5.010) {
 	try RE_balanced;
 	pass '(a(b))';
 	fail '(a(b)';

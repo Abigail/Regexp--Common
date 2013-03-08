@@ -1,3 +1,7 @@
+Version 2013030901 Sat Mar  9 14:51:42 CET 2013
++ Use (?-1) instead of (??{ }) for the recursive balanced pattern.
+  This makes the pattern unavailable for pre-5.010 perls.
+
 Version 2011121001 Sat Dec 10 21:32:49 CET 2011
 + Fixed a few cases where $[ was used instead of $].
   (RT 73033 by Father Chrysostomos <sprout@cpan.org>)

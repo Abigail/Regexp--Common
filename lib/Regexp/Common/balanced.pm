@@ -6,20 +6,15 @@ use strict;
 use warnings;
 
 use vars qw /$VERSION/;
-$VERSION = '2010010201';
+$VERSION = '2013030901';
 
 my %closer = ( '{'=>'}', '('=>')', '['=>']', '<'=>'>' );
-my $count = -1;
 my %cache;
 
 sub nested {
     my ($start, $finish) = @_;
 
-    return $Regexp::Common::balanced [$cache {$start} {$finish}]
-            if exists $cache {$start} {$finish};
-
-    $count ++;
-    my $r = '(??{$Regexp::Common::balanced ['. $count . ']})';
+    return $cache {$start} {$finish} if exists $cache {$start} {$finish};
 
     my @starts   = map {s/\\(.)/$1/g; $_} grep {length}
                         $start  =~ /([^|\\]+|\\.)+/gs;
@@ -41,24 +36,21 @@ sub nested {
         my $tb  = quotemeta substr $begin => 1;
         my $te  = quotemeta substr $end   => 1;
 
-        use re 'eval';
-
         my $add;
         if ($fb eq $fe) {
             push @re =>
-                   qr /(?:$qb(?:(?>[^$fb]+)|$fb(?!$tb)(?!$te)|$r)*$qe)/;
+                   qq /(?:$qb(?:(?>[^$fb]+)|$fb(?!$tb)(?!$te)|(?-1))*$qe)/;
         }
         else {
             my   @clauses =  "(?>[^$fb$fe]+)";
             push @clauses => "$fb(?!$tb)" if length $tb;
             push @clauses => "$fe(?!$te)" if length $te;
-            push @clauses =>  $r;
-            push @re      =>  qr /(?:$qb(?:@clauses)*$qe)/;
+            push @clauses => "(?-1)";
+            push @re      =>  qq /(?:$qb(?:@clauses)*$qe)/;
         }
     }
 
-    $cache {$start} {$finish} = $count;
-    $Regexp::Common::balanced [$count] = qr/@re/;
+    $cache {$start} {$finish} = qr /(@re)/;
 }
 
 
@@ -73,10 +65,9 @@ pattern name    => [qw /balanced -parens=() -begin= -end=/],
                 $flag -> {-begin} = join "|" => @open;
                 $flag -> {-end}   = join "|" => @close;
             }
-            my $pat = nested @$flag {qw /-begin -end/};
-            return exists $flag -> {-keep} ? qr /($pat)/ : $pat;
+            return nested @$flag {qw /-begin -end/};
         },
-        version => 5.006,
+        version => 5.010,
         ;
 
 }
@@ -122,15 +113,8 @@ More than one type of parenthesis can be specified:
 in which case all specified parenthesis types must be correctly balanced within
 the string.
 
-If we are using C{-keep} (See L<Regexp::Common>):
-
-=over 4
-
-=item $1
-
-captures the entire expression
-
-=back
+Since version 2013030901, C<< $1 >> will always be set (to the entire
+matched substring), regardless whether C<< {-keep} >> is used or not.
 
 =head2 C<< $RE{balanced}{-begin => "begin"}{-end => "end"} >>
 
@@ -150,15 +134,15 @@ is repeated. If it contains more cases than I<-begin>, the extra cases
 are ignored. If either of I<-begin> or I<-end> isn't given, or is empty,
 I<< -begin => '(' >> and I<< -end => ')' >> are assumed.
 
-If we are using C{-keep} (See L<Regexp::Common>):
+Since version 2013030901, C<< $1 >> will always be set (to the entire
+matched substring), regardless whether C<< {-keep} >> is used or not.
 
-=over 4
+=head2 Note
 
-=item $1
-
-captures the entire expression
-
-=back
+Since version 2013030901 the pattern will make of the recursive construct
+C<< (?-1) >>, instead of using the problematic C<< (??{ }) >> construct.
+This fixes an problem that was introduced in the 5.17 development track.
+This also means the pattern is no longer available for Perls older than 5.010.
 
 =head1 SEE ALSO
 
@@ -181,7 +165,7 @@ Send them in to I<regexp-common@abigail.be>.
 
 =head1 LICENSE and COPYRIGHT
 
-This software is Copyright (c) 2001 - 2009, Damian Conway and Abigail.
+This software is Copyright (c) 2001 - 2013, Damian Conway and Abigail.
 
 This module is free software, and maybe used under any of the following
 licenses:

@@ -15,7 +15,7 @@ $SIG{__WARN__} = sub { };
 use Regexp::Common;
 ok;
 
-if ($] >= 5.006) {
+if ($] >= 5.010) {
 	try $RE{balanced}{-keep};
 	pass '(a(b))';
 
