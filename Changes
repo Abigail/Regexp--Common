@@ -1,3 +1,10 @@
+Version 2013031101 Mon Mar 11 21:02:45 CET 2013
++ For integers and decimal numbers (reals), allow the user to specify the
+  pattern of the signs (leading sign, and for reals, the sign of the exponent).
+  This gives the user the option to ask for a pattern that matches unsigned
+  numbers (by specifying the empty string as the pattern). 
+  Requested by "Wilson, Jonathan" <jonathan.wilson@Vanderbilt.Edu>.
+
 Version 2013030901 Sat Mar  9 14:51:42 CET 2013
 + Use (?-1) instead of (??{ }) for the recursive balanced pattern.
   This makes the pattern unavailable for pre-5.010 perls.

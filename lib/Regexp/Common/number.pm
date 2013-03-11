@@ -7,7 +7,7 @@ use strict;
 use warnings;
 
 use vars qw /$VERSION/;
-$VERSION = '2010010201';
+$VERSION = '2013031101';
 
 
 sub _croak {
@@ -19,8 +19,8 @@ my $digits = join ("", 0 .. 9, "A" .. "Z");
 
 sub int_creator {
     my $flags = $_ [1];
-    my ($sep, $group, $base, $places) =
-            @{$flags} {qw /-sep -group -base -places/};
+    my ($sep, $group, $base, $places, $sign) =
+            @{$flags} {qw /-sep -group -base -places -sign/};
 
     # Deal with the bases.
     _croak "Base must be between 1 and 36" unless $base >=  1 &&
@@ -34,14 +34,14 @@ sub int_creator {
 
     my $quant = $places ? "{$places}" : "+";
 
-    return $sep ? qq {(?k:(?k:[+-]?)(?k:[$chars]{1,$max}} .
+    return $sep ? qq {(?k:(?k:$sign)(?k:[$chars]{1,$max}} .
                   qq {(?:$sep} . qq {[$chars]{$group})*))}
-                : qq {(?k:(?k:[+-]?)(?k:[$chars]$quant))}
+                : qq {(?k:(?k:$sign)(?k:[$chars]$quant))}
 }
 
 sub real_creator { 
-    my ($base, $places, $radix, $sep, $group, $expon) =
-            @{$_[1]}{-base, -places, -radix, -sep, -group, -expon};
+    my ($base, $places, $radix, $sep, $group, $expon, $sign) =
+            @{$_[1]}{-base, -places, -radix, -sep, -group, -expon, -sign};
     _croak "Base must be between 1 and 36"
            unless $base >= 1 && $base <= 36;
     $sep = ',' if exists $_[1]->{-sep}
@@ -50,17 +50,17 @@ sub real_creator {
     foreach ($radix, $sep, $expon) {$_ = "[$_]" if 1 == length}
     my $chars = substr $digits, 0, $base;
     return $sep
-           ? qq {(?k:(?i)(?k:[+-]?)(?k:(?=$radix?[$chars])}              .
+           ? qq {(?k:(?i)(?k:$sign)(?k:(?=$radix?[$chars])}              .
              qq {(?k:[$chars]{1,$group}(?:(?:$sep)[$chars]{$group})*)}   .
              qq {(?:(?k:$radix)(?k:[$chars]{$places}))?)}                .
-             qq {(?:(?k:$expon)(?k:(?k:[+-]?)(?k:[$chars]+))|))}
-           : qq {(?k:(?i)(?k:[+-]?)(?k:(?=$radix?[$chars])}              .
+             qq {(?:(?k:$expon)(?k:(?k:$sign)(?k:[$chars]+))|))}
+           : qq {(?k:(?i)(?k:$sign)(?k:(?=$radix?[$chars])}              .
              qq {(?k:[$chars]*)(?:(?k:$radix)(?k:[$chars]{$places}))?)}  .
-             qq {(?:(?k:$expon)(?k:(?k:[+-]?)(?k:[$chars]+))|))};
+             qq {(?:(?k:$expon)(?k:(?k:$sign)(?k:[$chars]+))|))};
 }
 sub decimal_creator { 
-    my ($base, $places, $radix, $sep, $group) =
-            @{$_[1]}{-base, -places, -radix, -sep, -group};
+    my ($base, $places, $radix, $sep, $group, $sign) =
+            @{$_[1]}{-base, -places, -radix, -sep, -group, -sign};
     _croak "Base must be between 1 and 36"
            unless $base >= 1 && $base <= 36;
     $sep = ',' if exists $_[1]->{-sep}
@@ -68,32 +68,32 @@ sub decimal_creator {
     foreach ($radix, $sep) {$_ = "[$_]" if 1 == length}
     my $chars = substr $digits, 0, $base;
     return $sep
-           ? qq {(?k:(?i)(?k:[+-]?)(?k:(?=$radix?[$chars])}               .
+           ? qq {(?k:(?i)(?k:$sign)(?k:(?=$radix?[$chars])}               .
              qq {(?k:[$chars]{1,$group}(?:(?:$sep)[$chars]{$group})*)}    .
              qq {(?:(?k:$radix)(?k:[$chars]{$places}))?))}
-           : qq {(?k:(?i)(?k:[+-]?)(?k:(?=$radix?[$chars])}               .
+           : qq {(?k:(?i)(?k:$sign)(?k:(?=$radix?[$chars])}               .
              qq {(?k:[$chars]*)(?:(?k:$radix)(?k:[$chars]{$places}))?))}
 }
 
 
-pattern name   => [qw (num int -sep= -base=10 -group=3)],
+pattern name   => [qw (num int -sep= -base=10 -group=3 -sign=[-+]?)],
         create => \&int_creator,
         ;
 
 pattern name   => [qw (num real -base=10), '-places=0,',
-                   qw (-radix=[.] -sep= -group=3 -expon=E)],
+                   qw (-radix=[.] -sep= -group=3 -expon=E -sign=[-+]?)],
         create => \&real_creator,
         ;
 
 pattern name   => [qw (num decimal -base=10), '-places=0,',
-                   qw (-radix=[.] -sep= -group=3)],
+                   qw (-radix=[.] -sep= -group=3 -sign=[-+]?)],
         create => \&decimal_creator,
         ;
 
 sub real_synonym {
     my ($name, $base) = @_;
     pattern name   => ['num', $name, '-places=0,', '-radix=[.]',
-                       '-sep=', '-group=3', '-expon=E'],
+                       '-sep=', '-group=3', '-expon=E', '-sign=[-+]?'],
             create => sub {my %flags = (%{$_[1]}, -base => $base);
                            real_creator (undef, \%flags);
                       }
@@ -169,7 +169,7 @@ of the works of this interface.
 
 Do not use this module directly, but load it via I<Regexp::Common>.
 
-=head2 C<$RE{num}{int}{-base}{-sep}{-group}{-places}>
+=head2 C<$RE{num}{int}{-base}{-sep}{-group}{-places}{-sign}>
 
 Returns a pattern that matches an integer.
 
@@ -193,6 +193,11 @@ exactly I<N> digits wide. If C<< -places => I<N,M> >> is specified, the
 integer must be at least I<N> wide, and at most I<M> characters. There
 is no default, which means that integers are unlimited in size. This
 option is ignored if the C<< -sep >> option is used.
+
+If C<< -sign => I<P> >> is used, it's a pattern the leading sign has to
+match. This defaults to C<< [-+]? >>, which means the number is optionally
+preceded by a minus or a plus. If you want to match unsigned integers,
+use C<< $RE{num}{int}{-sign => ''} >>.
 
 For example:
 
@@ -245,6 +250,10 @@ I<N> is 3.
 
 If C<-expon=I<P>> is specified, the pattern I<P> is used as the exponential
 marker.  The default value of I<P> is C<qr/[Ee]/>.
+
+If C<-sign=I<P>> is specified, the pattern I<P> is used to match the 
+leading sign (and the sign of the exponent). This defaults to C<< [-+]? >>,
+means means that an optional plus or minus sign can be used.
 
 For example:
 
@@ -423,7 +432,7 @@ Send them in to I<regexp-common@abigail.be>.
 
 =head1 LICENSE and COPYRIGHT
 
-This software is Copyright (c) 2001 - 2009, Damian Conway and Abigail.
+This software is Copyright (c) 2001 - 2013, Damian Conway and Abigail.
 
 This module is free software, and maybe used under any of the following
 licenses:

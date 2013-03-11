@@ -79,18 +79,41 @@ $targets {dot} = {
 };
 
 sub __ {
-    map {;"${_}_int",       "${_}_int_dot",
-          "${_}_minus_int", "${_}_plus_int",
-          "${_}_dot_frac",  "${_}_minus_dot_frac", "${_}_plus_dot_frac",
+    map {;"${_}_int",            "${_}_int_dot",
+          "${_}_minus_int",      "${_}_plus_int",
+          "${_}_dot_frac",       "${_}_minus_dot_frac", "${_}_plus_dot_frac",
     } @_
 }
 
-push @tests => {
-    name    =>  'basic',
-    re      =>  $decimal,
-    sub     =>  \&RE_num_decimal,
-    pass    =>  [__ (grep {$_ <= 10} map {$$_ [0]} @data)],
-    fail    =>  [__ (grep {$_ >  10} map {$$_ [0]} @data), "dot"],
+sub _2 {
+    map {;"${_}_minus_int",      "${_}_plus_int",
+          "${_}_minus_dot_frac", "${_}_plus_dot_frac",
+    } @_
+}
+
+sub _3 {
+    map {;"${_}_int",            "${_}_int_dot",
+          "${_}_dot_frac",
+    } @_
+}
+
+push @tests  => {
+    name     =>  'basic',
+    re       =>  $decimal,
+    sub      =>  \&RE_num_decimal,
+    pass     =>  [__ (grep {$_ <= 10} map {$$_ [0]} @data)],
+    fail     =>  [__ (grep {$_ >  10} map {$$_ [0]} @data), "dot"],
+};
+
+
+push @tests  => {
+    name     =>  'basic -- signed',
+    re       =>  $decimal -> {-sign => '[-+]'},
+    sub      =>  \&RE_num_decimal,
+    sub_args =>  [-sign => '[-+]'],
+    pass     =>  [ _2 (grep {$_ <= 10} map {$$_ [0]} @data)],
+    fail     =>  [(_3 (grep {$_ <= 10} map {$$_ [0]} @data)),
+                   __ (grep {$_ >  10} map {$$_ [0]} @data), "dot"],
 };
 
 foreach my $data (@data) {

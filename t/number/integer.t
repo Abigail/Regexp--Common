@@ -206,13 +206,48 @@ $targets {small_garbage} = {
 };
 
 
-push @tests => {
-    name    => "integer",
-    re      => $RE {num} {int},
-    sub     => \&RE_num_int,
-    pass    => [ map {;"u$_", "+$_", "-$_"} grep {$_ && $_ <= 10} @bases],
-    fail    => [(map {;"u$_", "+$_", "-$_"} grep {$_ && $_  > 10} @bases),
+push @tests  => {
+    name     => "integer",
+    re       => $RE {num} {int},
+    sub      => \&RE_num_int,
+    pass     => [ map {;"u$_", "+$_", "-$_"} grep {$_ && $_ <= 10} @bases],
+    fail     => [(map {;"u$_", "+$_", "-$_"} grep {$_ && $_  > 10} @bases),
                 "words", "garbage", "dot10", "sign10"],
+};
+
+push @tests  => {
+    name     => "unsigned",
+    re       => $RE {num} {int} {-sign => ''},
+    sub      => \&RE_num_int,
+    sub_args => [-sign => ''],
+    pass     => [ map {;"u$_"}               grep {$_ && $_ <= 10} @bases],
+    fail     => [(map {;"+$_", "-$_"}        grep {$_ && $_ <= 10} @bases),
+                 (map {;"u$_", "+$_", "-$_"} grep {$_ && $_ >  10} @bases),
+                 "words", "garbage", "dot10", "sign10"],
+};
+
+
+push @tests  => {
+    name     => "minus",
+    re       => $RE {num} {int} {-sign => '-'},
+    sub      => \&RE_num_int,
+    sub_args => [-sign => '-'],
+    pass     => [ map {;"-$_"}               grep {$_ && $_ <= 10} @bases],
+    fail     => [(map {;"+$_", "u$_"}        grep {$_ && $_ <= 10} @bases),
+                 (map {;"u$_", "+$_", "-$_"} grep {$_ && $_ >  10} @bases),
+                 "words", "garbage", "dot10", "sign10"],
+};
+
+
+push @tests  => {
+    name     => "signed",
+    re       => $RE {num} {int} {-sign => '(?:-|\+)'},
+    sub      => \&RE_num_int,
+    sub_args => [-sign => '(?:-|\+)'],
+    pass     => [ map {;"-$_", "+$_"}        grep {$_ && $_ <= 10} @bases],
+    fail     => [(map {;"u$_"}               grep {$_ && $_ <= 10} @bases),
+                 (map {;"u$_", "+$_", "-$_"} grep {$_ && $_ >  10} @bases),
+                 "words", "garbage", "dot10", "sign10"],
 };
 
 
@@ -230,6 +265,19 @@ foreach my $i (1 .. $#bases) {
                       grep {$_ && $_ <= $base} @bases],
         fail     => [(map {;"u$_", "+$_", "-$_"}
                       grep {$_ && $_  > $base} @bases),
+                    "words", "garbage", "dot$base", "sign$base"],
+    };
+
+    push @tests  => {
+        name     => "-base=$base; signed",
+        re       => $RE {num} {int} {-base => $base} {-sign => '[-+]'},
+        sub      => \&RE_num_int,
+        sub_args => [-base => $base, -sign => '[-+]'],
+        pass     => [ map {;"+$_", "-$_"}
+                      grep {$_ && $_ <= $base} @bases],
+        fail     => [(map {;"u$_"} grep {$_ && $_ <= $base} @bases),
+                     (map {;"u$_", "+$_", "-$_"}
+                                   grep {$_ && $_  > $base} @bases),
                     "words", "garbage", "dot$base", "sign$base"],
     };
 
