@@ -20,11 +20,18 @@ my %MACunit = (
     hex => q{(?k:[0-9a-fA-F]{1,2})},
 );
 
+my %IPv6unit = (
+    hex => q {(?k:[0-9a-f]{1,4})},
+    HEX => q {(?k:[0-9A-F]{1,4})},
+    HeX => q {(?k:[0-9a-fA-F]{1,4})},
+);
+
 sub dec {$_};
 sub bin {oct "0b$_"}
 
-my $IPdefsep  = '[.]';
-my $MACdefsep =  ':';
+my $IPdefsep   = '[.]';
+my $MACdefsep  =  ':';
+my $IPv6defsep =  ':';
 
 pattern name   => [qw (net IPv4)],
         create => "(?k:$IPunit{dec}$IPdefsep$IPunit{dec}$IPdefsep" .
@@ -63,6 +70,52 @@ foreach my $type (qw /dec oct hex bin/) {
             ;
 
 }
+
+
+pattern name   => [qw (net IPv6), "-sep=$IPv6defsep", "-style=HeX"],
+        create => sub {
+            my $style = $_ [1] {-style};
+            my $sep   = $_ [1] {-sep};
+            my @re;
+
+            die "Impossible style '$style'\n" unless exists $IPv6unit {$style};
+
+            #
+            # Nothing missing
+            #
+            push @re => join $sep => ($IPv6unit {$style}) x 8;
+
+            #
+            # For "double colon" representations, at least 2 units must
+            # be omitted, leaving us with at most 6 units. 0 units is also
+            # possible. Note we can have at most one double colon.
+            #
+            for (my $l = 0; $l <= 6; $l ++) {
+                #
+                # We prefer to do longest match, so larger $r gets priority
+                #
+                for (my $r = 6 - $l; $r >= 0; $r --) {
+                    #
+                    # $l is the number of blocks left of the double colon,
+                    # $r is the number of blocks left of the double colon,
+                    # $m is the number of omitted blocks
+                    #
+                    my $m    = 8 - $l - $r;
+                    my $patl = $l ? "(?:" . $IPv6unit {$style} . $sep . "){$l}"
+                                  : $sep;
+                    my $patr = $r ? "(?:" . $sep . $IPv6unit {$style} . "){$r}"
+                                  : $sep;
+                    my $patm = "(?k:)" x $m;
+                    my $pat  = $patl . $patm . $patr;
+                    push @re => "(?:$pat)";
+                }
+            }
+            local $" = "|";
+            qq /(?k:(?|@re))/;
+        },
+        version => 5.010
+;
+
 
 my $letter      =  "[A-Za-z]";
 my $let_dig     =  "[A-Za-z0-9]";
