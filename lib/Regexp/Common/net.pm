@@ -6,7 +6,7 @@ use strict;
 use warnings;
 
 use vars qw /$VERSION/;
-$VERSION = '2010010201';
+$VERSION = '2013031201';
 
 
 my %IPunit = (
@@ -69,15 +69,21 @@ my $let_dig     =  "[A-Za-z0-9]";
 my $let_dig_hyp = "[-A-Za-z0-9]";
 
 # Domain names, from RFC 1035.
-pattern name   => [qw (net domain -nospace=)],
+pattern name   => [qw (net domain -nospace= -rfc1101=)],
         create => sub {
+            my $rfc1101 = exists $_ [1] {-rfc1101} &&
+                        !defined $_ [1] {-rfc1101};
+
+            my $lead = $rfc1101 ? "(?!$RE{net}{IPv4}(?:[.]|\$))$let_dig"
+                                : $letter;
+
             if (exists $_ [1] {-nospace} && !defined $_ [1] {-nospace}) {
-                return "(?k:$letter(?:(?:$let_dig_hyp){0,61}$let_dig)?" .
-                       "(?:\\.$letter(?:(?:$let_dig_hyp){0,61}$let_dig)?)*)"
+                return "(?k:$lead(?:(?:$let_dig_hyp){0,61}$let_dig)?" .
+                       "(?:\\.$lead(?:(?:$let_dig_hyp){0,61}$let_dig)?)*)"
             }
             else {
-                return "(?k: |(?:$letter(?:(?:$let_dig_hyp){0,61}$let_dig)?" .
-                       "(?:\\.$letter(?:(?:$let_dig_hyp){0,61}$let_dig)?)*))"
+                return "(?k: |(?:$lead(?:(?:$let_dig_hyp){0,61}$let_dig)?" .
+                       "(?:\\.$lead(?:(?:$let_dig_hyp){0,61}$let_dig)?)*))"
             }
         },
         ;
@@ -275,6 +281,13 @@ domainnames, but not a space, you can do one of two things, either use
 
 or use the C<{-nospace}> option (without an argument).
 
+RFC 1035 does B<not> allow host or domain names to start with a digits;
+however, this restriction is relaxed in RFC 1101; this RFC allows host
+and domain names to start with a digit, as long as the first part of
+a domain does not look like an IP address. If the C<< {-rfc1101} >> option
+is given (as in C<< $RE {net} {domain} {-rfc1101} >>), we will match using
+the relaxed rules.
+
 =head1 REFERENCES
 
 =over 4
@@ -283,6 +296,11 @@ or use the C<{-nospace}> option (without an argument).
 
 Mockapetris, P.: I<DOMAIN NAMES - IMPLEMENTATION AND SPECIFICATION>.
 November 1987.
+
+=item B<RFC 1101>
+
+Mockapetris, P.: I<DNS Encoding of Network Names and Other Types>.
+April 1987.
 
 =back
 
@@ -307,7 +325,7 @@ Send them in to I<regexp-common@abigail.be>.
 
 =head1 LICENSE and COPYRIGHT
 
-This software is Copyright (c) 2001 - 2009, Damian Conway and Abigail.
+This software is Copyright (c) 2001 - 2013, Damian Conway and Abigail.
 
 This module is free software, and maybe used under any of the following
 licenses:
