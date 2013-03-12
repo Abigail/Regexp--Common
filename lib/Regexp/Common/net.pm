@@ -101,10 +101,8 @@ pattern name   => [qw (net IPv6), "-sep=$IPv6defsep", "-style=HeX"],
                     # $m is the number of omitted blocks
                     #
                     my $m    = 8 - $l - $r;
-                    my $patl = $l ? "(?:" . $IPv6unit {$style} . $sep . "){$l}"
-                                  : $sep;
-                    my $patr = $r ? "(?:" . $sep . $IPv6unit {$style} . "){$r}"
-                                  : $sep;
+                    my $patl = $l ? ($IPv6unit {$style} . $sep) x $l : $sep;
+                    my $patr = $r ? ($sep . $IPv6unit {$style}) x $r : $sep;
                     my $patm = "(?k:)" x $m;
                     my $pat  = $patl . $patm . $patr;
                     push @re => "(?:$pat)";
