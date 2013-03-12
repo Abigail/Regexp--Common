@@ -8,6 +8,9 @@ License, the Artistic License 2.0, the MIT license, or the BSD license.
 
 
 WARNINGS:
+       As of version 2013030901, $RE {balanced} is no longer supported 
+       for pre-5.10 Perls.
+
        INCOMPATIBLE CHANGE in version 2.119:
        The $N settings for the -keep option of US postal codes
        ($RE {zip} {US} {-keep}) have been changed. See the 
@@ -104,7 +107,7 @@ MAINTAINER
 
 COPYRIGHT and LICENSE
 
-    This software is Copyright (c) 2001 - 2009, Damian Conway and Abigail.
+    This software is Copyright (c) 2001 - 2013, Damian Conway and Abigail.
 
     This module is free software, and maybe used under any of the following
     licences:
