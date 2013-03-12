@@ -1,6 +1,6 @@
-Version 2013031301 Tue Mar 12 15:44:48 CET 2013
+Version 2013031201 Tue Mar 12 15:44:48 CET 2013
 + Allow host/domain names to start with a digit, using
-  $RE{net}{domain}{-rfc1101}. Requested by George Hartzell and many others.
+  $RE{net}{domain}{-rfc1101}. Requested by Guy Edwards and many others.
   RT 23626.
 
 Version 2013031101 Mon Mar 11 21:02:45 CET 2013
