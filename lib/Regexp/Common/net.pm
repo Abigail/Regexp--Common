@@ -72,10 +72,14 @@ foreach my $type (qw /dec oct hex bin/) {
 }
 
 
+my %cache6;
 pattern name   => [qw (net IPv6), "-sep=$IPv6defsep", "-style=HeX"],
         create => sub {
             my $style = $_ [1] {-style};
             my $sep   = $_ [1] {-sep};
+
+            return $cache6 {$style, $sep} if $cache6 {$style, $sep};
+
             my @re;
 
             die "Impossible style '$style'\n" unless exists $IPv6unit {$style};
@@ -109,7 +113,7 @@ pattern name   => [qw (net IPv6), "-sep=$IPv6defsep", "-style=HeX"],
                 }
             }
             local $" = "|";
-            qq /(?k:(?|@re))/;
+            $cache6 {$style, $sep} = qq /(?k:(?|@re))/;
         },
         version => 5.010
 ;
