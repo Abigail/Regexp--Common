@@ -20,11 +20,18 @@ my %MACunit = (
     hex => q{(?k:[0-9a-fA-F]{1,2})},
 );
 
+my %IPv6unit = (
+    hex => q {(?k:[0-9a-f]{1,4})},
+    HEX => q {(?k:[0-9A-F]{1,4})},
+    HeX => q {(?k:[0-9a-fA-F]{1,4})},
+);
+
 sub dec {$_};
 sub bin {oct "0b$_"}
 
-my $IPdefsep  = '[.]';
-my $MACdefsep =  ':';
+my $IPdefsep   = '[.]';
+my $MACdefsep  =  ':';
+my $IPv6defsep =  ':';
 
 pattern name   => [qw (net IPv4)],
         create => "(?k:$IPunit{dec}$IPdefsep$IPunit{dec}$IPdefsep" .
@@ -63,6 +70,54 @@ foreach my $type (qw /dec oct hex bin/) {
             ;
 
 }
+
+
+my %cache6;
+pattern name   => [qw (net IPv6), "-sep=$IPv6defsep", "-style=HeX"],
+        create => sub {
+            my $style = $_ [1] {-style};
+            my $sep   = $_ [1] {-sep};
+
+            return $cache6 {$style, $sep} if $cache6 {$style, $sep};
+
+            my @re;
+
+            die "Impossible style '$style'\n" unless exists $IPv6unit {$style};
+
+            #
+            # Nothing missing
+            #
+            push @re => join $sep => ($IPv6unit {$style}) x 8;
+
+            #
+            # For "double colon" representations, at least 2 units must
+            # be omitted, leaving us with at most 6 units. 0 units is also
+            # possible. Note we can have at most one double colon.
+            #
+            for (my $l = 0; $l <= 6; $l ++) {
+                #
+                # We prefer to do longest match, so larger $r gets priority
+                #
+                for (my $r = 6 - $l; $r >= 0; $r --) {
+                    #
+                    # $l is the number of blocks left of the double colon,
+                    # $r is the number of blocks left of the double colon,
+                    # $m is the number of omitted blocks
+                    #
+                    my $m    = 8 - $l - $r;
+                    my $patl = $l ? ($IPv6unit {$style} . $sep) x $l : $sep;
+                    my $patr = $r ? ($sep . $IPv6unit {$style}) x $r : $sep;
+                    my $patm = "(?k:)" x $m;
+                    my $pat  = $patl . $patm . $patr;
+                    push @re => "(?:$pat)";
+                }
+            }
+            local $" = "|";
+            $cache6 {$style, $sep} = qq /(?k:(?|@re))/;
+        },
+        version => 5.010
+;
+
 
 my $letter      =  "[A-Za-z]";
 my $let_dig     =  "[A-Za-z0-9]";
@@ -266,6 +321,40 @@ binary numbers.
 
 If C<< -sep=I<P> >> is specified the pattern I<P> is used as the separator.
 By default I<P> is C<qr/:/>.
+
+=head2 C<$RE{net}{IPv6}{-sep => ':'}{-style => 'HeX'}>
+
+Returns a pattern matching IPv6 numbers. An IPv6 address consists of
+eigth groups of four hexadecimal digits, separated by colons. In each
+group, leading zeros may be omitted. Two or more consecutive groups
+consisting of only zeros may be omitted (including any colons separating
+them), resulting into two sets of groups, separated by a double colon.
+(Each of the groups may be empty; C<< :: >> is a valid address, equal to
+C<< 0000:0000:0000:0000:0000:0000:0000:0000 >>). The hex numbers may be
+in either case.
+
+If the C<< -sep >> option is used, its argument is a pattern that matches
+the separator that separates groups. This defaults to C<< : >>. The 
+C<< -style >> option is used to denote which case the hex numbers may be.
+The default style, C<< 'HeX' >> indicates both lower case letters C<< 'a' >>
+to C<< 'f' >> and upper case letters C<< 'A' >> to C<< 'F' >> will be 
+matched. The style C<< 'HEX' >> restricts matching to upper case letters,
+and C<< 'hex' >> only matches lower case letters.
+
+If C<< {-keep} >> is used, C<< $1 >> to C<< $9 >> will be set. C<< $1 >>
+will be set to the matched address, while C<< $2 >> to C<< $9 >> will be
+set to each matched group. If a group is omitted because it contains all
+zeros, its matching variable will be the empty string.
+
+Example:
+
+  "2001:db8:85a3::8a2e:370:7334" =~ /$RE{net}{IPv6}{-keep}/;
+  print $2;    # '2001'
+  print $4;    # '85a3'
+  print $6;    # Empty string
+  print $8;    # '370'
+
+Perl 5.10 (or later) is required for this pattern.
 
 =head2 C<$RE{net}{domain}>
 
