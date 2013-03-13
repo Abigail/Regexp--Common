@@ -1,3 +1,7 @@
+Version 2013031302
++ Doc typo fixes (Jonathan You <jawnsy@cpan.org>/RT 67549) and
+  (Gregor Herrmann <gregoa@cpan.org>/RT 71131).
+
 Version 2013031301 Wed Mar 13 12:03:41 CET 2013
 + Pattern for IPv6 addresses. Requested by Guy Edwards and many others.
   RT 50693.
