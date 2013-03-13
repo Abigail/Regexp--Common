@@ -267,7 +267,7 @@ binary numbers.
 If C<< -sep=I<P> >> is specified the pattern I<P> is used as the separator.
 By default I<P> is C<qr/:/>.
 
-=head2 $RE{net}{domain}
+=head2 C<$RE{net}{domain}>
 
 Returns a pattern to match domains (and hosts) as defined in RFC 1035.
 Under I{-keep} only the entire domain name is returned.
