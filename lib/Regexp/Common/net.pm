@@ -322,6 +322,41 @@ binary numbers.
 If C<< -sep=I<P> >> is specified the pattern I<P> is used as the separator.
 By default I<P> is C<qr/:/>.
 
+
+=head2 C<$RE{net}{IPv6}{-sep => ':'}{-style => 'HeX'}>
+
+Returns a pattern matching IPv6 numbers. An IPv6 address consists of
+eigth groups of four hexadecimal digits, separated by colons. In each
+group, leading zeros may be omitted. Two or more consecutive groups
+consisting of only zeros may be omitted (including any colons separating
+them), resulting into two sets of groups, separated by a double colon.
+(Each of the groups may be empty; C<< :: >> is a valid address, equal to
+C<< 0000:0000:0000:0000:0000:0000:0000:0000 >>). The hex numbers may be
+in either case.
+
+If the C<< -sep >> option is used, its argument is a pattern that matches
+the separator that separates groups. This defaults to C<< : >>. The 
+C<< -style >> option is used to denote which case the hex numbers may be.
+The default style, C<< 'HeX' >> indicates both lower case letters C<< 'a' >>
+to C<< 'f' >> and upper case letters C<< 'A' >> to C<< 'F' >> will be 
+matched. The style C<< 'HEX' >> restricts matching to upper case letters,
+and C<< 'hex' >> only matches lower case letters.
+
+If C<< {-keep} >> is used, C<< $1 >> to C<< $9 >> will be set. C<< $1 >>
+will be set to the matched address, while C<< $2 >> to C<< $9 >> will be
+set to each matched group. If a group is omitted because it contains all
+zeros, its matching variable will be the empty string.
+
+Example:
+
+  "2001:db8:85a3::8a2e:370:7334" =~ /$RE{net}{IPv6}{-keep}/;
+  print $2;    # '2001'
+  print $4;    # '85a3'
+  print $6;    # Empty string
+  print $8;    # '370'
+
+Perl 5.10 (or later) is required for this pattern.
+
 =head2 $RE{net}{domain}
 
 Returns a pattern to match domains (and hosts) as defined in RFC 1035.
