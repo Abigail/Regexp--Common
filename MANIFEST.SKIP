@@ -1,6 +1,7 @@
 .git
 .gitignore
 MANIFEST.SKIP
+.*.tar.gz
 Releases
 fix_versions
 t/zzz_90_kwalitee.t
