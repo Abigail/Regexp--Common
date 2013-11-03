@@ -681,7 +681,7 @@ However, it is possible to indicate which sets of patterns should
 be made available - the wanted sets should be given as arguments to
 C<use>. Alternatively, it is also possible to indicate which sets of
 patterns should not be made available - those sets will be given as
-argument to the C<use> statement, but are preceeded with an exclaimation
+argument to the C<use> statement, but are preceded with an exclamation
 mark. The argument I<no_defaults> indicates none of the default patterns
 should be made available. This is useful for instance if all you want
 is the C<pattern()> subroutine.
@@ -699,7 +699,7 @@ you can have it made available with
  use Regexp::Common qw /my_patterns/;
 
 Note that the default patterns will still be made available - only if
-you use I<no_defaults>, or mention one of the default sets explicitely,
+you use I<no_defaults>, or mention one of the default sets explicitly,
 the non mentioned defaults aren't made available.
 
 =head2 List of available patterns
@@ -789,7 +789,7 @@ Often caused by a spelling mistake or an incompletely specified name.
 =item C<Can't create unknown regex: $RE{...}>
 
 Regexp::Common doesn't have a generator for the requested pattern.
-Often indicates a mispelt or missing parameter.
+Often indicates a misspelt or missing parameter.
 
 =item
 C<Perl %f does not support the pattern $RE{...}.
