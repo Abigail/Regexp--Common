@@ -254,7 +254,7 @@ pattern requires a country prefix, while C<-prefix=no> disallows a
 prefix. Any argument that doesn't start with a C<y> or a C<n> allows a
 country prefix, but doesn't require them.
 
-The prefixes used are, unfortunally, not always the same. Officially,
+The prefixes used are, unfortunately, not always the same. Officially,
 ISO country codes need to be used, but the usage of I<CEPT> codes (the
 same ones as used on cars) is common too. By default, each postal code
 will recognize a country prefix that's either the ISO standard or the
