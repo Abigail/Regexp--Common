@@ -23,7 +23,7 @@ __END__
 =head1 NAME
 
 Regexp::Common::whitespace -- provides a regex for leading or
-trailing whitescape
+trailing whitespace
 
 =head1 SYNOPSIS
 
