@@ -325,7 +325,7 @@ By default I<P> is C<qr/:/>.
 =head2 C<$RE{net}{IPv6}{-sep => ':'}{-style => 'HeX'}>
 
 Returns a pattern matching IPv6 numbers. An IPv6 address consists of
-eigth groups of four hexadecimal digits, separated by colons. In each
+eight groups of four hexadecimal digits, separated by colons. In each
 group, leading zeros may be omitted. Two or more consecutive groups
 consisting of only zeros may be omitted (including any colons separating
 them), resulting into two sets of groups, separated by a double colon.

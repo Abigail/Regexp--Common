@@ -253,7 +253,7 @@ marker.  The default value of I<P> is C<qr/[Ee]/>.
 
 If C<-sign=I<P>> is specified, the pattern I<P> is used to match the 
 leading sign (and the sign of the exponent). This defaults to C<< [-+]? >>,
-means means that an optional plus or minus sign can be used.
+which means that an optional plus or minus sign can be used.
 
 For example:
 

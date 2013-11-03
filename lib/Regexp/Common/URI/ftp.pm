@@ -95,7 +95,7 @@ I<I> and I<D> (either upper case or lower case). However, the internet
 draft about FTP URIs B<[DRAFT-FTP-URL]> (which expired in May 1997) notes
 the lack of consistent implementation of the I<D> parameter and drops I<D>
 from the set of possible values. We follow this practise; however, RFC 1738
-behaviour can be archieved by using the I<-type => "[ADIadi]"> parameter.
+behaviour can be achieved by using the I<-type => "[ADIadi]"> parameter.
 
 =back
 

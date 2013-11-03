@@ -313,7 +313,7 @@ pattern name    =>  [qw /comment Fortran fixed/],
 
 
 # http://www.csis.ul.ie/cobol/Course/COBOLIntro.htm
-# Traditionally, comments in COBOL were indicated with an asteriks in
+# Traditionally, comments in COBOL were indicated with an asterisk in
 # the seventh column. Modern compilers may be more lenient.
 pattern name    =>  [qw /comment COBOL/],
         create  =>  '(?<=^......)(?k:(?k:[*])(?k:[^\n]*)(?k:\n))',
@@ -435,7 +435,7 @@ L<http://www.rainingdata.com/products/beta/docs/mve/50/ReferenceManual/Basic.pdf
 
 =item Beatnik
 
-The esotoric language I<Beatnik> only uses words consisting of letters.
+The esoteric language I<Beatnik> only uses words consisting of letters.
 Words are scored according to the rules of Scrabble. Words scoring less
 than 5 points, or 18 points or more are considered comments (although
 the compiler might mock at you if you score less than 5 points).
@@ -450,7 +450,7 @@ L<http://www.catseye.mb.ca/esoteric/b-juliet/index.html>.
 
 =item Befunge-98
 
-The esotoric language I<Befunge-98> uses comments that start and end
+The esoteric language I<Befunge-98> uses comments that start and end
 with a C<;>. See L<http://www.catseye.mb.ca/esoteric/befunge/98/spec98.html>.
 
 =item BML                 
@@ -506,13 +506,13 @@ See L<http://developer.nvidia.com/attach/3722>.
 
 =item CLU
 
-In C<CLU>, a comment starts with a procent sign (C<%>), and ends with the
+In C<CLU>, a comment starts with a precent sign (C<%>), and ends with the
 next newline. See L<ftp://ftp.lcs.mit.edu:/pub/pclu/CLU-syntax.ps> and
 L<http://www.pmg.lcs.mit.edu/CLU.html>.
 
 =item COBOL
 
-Traditionally, comments in I<COBOL> are indicated by an asteriks in the
+Traditionally, comments in I<COBOL> are indicated by an asterisk in the
 seventh column. This is what the pattern matches. Modern compiler may
 more lenient though. See L<http://www.csis.ul.ie/cobol/Course/COBOLIntro.htm>,
 and L<http://www.csis.ul.ie/cobol/default.htm>. Due to a bug in the regexp
@@ -579,7 +579,7 @@ See also L<http://www.cray.com/craydoc/manuals/007-3692-005/html-007-3692-005/>.
 
 =item Funge-98
 
-The esotoric language I<Funge-98> uses comments that start and end with
+The esoteric language I<Funge-98> uses comments that start and end with
 a C<;>.
 
 =item fvwm2
@@ -589,7 +589,7 @@ C<#> and lasting the rest of the line.
 
 =item Haifu
 
-I<Haifu>, an esotoric language using haikus, has comments starting and
+I<Haifu>, an esoteric language using haikus, has comments starting and
 ending with a C<,>.
 See L<http://www.dangermouse.net/esoteric/haifu.html>.
 
@@ -662,7 +662,7 @@ L<http://burks.bton.ac.uk/burks/language/icon/index.htm>.
 
 =item ILLGOL
 
-The esotoric language I<ILLGOL> uses comments starting with I<NB> and lasting
+The esoteric language I<ILLGOL> uses comments starting with I<NB> and lasting
 till the end of the line.
 See L<http://www.catseye.mb.ca/esoteric/illgol/index.html>.
 
@@ -871,7 +871,7 @@ of the line.
 =item Q-BAL
 
 Comments in the I<Q-BAL> language start with C<`> (a backtick), and
-contine till the end of the line.
+continue till the end of the line.
 
 =item QML
 
@@ -904,12 +904,12 @@ the line.
 
 =item Shelta
 
-The esotoric language I<Shelta> uses comments that start and end with
+The esoteric language I<Shelta> uses comments that start and end with
 a C<;>. See L<http://www.catseye.mb.ca/esoteric/shelta/index.html>.
 
 =item SLIDE
 
-The I<SLIDE> language has two froms of comments. First there is the
+The I<SLIDE> language has two forms of comments. First there is the
 line comment, which starts with a C<#> and includes the rest of the
 line (just like Perl). Second, there is the multiline, nested comment,
 which are delimited by C<(*> and C<*)>. Under C{-keep}>, only 
