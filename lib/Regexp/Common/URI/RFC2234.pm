@@ -42,7 +42,7 @@ $HEXDIG      = '[0-9A-F]';          # Hexadecimal digit
 $HTAB        = "\x09";              # Vertical tab
 $SP          = ' ';                 # Space
 $WSP         = "[$SP$HTAB]";        # White space
-$LWSP        = "(?:$CRLF?$WSP)*"    # Linear white space
+$LWSP        = "(?:$CRLF?$WSP)*";   # Linear white space
 $OCTET       = "[\x00-\xFF]";       # 8 Bits of data
 $VCHAR       = "[\x21-\x7E]";       # Visible characters
 
