@@ -55,7 +55,7 @@ my %imports = map {$_ => "Regexp::Common::$_"}
 
 sub import {
     shift;  # Shift off the class.
-    tie %RE, __PACKAGE__;
+    tie %RE, __PACKAGE__ unless defined tied %RE;
     {
         no strict 'refs';
         *{caller() . "::RE"} = \%RE;
