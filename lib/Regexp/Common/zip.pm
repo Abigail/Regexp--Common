@@ -16,6 +16,7 @@ $VERSION = '2010010201';
 
 my %code = (
     Australia         =>  [qw /AUS? AU AUS/],
+    Austria           =>  [qw /AT   AT A/],
     Belgium           =>  [qw /BE?  BE B/],
     Denmark           =>  [qw /DK   DK DK/],
     France            =>  [qw /FR?  FR F/],
@@ -62,6 +63,13 @@ my %zip = (
                     # two digits 02, 08 or 20-97. Leading 0 may be omitted.
                     # 909 and 0909 are valid as well - but no other postal
                     # codes starting with 9 or 09.
+
+    Austria     =>  "(?k:[1-9][0-9]{3})",
+                    # Four digits, no leading zero,
+                    # first is distribution area ("Leitzone"),
+                    # second is routing area ("Leitgebiet"),
+                    # third is route ("Leitstrecke"),
+                    # fourth is post office number ("Leitort").
 
     Belgium     =>  "(?k:(?k:[1-9])(?k:[0-9]{3}))",
                     # Postal codes of the form: 'DDDD', with the first
@@ -334,6 +342,14 @@ The state or territory.
 The last two digits.
 
 =back
+
+=head2 C<< $RE{zip}{Austria} >>
+
+Returns a pattern that recognizes Austrian postal codes. Austrian postal
+codes consist of 4 digits. The first indicates the distribution area
+("Leitzone"), starting with 1. The second indicates the routing area
+("Leitgebiet"), the third the route ("Leitstrecke"), and the fourth the
+post office number ("Leitort").
 
 =head2 C<$RE{zip}{Belgium}>
 
