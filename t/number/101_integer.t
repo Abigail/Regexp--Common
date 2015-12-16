@@ -54,7 +54,7 @@ foreach my $digit (0 .. 9) {
     $unsigned_integer -> no_match ("+$digit", reason => "Number has + sign");
 }
 
-foreach my $letter ('a' .. 'z') {
+foreach my $letter ('A' .. 'Z') {
     my $reason = "Cannot match letters";
     $integer          -> no_match (  $letter,  reason => $reason);
     $integer          -> no_match ("-$letter", reason => $reason);
@@ -89,7 +89,7 @@ my @failures = (
     ["-"            =>  "Sign only"],
     ["1234 678"     =>  "Space in number"],
     ["1234+678"     =>  "Sign in number"],
-    ["678a90"       =>  "Letter in number"],
+    ["678A90"       =>  "Letter in number"],
     ["0x1234"       =>  "Hex number"],
     ["0b1234"       =>  "Octal number"],
     ["Bla bla"      =>  "Garbage"],
