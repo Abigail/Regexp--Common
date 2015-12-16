@@ -48,6 +48,8 @@ t/comment/nested.t
 t/comment/pascal.t
 t/comment/single_line.t
 t/comment/single_or_multiline.t
+t/number/101_integer.t
+t/number/111_integer_base.t
 t/number/decimal.t
 t/number/integer.t
 t/number/number.t
