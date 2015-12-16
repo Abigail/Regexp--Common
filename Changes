@@ -1,3 +1,6 @@
+Version 2015121601 Wed Dec 16 01:12:18 CET 2015
++ Force Darwin 10.0 on Perl 5.10.0 to run square tests in 32 bit mode.
+
 Version 2013031301 Wed Mar 13 12:03:41 CET 2013
 + Pattern for IPv6 addresses. Requested by Guy Edwards and many others.
   RT 50693.
