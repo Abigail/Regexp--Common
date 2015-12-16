@@ -1,3 +1,6 @@
+Version 2015121601 Wed Dec 16 01:12:18 CET 2015
++ Force Darwin 10.0 on Perl 5.10.0 to run square tests in 32 bit mode.
+
 Version 2013031302
 + Doc typo fixes (Jonathan You <jawnsy@cpan.org>/RT 67549) and
   (Gregor Herrmann <gregoa@cpan.org>/RT 71131).
