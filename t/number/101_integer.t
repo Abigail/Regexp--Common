@@ -1,9 +1,10 @@
 #!/usr/bin/perl
 
 use strict;
-use lib  qw {blib/lib};
+use warnings;
+no  warnings 'syntax';
 
-use Regexp::Common qw /RE_num_int/;
+use Regexp::Common;
 use Test::More;
 
 my $r = eval "require Test::Regexp; 1";

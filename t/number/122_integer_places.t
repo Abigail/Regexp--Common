@@ -1,6 +1,8 @@
 #!/usr/bin/perl
 
 use strict;
+use warnings;
+no  warnings 'syntax';
 
 use Regexp::Common;
 use Test::More;
