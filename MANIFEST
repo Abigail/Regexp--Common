@@ -53,6 +53,7 @@ t/number/111_integer_base.t
 t/number/121_integer_places.t
 t/number/122_integer_places.t
 t/number/123_integer_places.t
+t/number/131_integer_sep.t
 t/number/decimal.t
 t/number/integer.t
 t/number/number.t
