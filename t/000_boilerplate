@@ -1,0 +1,44 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+no  warnings 'syntax';
+
+use Regexp::Common;
+use Test::More;
+
+my $r = eval "require Test::Regexp; 1";
+
+unless ($r) {
+    print "1..0 # SKIP Test::Regexp not found\n";
+    exit;
+}
+
+sub make_test {
+    my ($name, $base, @options) = @_;
+    my $pat = $base;
+    while (@options) {
+        my $opt = shift @options;
+        if (@options && $options [0] !~ /^-/) {
+            my $val = shift @options;
+            $pat = $$pat {$opt => $val};
+            $name .= ", $opt => $val";
+        }
+        else {
+            $pat = $$pat {$opt};
+            $name .= ", $opt";
+        }
+    }
+    my $keep = $$pat {-keep};
+    Test::Regexp:: -> new -> init (
+        pattern      => $pat,
+        keep_pattern => $keep,
+        name         => $name,
+    );
+}
+
+
+done_testing;
+
+
+__END__
