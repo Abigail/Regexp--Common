@@ -51,6 +51,7 @@ t/comment/single_or_multiline.t
 t/number/101_integer.t
 t/number/111_integer_base.t
 t/number/121_integer_places.t
+t/number/122_integer_places.t
 t/number/decimal.t
 t/number/integer.t
 t/number/number.t
