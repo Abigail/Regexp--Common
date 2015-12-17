@@ -14,6 +14,30 @@ unless ($r) {
     exit;
 }
 
+
+sub make_test {
+    my ($name, $base, @options) = @_;
+    my $pat = $base;
+    while (@options) {
+        my $opt = shift @options;
+        if (@options && $options [0] !~ /^-/) {
+            my $val = shift @options;
+            $pat = $$pat {$opt => $val};
+            $name .= ", $opt => $val";
+        }
+        else {
+            $pat = $$pat {$opt};
+            $name .= ", $opt";
+        }
+    }
+    my $keep = $$pat {-keep};
+    Test::Regexp:: -> new -> init (
+        pattern      => $pat,
+        keep_pattern => $keep,
+        name         => $name,
+    );
+}
+
 #
 # Patterns with fixed places.
 #
@@ -22,18 +46,11 @@ my @places = (1, 2, 3, 5, 8, 13, 21, 34);
 my %patterns;
 
 foreach my $places (@places) {
-    my $places_pattern        = Test::Regexp:: -> new -> init (
-        pattern        => $RE {num} {int} {-places  => $places},
-        keep_pattern   => $RE {num} {int} {-places  => $places} {-keep},
-        name           => "Integer pattern, -places => $places",
-    );
-    my $places_pattern_signed = Test::Regexp:: -> new -> init (
-        pattern        => $RE {num} {int} {-places  => $places}
-                                          {-sign    => '[-+]'},
-        keep_pattern   => $RE {num} {int} {-places  => $places}
-                                          {-sign    => '[-+]'} {-keep},
-        name           => "Signed integer pattern, -places => $places",
-    );
+    my $places_pattern        = make_test "Integer pattern",
+                                $RE {num} {int}, -places => $places;
+    my $places_pattern_signed = make_test "Integer pattern",
+                                $RE {num} {int}, -places => $places,
+                                                 -sign   => '[-+]';
 
     $patterns {$places} = [$places_pattern, $places_pattern_signed];
 }

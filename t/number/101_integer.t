@@ -14,25 +14,39 @@ unless ($r) {
     exit;
 }
 
+
+sub make_test {
+    my ($name, $base, @options) = @_;
+    my $pat = $base;
+    while (@options) {
+        my $opt = shift @options;
+        if (@options && $options [0] !~ /^-/) {
+            my $val = shift @options;
+            $pat = $$pat {$opt => $val};
+            $name .= ", $opt => $val";
+        }
+        else {
+            $pat = $$pat {$opt};
+            $name .= ", $opt";
+        }
+    }
+    my $keep = $$pat {-keep};
+    Test::Regexp:: -> new -> init (
+        pattern      => $pat,
+        keep_pattern => $keep,
+        name         => $name,
+    );
+}
+
+
 #
 # Some basic patterns: plain integers, signed integers, unsigned integers.
 #
-my $integer = Test::Regexp -> new -> init (
-    pattern      =>  $RE {num} {int},
-    keep_pattern =>  $RE {num} {int} {-keep},
-    name         =>  "Simple integer pattern",
-);
-
-my $signed_integer = Test::Regexp -> new -> init (
-    pattern      =>  $RE {num} {int} {-sign => '[-+]'},
-    keep_pattern =>  $RE {num} {int} {-sign => '[-+]'} {-keep},
-    name         =>  "Signed integer pattern",
-);
-my $unsigned_integer = Test::Regexp -> new -> init (
-    pattern      =>  $RE {num} {int} {-sign => ''},
-    keep_pattern =>  $RE {num} {int} {-sign => ''} {-keep},
-    name         =>  "Unsigned integer pattern",
-);
+my $integer          = make_test "Integer pattern" => $RE {num} {int};
+my $signed_integer   = make_test "Integer pattern" => $RE {num} {int},
+                                                      -sign => '[-+]';
+my $unsigned_integer = make_test "Integer pattern" => $RE {num} {int},
+                                                      -sign => '';
 
 
 foreach my $digit (0 .. 9) {

@@ -14,6 +14,31 @@ unless ($r) {
     exit;
 }
 
+
+sub make_test {
+    my ($name, $base, @options) = @_;
+    my $pat = $base;
+    while (@options) {
+        my $opt = shift @options;
+        if (@options && $options [0] !~ /^-/) {
+            my $val = shift @options;
+            $pat = $$pat {$opt => $val};
+            $name .= ", $opt => $val";
+        }
+        else {
+            $pat = $$pat {$opt};
+            $name .= ", $opt";
+        }
+    }
+    my $keep = $$pat {-keep};
+    Test::Regexp:: -> new -> init (
+        pattern      => $pat,
+        keep_pattern => $keep,
+        name         => $name,
+    );
+}
+
+
 #
 # Play with -base.
 #
@@ -22,18 +47,10 @@ my %patterns;
 my $PLAIN  = 0;
 my $SIGNED = 1;
 foreach my $base (@bases) {
-    my $plain = Test::Regexp -> new -> init (
-        pattern      =>  $RE {num} {int} {-base => $base},
-        keep_pattern =>  $RE {num} {int} {-base => $base} {-keep},
-        name         =>  "Base $base integer pattern",
-    );
-
-    my $signed = Test::Regexp -> new -> init (
-        pattern      =>  $RE {num} {int} {-base => $base} {-sign => '[-+]'},
-        keep_pattern =>  $RE {num} {int} {-base => $base} {-sign => '[-+]'}
-                                                          {-keep},
-        name         =>  "Signed base $base integer pattern",
-    );
+    my $plain  = make_test "Base $base integer pattern",
+                           $RE {num} {int}, -base => $base;
+    my $signed = make_test "Base $base integer pattern",
+                           $RE {num} {int}, -base => $base, -sign => '[-+]';
     $patterns {$base} = [$plain, $signed];
 }
 
