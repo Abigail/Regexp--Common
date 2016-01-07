@@ -75,6 +75,29 @@ foreach my $number (@pass_numbers) {
 }
 
 
+my @failures = (
+    ["Wrong separator"    => qw [0.0 1,234_456,789], "100 123"],
+    ["Leading separator"  => qw [,123 ,456,789]],
+    ["Trailing separator" => qw [123, 456,789,]],
+    ["Double separator"   => qw [0,,0 123,456,,789]],
+    ["No digits"          => qw [, ,,]],
+    ["Wrong number of digits in group" 
+                          => qw [1,23,456 1,2345,678 489,1234,345,169,000]],
+    ["Wrong number of digits in last group" 
+                          => qw [123,4567 456,78]],
+    ["Too many leading digits"
+                          => qw [1234,567 0000,000,000 8129132412341,000]],
+);
+
+foreach my $failure (@failures) {
+    my ($reason, @subjects) = @$failure;
+    foreach my $subject (@subjects) {
+        $pattern_c -> no_match ($subject, reason => $reason);
+    }
+}
+
+
+
 done_testing;
 
 
