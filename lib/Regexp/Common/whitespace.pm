@@ -6,7 +6,7 @@ use strict;
 use warnings;
 
 use vars qw /$VERSION/;
-$VERSION = '2010010201';
+$VERSION = '2016010701';
 
 pattern name   => [qw (ws crop)],
         create => '(?:^\s+|\s+$)',

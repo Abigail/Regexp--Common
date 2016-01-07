@@ -6,7 +6,7 @@ use strict;
 use warnings;
 
 use vars qw /$VERSION/;
-$VERSION = '2013030901';
+$VERSION = '2016010701';
 
 my %closer = ( '{'=>'}', '('=>')', '['=>']', '<'=>'>' );
 my %cache;

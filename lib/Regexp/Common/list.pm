@@ -6,7 +6,7 @@ use strict;
 use warnings;
 
 use vars qw /$VERSION/;
-$VERSION = '2010010201';
+$VERSION = '2016010701';
 
 sub gen_list_pattern {
     my ($pat, $sep, $lsep) = @_;

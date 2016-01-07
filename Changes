@@ -1,3 +1,12 @@
+Version 2016010701 Thu Jan  7 19:31:34 CET 2016
++ Removed the 29143 tests from t/number/integer.t, and replaced them with
+  34689 spread over 7 new files. The reason is, there are sporadic failures
+  reported by CPAN testers in the t/number/integer.t file, but this file
+  uses the random number generator to generate tests. Which makes issues
+  very hard to debug, as failures cannot be reproduced.
+
+  The new tests will be deterministic.
+
 Version 2015121601 Wed Dec 16 01:12:18 CET 2015
 + Force Darwin 10.0 on Perl 5.10.0 to run square tests in 32 bit mode.
 
