@@ -87,6 +87,12 @@ my @failures = (
                           => qw [123,4567 456,78]],
     ["Too many leading digits"
                           => qw [1234,567 0000,000,000 8129132412341,000]],
+    ["Trailing garbage"   => qw [123,456,789foo 000,bar], "123,456 ",
+                                "987,543,611\n"],
+    ["Leading garbage"    => qw [baz,123,456 qux,000], " 123,456"],
+    ["Inner garbage"      => qw [123,foo,456 1a3,456], "123, 456"],
+    ["Empty string"       => ""],
+    ["Garbage"            => "wibble", "\n", "foo,123,bar"],
 );
 
 foreach my $failure (@failures) {
