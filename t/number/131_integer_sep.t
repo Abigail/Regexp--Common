@@ -76,10 +76,10 @@ foreach my $number (@pass_numbers) {
 
 
 my @failures = (
-    ["Wrong separator"    => qw [0.0 1,234_456,789], "100 123"],
+    ["Wrong separator"    => qw [0.000 1,234_456,789], "100 123"],
     ["Leading separator"  => qw [,123 ,456,789]],
     ["Trailing separator" => qw [123, 456,789,]],
-    ["Double separator"   => qw [0,,0 123,456,,789]],
+    ["Double separator"   => qw [0,,000 123,456,,789]],
     ["No digits"          => qw [, ,,]],
     ["Wrong number of digits in group" 
                           => qw [1,23,456 1,2345,678 489,1234,345,169,000]],
