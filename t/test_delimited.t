@@ -12,7 +12,7 @@ ok;
 if ($] >= 5.006) {
     # This gives a 'panic: POPSTACK' in 5.005_*
     eval {"" =~ $RE {delimited}};
-    ok $@ =~ /Must specify delimiter in \$RE{delimited}/;
+    ok $@ =~ /Must specify delimiter in \$RE\{delimited}/;
 }
 
 try $RE {delimited} {-delim => ' '};
