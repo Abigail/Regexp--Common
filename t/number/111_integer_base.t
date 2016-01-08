@@ -160,6 +160,6 @@ foreach my $base (@bases) {
 
 
 
-done_testing;
+done_testing ();
 
 __END__

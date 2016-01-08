@@ -104,7 +104,7 @@ foreach my $entry (@bad_characters) {
     }
 }
 
-done_testing;
+done_testing ();
 
 
 __END__

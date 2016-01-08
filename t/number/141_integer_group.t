@@ -158,7 +158,7 @@ foreach my $failure (@failures) {
 
 
 
-done_testing;
+done_testing ();
 
 
 __END__

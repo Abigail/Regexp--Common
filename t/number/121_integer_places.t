@@ -103,7 +103,7 @@ foreach my $number (@numbers) {
     }
 }
 
-done_testing;
+done_testing ();
 
 
 __END__
