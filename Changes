@@ -1,3 +1,7 @@
+Version 2016010801 Fri Jan  8 12:52:36 CET 2016
++ Use 'done_testing ()' instead of 'done_testing', so the test file compiles
+  even if the user uses an old Test::More.
+
 Version 2016010701 Thu Jan  7 19:31:34 CET 2016
 + Removed the 29143 tests from t/number/integer.t, and replaced them with
   34689 spread over 7 new files. The reason is, there are sporadic failures

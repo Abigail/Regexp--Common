@@ -14,7 +14,7 @@ use strict;
 use warnings;
 
 use vars qw /$VERSION/;
-$VERSION = '2016010701';
+$VERSION = '2016010801';
 
 #
 # Returns true/false, depending whether the given the argument

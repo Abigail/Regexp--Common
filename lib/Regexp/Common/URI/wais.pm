@@ -9,7 +9,7 @@ use strict;
 use warnings;
 
 use vars qw /$VERSION/;
-$VERSION = '2016010701';
+$VERSION = '2016010801';
 
 
 my $scheme = 'wais';
