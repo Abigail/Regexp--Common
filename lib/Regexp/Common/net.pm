@@ -322,7 +322,7 @@ binary numbers.
 If C<< -sep=I<P> >> is specified the pattern I<P> is used as the separator.
 By default I<P> is C<qr/:/>.
 
-=head2 C<$RE{net}{IPv6}{-sep => ':'}{-style => 'HeX'}>
+=head2 C<$RE{net}{IPv6}{-sep =E<gt> ':'}{-style =E<gt> 'HeX'}>
 
 Returns a pattern matching IPv6 numbers. An IPv6 address consists of
 eigth groups of four hexadecimal digits, separated by colons. In each
