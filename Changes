@@ -1,3 +1,6 @@
+Version 2016020301 Wed Feb  3 20:00:13 CET 2016
++ Fixed POD issue (Hernan Lopes)
+
 Version 2016010801 Fri Jan  8 12:52:36 CET 2016
 + Use 'done_testing ()' instead of 'done_testing', so the test file compiles
   even if the user uses an old Test::More.

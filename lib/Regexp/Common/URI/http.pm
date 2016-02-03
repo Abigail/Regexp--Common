@@ -8,7 +8,7 @@ use strict;
 use warnings;
 
 use vars qw /$VERSION/;
-$VERSION = '2016010801';
+$VERSION = '2016020301';
 
 
 my $http_uri = "(?k:(?k:http)://(?k:$host)(?::(?k:$port))?"           .
