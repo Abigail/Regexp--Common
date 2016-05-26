@@ -1,93 +1,253 @@
-# VOODOO LINE-NOISE
-my($C,$M,$P,$N,$S);END{print"1..$C\n$M";print"\nfailed: $N\n"if$N}
-sub ok{$C++; $M.= ($_[0]||!@_)?"ok $C\n":($N++,"not ok $C (".
-((caller 1)[1]||(caller 0)[1]).":".((caller 1)[2]||(caller 0)[2]).")\n")}
-sub try{$P=qr/^$_[0]$/}sub fail{ok($S=$_[0]!~$P)}sub pass{ok($S=$_[0]=~$P)}
+#!/opt/perl/bin/perl
 
-# LOAD
+use strict;
+use warnings;
+no  warnings 'syntax';
 
 use Regexp::Common;
-ok;
+use Test::More;
 
-if ($] >= 5.006) {
-    # This gives a 'panic: POPSTACK' in 5.005_*
-    eval {"" =~ $RE {delimited}};
-    ok $@ =~ /Must specify delimiter in \$RE\{delimited}/;
+my $r = eval "require Test::Regexp; 1";
+
+unless ($r) {
+    print "1..0 # SKIP Test::Regexp not found\n";
+    exit;
 }
 
-try $RE {delimited} {-delim => ' '};
-pass q { a-few-words };
-pass q { a\ few\ words };
-fail q { a few words };
-
-try $RE{delimited}{qq{-delim$;"}};
-
-pass q{"a few words "};
-pass q{"a few \"words\" "};
-pass q{"a few 'words' "};
-fail q{"a few "words" "};
-fail q{'a few words '};
-fail q{'a few \"words\" '};
-fail q{'a few "words" '};
-fail q{a "few" words "};
+sub make_test {
+    my ($name, $pat) = @_;
+    my $keep = $$pat {-keep};
+    Test::Regexp::   -> new -> init (
+        pattern      => $pat,
+        keep_pattern => $keep,
+        name         => $name,
+    );
+}
 
 
-try $RE{delimited}{qq{-delim$;"}}{qq{-esc$;"}};
+#
+# Test double quoted delimiter
+#
+{
+    my $test = make_test "Double quoted string" =>
+                         $RE {delimited} {-delim => '"'};
 
-pass q{"a few words "};
-fail q{"a few \"words\" "};
-pass q{"a few ""words"" "};
-pass q{"a few 'words' "};
-fail q{"a few "words" "};
-fail q{a "few" words "};
+    $test -> match (q {"a few words"},
+                   [q {"a few words"}, q {"}, q {a few words}, q {"}],
+                   test => "Simple string"),
+    $test -> match (q {"a few \ words"},
+                   [q {"a few \ words"}, q {"}, q {a few \ words}, q {"}],
+                   test => "Simple string with escape"),
+    $test -> match (q {"a few \" words"},
+                   [q {"a few \" words"}, q {"}, q {a few \" words}, q {"}],
+                   test => "Simple string with escaped delimiter"),
+    $test -> match (q {"a 'few' words"},
+                   [q {"a 'few' words"}, q {"}, q {a 'few' words}, q {"}],
+                   test => "Simple string with single quotes"),
 
-
-try $RE{delimited}{qq{-delim$;'}};
-
-fail q{"a few words "};
-fail q{"a few \"words\" "};
-fail q{"a few 'words' "};
-fail q{"a few "words" "};
-pass q{'a few words '};
-pass q{'a few \"words\" '};
-pass q{'a few "words" '};
-fail q{a "few" words "};
-
-
-try $RE{quoted};
-
-pass q{"a few words "};
-pass q{"a few \"words\" "};
-pass q{"a few 'words' "};
-fail q{"a few "words" "};
-pass q{'a few words '};
-pass q{'a few \"words\" '};
-pass q{'a few "words" '};
-fail q{a "few" words "};
+    $test -> no_match (q {'a few words'}, reason => "Wrong delimiters");
+    $test -> no_match (q {a few words"}, reason => "No opening delimiter");
+    $test -> no_match (q {"a few words}, reason => "No closing delimiter");
+    $test -> no_match (q {"a few" words"}, reason => "Unescaped delimiter");
+    $test -> no_match (q {"a few\\\\" words"}, reason => "Escaped escape");
+    $test -> no_match (q { "a few words"},
+                       reason => "Characters before opening delimiter");
+    $test -> no_match (q {"a few words" },
+                       reason => "Characters after opening delimiter");
+}
 
 
-try $RE{quoted}{qq{-esc$;_!}};
+#
+# Test single quoted delimiter
+#
+{
+    my $test = make_test "Single quoted string" =>
+                         $RE {delimited} {-delim => "'"};
 
-pass q{"a few words "};
-fail q{"a few \"words\" "};
-pass q{"a few _"words_" "};
-pass q{"a few 'words' "};
-fail q{"a few "words" "};
-pass q{'a few words '};
-fail q{'a few \'words\' '};
-pass q{'a few !'words!' '};
-pass q{'a few "words" '};
-fail q{a "few" words "};
+    $test -> match (q {'a few words'},
+                   [q {'a few words'}, q {'}, q {a few words}, q {'}],
+                   test => "Simple string"),
+    $test -> match (q {'a few \ words'},
+                   [q {'a few \ words'}, q {'}, q {a few \ words}, q {'}],
+                   test => "Simple string with escape"),
+    $test -> match (q {'a few \' words'},
+                   [q {'a few \' words'}, q {'}, q {a few \' words}, q {'}],
+                   test => "Simple string with escaped delimiter"),
+    $test -> match (q {'a "few" words'},
+                   [q {'a "few" words'}, q {'}, q {a "few" words}, q {'}],
+                   test => "Simple string with double quotes"),
 
-try $RE{quoted}{qq{-esc$;}};
+    $test -> no_match (q {"a few words"}, reason => "Wrong delimiters");
+    $test -> no_match (q {a few words'}, reason => "No opening delimiter");
+    $test -> no_match (q {'a few words}, reason => "No closing delimiter");
+    $test -> no_match (q {'a few' words'}, reason => "Unescaped delimiter");
+    $test -> no_match (q {'a few\\\\' words'}, reason => "Escaped escape");
+    $test -> no_match (q { 'a few words'},
+                       reason => "Characters before opening delimiter");
+    $test -> no_match (q {'a few words' },
+                       reason => "Characters after opening delimiter");
+}
 
-pass q{"a few words "};
-fail q{"a few \"words\" "};
-fail q{"a few _"words_" "};
-pass q{"a few 'words' "};
-fail q{"a few "words" "};
-pass q{'a few words '};
-fail q{'a few \'words\' '};
-fail q{'a few !'words!' '};
-pass q{'a few "words" '};
-fail q{a "few" words "};
+
+#
+# Test an odd (space) delimiter
+#
+{
+    my $test = make_test "Space quoted string" =>
+                         $RE {delimited} {-delim => " "};
+
+    $test -> match (q { a-few-words },
+                   [q { a-few-words }, q { }, q {a-few-words}, q { }],
+                   test => "Simple string"),
+    $test -> match (q { a-few-\-words },
+                   [q { a-few-\-words }, q { }, q {a-few-\-words}, q { }],
+                   test => "Simple string with escape"),
+    $test -> match (q { a-few-\ -words },
+                   [q { a-few-\ -words }, q { }, q {a-few-\ -words}, q { }],
+                   test => "Simple string with escaped delimiter"),
+
+    $test -> no_match (q {"a few words"}, reason => "Wrong delimiters");
+}
+
+
+#
+# Test $RE {quoted}. This automatically tests multiple delimiters as well.
+#
+{
+    my $test = make_test "Quoted string (using 'quoted')" => $RE {quoted};
+
+    $test -> match (q {"a few words"},
+                   [q {"a few words"}, q {"}, q {a few words}, q {"}],
+                   test => "Simple string, using double quotes"),
+    $test -> match (q {'a few words'},
+                   [q {'a few words'}, q {'}, q {a few words}, q {'}],
+                   test => "Simple string, using single quotes"),
+    $test -> match (q {`a few words`},
+                   [q {`a few words`}, q {`}, q {a few words}, q {`}],
+                   test => "Simple string, using backticks"),
+    $test -> match (q {"a few \ words"},
+                   [q {"a few \ words"}, q {"}, q {a few \ words}, q {"}],
+                   test => "Double quoted string with escape"),
+    $test -> match (q {'a few \ words'},
+                   [q {'a few \ words'}, q {'}, q {a few \ words}, q {'}],
+                   test => "Single quoted string with escape"),
+    $test -> match (q {`a few \ words`},
+                   [q {`a few \ words`}, q {`}, q {a few \ words}, q {`}],
+                   test => "Backtick quoted string with escape"),
+    $test -> match (q {"a few \" words"},
+                   [q {"a few \" words"}, q {"}, q {a few \" words}, q {"}],
+                   test => "Double quoted string with escaped delimiter"),
+    $test -> match (q {'a few \' words'},
+                   [q {'a few \' words'}, q {'}, q {a few \' words}, q {'}],
+                   test => "Single quoted string with escaped delimiter"),
+    $test -> match (q {`a few \` words`},
+                   [q {`a few \` words`}, q {`}, q {a few \` words}, q {`}],
+                   test => "Backtick quoted string with escaped delimiter"),
+    $test -> match (q {"a 'few' words"},
+                   [q {"a 'few' words"}, q {"}, q {a 'few' words}, q {"}],
+                   test => "Double quoted string with single quotes"),
+    $test -> match (q {'a "few" words'},
+                   [q {'a "few" words'}, q {'}, q {a "few" words}, q {'}],
+                   test => "Single quoted string with double quotes"),
+    $test -> match (q {`a "few" words`},
+                   [q {`a "few" words`}, q {`}, q {a "few" words}, q {`}],
+                   test => "Backtick quoted string with double quotes"),
+
+    $test -> no_match (q {'a few words"}, reason => "Mixed delimiters");
+    $test -> no_match (q {'a few words`}, reason => "Mixed delimiters");
+    $test -> no_match (q {"a few words`}, reason => "Mixed delimiters");
+    $test -> no_match (q {"a few words'}, reason => "Mixed delimiters");
+    $test -> no_match (q {`a few words"}, reason => "Mixed delimiters");
+    $test -> no_match (q {`a few words'}, reason => "Mixed delimiters");
+}
+
+
+#
+# Test an another delimiter
+#
+{
+    my $test = make_test "Bang as delimiter" =>
+                         $RE {delimited} {-delim => '"'} {-esc => '!'};
+
+    $test -> match (q {"a few words"},
+                   [q {"a few words"}, q {"}, q {a few words}, q {"}],
+                   test => "Simple string"),
+    $test -> match (q {"a few ! words"},
+                   [q {"a few ! words"}, q {"}, q {a few ! words}, q {"}],
+                   test => "Simple string with escape"),
+    $test -> match (q {"a few !" words"},
+                   [q {"a few !" words"}, q {"}, q {a few !" words}, q {"}],
+                   test => "Simple string with escaped delimiter"),
+
+    $test -> no_match (q {"a few\" words"}, reason => "Incorrect escape");
+    $test -> no_match (q {"a few!!" words"}, reason => "Escaped escape");
+}
+
+
+
+#
+# Test delimiter and escape the same characters
+#
+{
+    my $test = make_test "Delimiter is same as escape" =>
+                         $RE {delimited} {-delim => '!'} {-esc => '!'};
+
+    $test -> match (q {!a few words!},
+                   [q {!a few words!}, q {!}, q {a few words}, q {!}],
+                   test => "Simple string"),
+    $test -> match (q {!a few !! words!},
+                   [q {!a few !! words!}, q {!}, q {a few !! words}, q {!}],
+                   test => "Simple string with escaped delimiter"),
+
+    $test -> no_match (q {!a few\! words!}, reason => "Incorrect escape");
+    $test -> no_match (q {!a few! words!},
+                       reason => "Escape must be followed by delimiter");
+}
+
+
+#
+# Test multiple escapes; they should match up with the delimiters
+#
+{
+    my $test = make_test "Multiple escape characters" =>
+                         $RE {quoted} {-esc => '!_'};
+
+    $test -> match (q {"a few words"},
+                   [q {"a few words"}, q {"}, q {a few words}, q {"}],
+                   test => "Simple string");
+    $test -> match (q {"a !"few words"},
+                   [q {"a !"few words"}, q {"}, q {a !"few words}, q {"}],
+                   test => "Simple string, with escape");
+    $test -> match (q {'a _'few words'},
+                   [q {'a _'few words'}, q {'}, q {a _'few words}, q {'}],
+                   test => "Simple string, with another delimiter/escape");
+    $test -> match (q {`a _`few words`},
+                   [q {`a _`few words`}, q {`}, q {a _`few words}, q {`}],
+                   test => "Escape copied when there are more delimiters");
+
+    $test -> no_match (q {"a _"few words"}, reason => "Incorrect delimiter");
+    $test -> no_match (q {'a !'few words'}, reason => "Incorrect delimiter");
+    $test -> no_match (q {`a !`few words`}, reason => "Incorrect delimiter");
+    $test -> no_match (q {"a \"few words"}, reason => "Incorrect delimiter");
+}
+
+
+#
+# Test no escape character
+#
+{
+    my $test = make_test "Double quoted string" =>
+                         $RE {delimited} {-delim => '"'} {-esc =>};
+
+    $test -> match (q {"a few words"},
+                   [q {"a few words"}, q {"}, q {a few words}, q {"}],
+                   test => "Simple string"),
+
+    $test -> no_match (q {"a few" words"}, reason => "Delimiter in string");
+    $test -> no_match (q {"a few\" words"}, reason => "There is no escape");
+}
+
+
+done_testing;
+
+__END__

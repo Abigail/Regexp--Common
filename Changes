@@ -1,3 +1,10 @@
+Version 20160527
++ When multiple delimiters are given, wrap the clauses inside a (?|).
+  This makes that, under -keep, the used delimiters are always in
+  $2 and $4, and the string between the delimiters is always in $3.
+  A requirement on 5.10.0 is now in place for the 'delimited' and 'quoted'
+  patterns.
+
 Version 2016020301 Wed Feb  3 20:00:13 CET 2016
 + Fixed POD issue (Hernan Lopes)
 

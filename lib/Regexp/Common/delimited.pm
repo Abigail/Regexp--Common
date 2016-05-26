@@ -33,7 +33,7 @@ sub gen_delimited {
         }
     }
     my $pat = join '|', @pat;
-    return "(?k:$pat)";
+    return "(?k:(?|$pat))";
 }
 
 sub _croak {
@@ -41,18 +41,20 @@ sub _croak {
     goto &Carp::croak;
 }
 
-pattern name   => [qw( delimited -delim= -esc=\\ )],
-        create => sub {my $flags = $_[1];
-                       _croak 'Must specify delimiter in $RE{delimited}'
-                             unless length $flags->{-delim};
-                       return gen_delimited (@{$flags}{-delim, -esc});
-                  },
+pattern name    => [qw( delimited -delim= -esc=\\ )],
+        create  => sub {my $flags = $_[1];
+                        _croak 'Must specify delimiter in $RE{delimited}'
+                              unless length $flags->{-delim};
+                        return gen_delimited (@{$flags}{-delim, -esc});
+                   },
+        version => 5.010,
         ;
 
-pattern name   => [qw( quoted -esc=\\ )],
-        create => sub {my $flags = $_[1];
-                       return gen_delimited (q{"'`}, $flags -> {-esc});
-                  },
+pattern name    => [qw( quoted -esc=\\ )],
+        create  => sub {my $flags = $_[1];
+                        return gen_delimited (q{"'`}, $flags -> {-esc});
+                   },
+        version => 5.010,
         ;
 
 
@@ -113,22 +115,25 @@ captures the entire match
 
 =item $2
 
-captures the opening delimiter (provided only one delimiter was specified)
+captures the opening delimiter
 
 =item $3
 
-captures delimited portion of the string (provided only one delimiter was
-specified)
+captures delimited portion of the string
 
 =item $4
 
-captures the closing delimiter (provided only one delimiter was specified)
+captures the closing delimiter
 
 =back
+
+You must use at least version 5.10.0 to use these patterns.
 
 =head2 $RE{quoted}{-esc}
 
 A synonym for C<$RE{delimited}{q{-delim='"`}{...}}>
+
+You must use at least version 5.10.0 to use these patterns.
 
 =head1 SEE ALSO
 
@@ -151,7 +156,7 @@ Send them in to I<regexp-common@abigail.be>.
 
 =head1 LICENSE and COPYRIGHT
 
-This software is Copyright (c) 2001 - 2009, Damian Conway and Abigail.
+This software is Copyright (c) 2001 - 2016, Damian Conway and Abigail.
 
 This module is free software, and maybe used under any of the following
 licenses:
