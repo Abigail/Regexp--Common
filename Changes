@@ -1,3 +1,6 @@
+Version 2016052802
++ Document what is captured for the 'bquote' pattern.
+
 Version 2016052801 Sat May 28 00:40:22 CEST 2016
 + When multiple delimiters are given, wrap the clauses inside a (?|).
   This makes that, under -keep, the used delimiters are always in

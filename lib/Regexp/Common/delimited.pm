@@ -309,6 +309,28 @@ matching pair of delimiters.
 
 The C<< {-esc => I<S> } >> works as in the C<< $RE {delimited} >> pattern.
 
+If C<< {-keep} >> is given, the following things will be captured:
+
+=over 4
+
+=item $1
+
+captures the entire match
+
+=item $2
+
+captures the opening delimiter
+
+=item $3
+
+captures delimited portion of the string
+
+=item $4
+
+captures the closing delimiter
+
+=back
+
 =head1 SEE ALSO
 
 L<Regexp::Common> for a general description of how to use this interface.
