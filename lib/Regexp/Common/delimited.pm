@@ -282,7 +282,7 @@ You must use at least version 5.10.0 to use these patterns.
 
 =head2 $RE{quoted}{-esc}
 
-A synonym for C<$RE{delimited}{q{-delim='"`}{...}}>
+A synonym for C<$RE{delimited}{q{-delim => '"`}{...}}>
 
 You must use at least version 5.10.0 to use these patterns.
 
