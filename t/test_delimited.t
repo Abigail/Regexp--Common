@@ -248,6 +248,60 @@ sub make_test {
 }
 
 
+#
+# Test different closing delimiters
+#
+{
+    my $test = make_test "Bracketed strings" =>
+                         $RE {delimited} { -delim => '([{<'} 
+                                         {-cdelim => ')]}>'};
+
+    $test -> match ("(a few words)",
+                   ["(a few words)", "(", "a few words", ")"],
+                   test => "Using parenthesis");
+    $test -> match ("[a few words]",
+                   ["[a few words]", "[", "a few words", "]"],
+                   test => "Using brackets");
+    $test -> match ("{a few words}",
+                   ["{a few words}", "{", "a few words", "}"],
+                   test => "Using braces");
+    $test -> match ("<a few words>",
+                   ["<a few words>", "<", "a few words", ">"],
+                   test => "Using angle brackets");
+    $test -> match ("[a [few words]",
+                   ["[a [few words]", "[", "a [few words", "]"],
+                   test => "Opening delimiter needs no escape");
+    $test -> match ('[a [few\] words]',
+                   ['[a [few\] words]', "[", 'a [few\] words', "]"],
+                   test => "Closing delimiter needs escape");
+
+    $test -> no_match ("[a few words}", reason => "Mismatched delimiters");
+    $test -> no_match ("(a few words>", reason => "Mismatched delimiters");
+    $test -> no_match ("{a few words{",
+                reason => "Using opening delimiter as the closing delimiter");
+    $test -> no_match (">a few words>",
+                reason => "Using closing delimiter as the opening delimiter");
+    $test -> no_match ("[a [few] words]",
+                reason => "Unescaped closing delimiter");
+}
+
+
+#
+# Use less closing delimiters than opening delimiters
+#
+{
+    my $test = make_test "Less closing delimiters than opening delimiters" =>
+                         $RE {delimited} { -delim => "\x{AB}<"}
+                                         {-cdelim => "\x{BB}"};
+    $test -> match ("\x{AB}a few words\x{BB}",
+                   ["\x{AB}a few words\x{BB}", "\x{AB}", "a few words",
+                                               "\x{BB}"],
+                   test => "Using double angled quotation marks");
+    $test -> match ("<a few words\x{BB}",
+                   ["<a few words\x{BB}", "<", "a few words", "\x{BB}"],
+                   test => "Closing delimiter repeats");
+}
+
 done_testing;
 
 __END__

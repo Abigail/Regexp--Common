@@ -10,26 +10,33 @@ $VERSION = '2016020301';
 
 sub gen_delimited {
 
-    my ($dels, $escs) = @_;
+    my ($dels, $escs, $cdels) = @_;
     # return '(?:\S*)' unless $dels =~ /\S/;
     if (length $escs) {
-        $escs .= substr ($escs, -1) x (length ($dels) - length ($escs));
+        $escs  .= substr  ($escs, -1) x (length ($dels) - length  ($escs));
     }
+    if (length $cdels) {
+        $cdels .= substr ($cdels, -1) x (length ($dels) - length ($cdels));
+    }
+    else {
+        $cdels = $dels;
+    }
+
     my @pat = ();
-    my $i;
-    for ($i=0; $i < length $dels; $i++) {
-        my $del = quotemeta substr ($dels, $i, 1);
+    for (my $i = 0; $i < length $dels; $i ++) {
+        my $del  = quotemeta substr  ($dels, $i, 1);
+        my $cdel = quotemeta substr ($cdels, $i, 1);
         my $esc = length($escs) ? quotemeta substr ($escs, $i, 1) : "";
-        if ($del eq $esc) {
-            push @pat,
-                 "(?k:$del)(?k:[^$del]*(?:(?:$del$del)[^$del]*)*)(?k:$del)";
+        if ($cdel eq $esc) {
+            push @pat =>
+                "(?k:$del)(?k:[^$cdel]*(?:(?:$cdel$cdel)[^$cdel]*)*)(?k:$cdel)";
         }
         elsif (length $esc) {
-            push @pat,
-                 "(?k:$del)(?k:[^$esc$del]*(?:$esc.[^$esc$del]*)*)(?k:$del)";
+            push @pat =>
+                "(?k:$del)(?k:[^$esc$cdel]*(?:$esc.[^$esc$cdel]*)*)(?k:$cdel)";
         }
         else {
-            push @pat, "(?k:$del)(?k:[^$del]*)(?k:$del)";
+            push @pat => "(?k:$del)(?k:[^$cdel]*)(?k:$cdel)";
         }
     }
     my $pat = join '|', @pat;
@@ -41,11 +48,11 @@ sub _croak {
     goto &Carp::croak;
 }
 
-pattern name    => [qw( delimited -delim= -esc=\\ )],
+pattern name    => [qw( delimited -delim= -esc=\\ -cdelim= )],
         create  => sub {my $flags = $_[1];
                         _croak 'Must specify delimiter in $RE{delimited}'
                               unless length $flags->{-delim};
-                        return gen_delimited (@{$flags}{-delim, -esc});
+                        return gen_delimited (@{$flags}{-delim, -esc, -cdelim});
                    },
         version => 5.010,
         ;
@@ -85,25 +92,35 @@ of the works of this interface.
 
 Do not use this module directly, but load it via I<Regexp::Common>.
 
-=head2 C<$RE{delimited}{-delim}{-esc}>
+=head2 C<$RE{delimited}{-delim}{-cdelim}{-esc}>
 
 Returns a pattern that matches a single-character-delimited substring,
 with optional internal escaping of the delimiter.
 
-When C<-delim=I<S>> is specified, each character in the sequence I<S> is
+When C<-delim => I<S>> is specified, each character in the sequence I<S> is
 a possible delimiter. There is no default delimiter, so this flag must always
 be specified.
 
-If C<-esc=I<S>> is specified, each character in the sequence I<S> is
+By default, the closing delimiter is the same character as the opening
+delimiter. If this is not wanted, for instance, if you want to match
+a string with symmetric delimeters, you can specify the closing delimiter(s)
+with C<-cdelim => I<S>>. Each character in I<S> is matched with the
+corresponding character supplied with the C<-delim> option. If the C<-cdelim>
+option has less characters than the C<-delim> option, the last character
+is repeated as often as necessary. If the C<-cdelim> option has more 
+characters than the C<-delim> option, the extra characters are ignored.
+
+If C<-esc => I<S>> is specified, each character in the sequence I<S> is
 the delimiter for the corresponding character in the C<-delim=I<S>> list.
 The default escape is backslash.
 
 For example:
 
-   $RE{delimited}{-delim=>'"'}            # match "a \" delimited string"
-   $RE{delimited}{-delim=>'"'}{-esc=>'"'} # match "a "" delimited string"
-   $RE{delimited}{-delim=>'/'}            # match /a \/ delimited string/
-   $RE{delimited}{-delim=>q{'"}}          # match "string" or 'string'
+   $RE{delimited}{-delim=>'"'}               # match "a \" delimited string"
+   $RE{delimited}{-delim=>'"'}{-esc=>'"'}    # match "a "" delimited string"
+   $RE{delimited}{-delim=>'/'}               # match /a \/ delimited string/
+   $RE{delimited}{-delim=>q{'"}}             # match "string" or 'string'
+   $RE{delimited}{-delim=>"("}{-cdelim=>")"} # match (string)
 
 Under C<-keep> (See L<Regexp::Common>):
 

@@ -4,6 +4,9 @@ Version 20160527
   $2 and $4, and the string between the delimiters is always in $3.
   A requirement on 5.10.0 is now in place for the 'delimited' and 'quoted'
   patterns.
++ The 'delimited' pattern now allows specifying closing delimiters which
+  are different from the opening delimiters.
++ 243269 tests in 66 files.
 
 Version 2016020301 Wed Feb  3 20:00:13 CET 2016
 + Fixed POD issue (Hernan Lopes)
