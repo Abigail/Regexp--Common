@@ -1,4 +1,4 @@
-#!/usr/bin/perl
+#!/opt/perl/bin/perl
 
 use 5.010;
 
