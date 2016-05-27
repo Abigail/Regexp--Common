@@ -49,6 +49,7 @@ t/comment/pascal.t
 t/comment/single_line.t
 t/comment/single_or_multiline.t
 t/delimited/101_delimited.t
+t/delimited/111_bquoted.t
 t/number/101_integer.t
 t/number/111_integer_base.t
 t/number/121_integer_places.t

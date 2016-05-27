@@ -6,7 +6,9 @@ Version 20160527
   patterns.
 + The 'delimited' pattern now allows specifying closing delimiters which
   are different from the opening delimiters.
-+ 243269 tests in 66 files.
++ Added a 'bquoted' pattern, which is a shortcut for using the 'delimited'
+  pattern with 85 mirror imaged bracketing constructs.
++ 248427 tests in 67 files.
 
 Version 2016020301 Wed Feb  3 20:00:13 CET 2016
 + Fixed POD issue (Hernan Lopes)

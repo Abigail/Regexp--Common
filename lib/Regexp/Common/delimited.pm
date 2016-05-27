@@ -5,6 +5,8 @@ use Regexp::Common qw /pattern clean no_defaults/;
 use strict;
 use warnings;
 
+use charnames ':full';
+
 use vars qw /$VERSION/;
 $VERSION = '2016020301';
 
@@ -64,6 +66,138 @@ pattern name    => [qw( quoted -esc=\\ )],
         version => 5.010,
         ;
 
+
+#
+# List from http://xahlee.info/comp/unicode_matching_brackets.html
+#
+my @bracket_pairs =
+    map {ref $_ ? $_ :
+            /!/ ? [( s/!/TOP/r,   s/!/BOTTOM/r)]
+                : [(s/\?/LEFT/r, s/\?/RIGHT/r)]}
+        "? PARENTHESIS",
+        "? SQUARE BRACKET",
+        "? CURLY BRACKET",
+        "? DOUBLE QUOTATION MARK",
+        "? SINGLE QUOTATION MARK",
+        "SINGLE ?-POINTING ANGLE QUOTATION MARK",
+        "?-POINTING DOUBLE ANGLE QUOTATION MARK",
+        "FULLWIDTH ? PARENTHESIS",
+        "FULLWIDTH ? SQUARE BRACKET",
+        "FULLWIDTH ? CURLY BRACKET",
+        "FULLWIDTH ? WHITE PARENTHESIS",
+        "? WHITE PARENTHESIS",
+        "? WHITE SQUARE BRACKET",
+        "? WHITE CURLY BRACKET",
+        "? CORNER BRACKET",
+        "? ANGLE BRACKET",
+        "? DOUBLE ANGLE BRACKET",
+        "? BLACK LENTICULAR BRACKET",
+        "? TORTOISE SHELL BRACKET",
+        "? BLACK TORTOISE SHELL BRACKET",
+        "? WHITE CORNER BRACKET",
+        "? WHITE LENTICULAR BRACKET",
+        "? WHITE TORTOISE SHELL BRACKET",
+        "HALFWIDTH ? CORNER BRACKET",
+        "MATHEMATICAL ? WHITE SQUARE BRACKET",
+        "MATHEMATICAL ? ANGLE BRACKET",
+        "MATHEMATICAL ? DOUBLE ANGLE BRACKET",
+        "MATHEMATICAL ? FLATTENED PARENTHESIS",
+        "MATHEMATICAL ? WHITE TORTOISE SHELL BRACKET",
+        "? CEILING",
+        "? FLOOR",
+        "Z NOTATION ? IMAGE BRACKET",
+        "Z NOTATION ? BINDING BRACKET",
+        [   "HEAVY SINGLE TURNED COMMA QUOTATION MARK ORNAMENT",
+            "HEAVY SINGLE " .   "COMMA QUOTATION MARK ORNAMENT", ],
+        [   "HEAVY DOUBLE TURNED COMMA QUOTATION MARK ORNAMENT",
+            "HEAVY DOUBLE " .   "COMMA QUOTATION MARK ORNAMENT", ],
+        "MEDIUM ? PARENTHESIS ORNAMENT",
+        "MEDIUM FLATTENED ? PARENTHESIS ORNAMENT",
+        "MEDIUM ? CURLY BRACKET ORNAMENT",
+        "MEDIUM ?-POINTING ANGLE BRACKET ORNAMENT",
+        "HEAVY ?-POINTING ANGLE QUOTATION MARK ORNAMENT",
+        "HEAVY ?-POINTING ANGLE BRACKET ORNAMENT",
+        "LIGHT ? TORTOISE SHELL BRACKET ORNAMENT",
+        "ORNATE ? PARENTHESIS",
+        "! PARENTHESIS",
+        "! SQUARE BRACKET",
+        "! CURLY BRACKET",
+        "! TORTOISE SHELL BRACKET",
+        "PRESENTATION FORM FOR VERTICAL ? CORNER BRACKET",
+        "PRESENTATION FORM FOR VERTICAL ? WHITE CORNER BRACKET",
+        "PRESENTATION FORM FOR VERTICAL ? TORTOISE SHELL BRACKET",
+        "PRESENTATION FORM FOR VERTICAL ? BLACK LENTICULAR BRACKET",
+        "PRESENTATION FORM FOR VERTICAL ? WHITE LENTICULAR BRACKET",
+        "PRESENTATION FORM FOR VERTICAL ? ANGLE BRACKET",
+        "PRESENTATION FORM FOR VERTICAL ? DOUBLE ANGLE BRACKET",
+        "PRESENTATION FORM FOR VERTICAL ? SQUARE BRACKET",
+        "PRESENTATION FORM FOR VERTICAL ? CURLY BRACKET",
+        "?-POINTING ANGLE BRACKET",
+        "? ANGLE BRACKET WITH DOT",
+        "?-POINTING CURVED ANGLE BRACKET",
+        "SMALL ? PARENTHESIS",
+        "SMALL ? CURLY BRACKET",
+        "SMALL ? TORTOISE SHELL BRACKET",
+        "SUPERSCRIPT ? PARENTHESIS",
+        "SUBSCRIPT ? PARENTHESIS",
+        "? SQUARE BRACKET WITH UNDERBAR",
+        [    "LEFT SQUARE BRACKET WITH TICK IN TOP CORNER",
+            "RIGHT SQUARE BRACKET WITH TICK IN BOTTOM CORNER", ],
+        [    "LEFT SQUARE BRACKET WITH TICK IN BOTTOM CORNER",
+            "RIGHT SQUARE BRACKET WITH TICK IN TOP CORNER", ],
+        "? SQUARE BRACKET WITH QUILL",
+        "TOP ? HALF BRACKET",
+        "BOTTOM ? HALF BRACKET",
+        "? S-SHAPED BAG DELIMITER",
+        [    "LEFT ARC LESS-THAN BRACKET",
+            "RIGHT ARC GREATER-THAN BRACKET",  ],
+        [    "DOUBLE LEFT ARC GREATER-THAN BRACKET",
+            "DOUBLE RIGHT ARC LESS-THAN BRACKET",  ],
+        "? SIDEWAYS U BRACKET",
+        "? DOUBLE PARENTHESIS",
+        "? WIGGLY FENCE",
+        "? DOUBLE WIGGLY FENCE",
+        "? LOW PARAPHRASE BRACKET",
+        "? RAISED OMISSION BRACKET",
+        "? SUBSTITUTION BRACKET",
+        "? DOTTED SUBSTITUTION BRACKET",
+        "? TRANSPOSITION BRACKET",
+        [   "OGHAM FEATHER MARK",
+            "OGHAM REVERSED FEATHER MARK",  ],
+        [   "TIBETAN MARK GUG RTAGS GYON",
+            "TIBETAN MARK GUG RTAGS GYAS",  ],
+        [   "TIBETAN MARK ANG KHANG GYON",
+            "TIBETAN MARK ANG KHANG GYAS",  ],
+;
+
+#
+# Filter out unknown characters; this may run on an older version
+# of Perl with an old version of Unicode.
+#
+@bracket_pairs = grep {defined charnames::string_vianame ($$_ [0]) &&
+                       defined charnames::string_vianame ($$_ [1])}
+                 @bracket_pairs;
+
+if (@bracket_pairs) {
+    my  $delims = join "" => map {charnames::string_vianame ($$_ [0])}
+                                 @bracket_pairs;
+    my $cdelims = join "" => map {charnames::string_vianame ($$_ [1])}
+                                 @bracket_pairs;
+
+    pattern name   => [qw (bquoted -esc=\\)],
+            create => sub {my $flags = $_ [1];
+                           return gen_delimited ($delims, $flags -> {-esc},
+                                                $cdelims);
+                      },
+            version => 5.010,
+            ;
+}
+
+
+#
+# Return the Unicode names of the pairs of matching delimiters.
+#
+sub bracket_pairs {@bracket_pairs}
 
 1;
 
@@ -151,6 +285,29 @@ You must use at least version 5.10.0 to use these patterns.
 A synonym for C<$RE{delimited}{q{-delim='"`}{...}}>
 
 You must use at least version 5.10.0 to use these patterns.
+
+=head2 $RE {bquoted} {-esc}
+
+This is a pattern which matches delimited strings, where the delimiters
+are a set of matching brackets. Currently, this comes 85 pairs. This
+includes the 60 pairs of bidirection paired brackets, as listed
+in L<< http://www.unicode.org/Public/UNIDATA/BidiBrackets.txt >>.
+
+The other 25 pairs are the quotation marks, the double quotation
+marks, the single and double pointing quoation marks, the heavy
+single and double commas, 4 pairs of top-bottom parenthesis and
+brackets, 9 pairs of presentation form for vertical brackets,
+and the low paraphrase, raised omission, substitution, double
+substitution, and transposition brackets.
+
+In a future update, pairs may be added (or deleted).
+
+For a full list of bracket pairs, inspect the output of 
+C<< Regexp::Common::delimited::bracket_pair () >>, which returns
+a list of two element arrays, each holding the Unicode names of
+matching pair of delimiters.
+
+The C<< {-esc => I<S> } >> works as in the C<< $RE {delimited} >> pattern.
 
 =head1 SEE ALSO
 
