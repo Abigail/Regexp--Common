@@ -48,6 +48,7 @@ t/comment/nested.t
 t/comment/pascal.t
 t/comment/single_line.t
 t/comment/single_or_multiline.t
+t/delimited/101_delimited.t
 t/number/101_integer.t
 t/number/111_integer_base.t
 t/number/121_integer_places.t
@@ -64,7 +65,6 @@ t/test_bases.t
 t/test_bases_sep.t
 t/test_comments.t
 t/test_curry.t
-t/test_delimited.t
 t/test_domain.t
 t/test_i.t
 t/test_ip.t
