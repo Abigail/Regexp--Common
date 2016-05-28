@@ -237,7 +237,7 @@ be specified.
 
 By default, the closing delimiter is the same character as the opening
 delimiter. If this is not wanted, for instance, if you want to match
-a string with symmetric delimeters, you can specify the closing delimiter(s)
+a string with symmetric delimiters, you can specify the closing delimiter(s)
 with C<-cdelim => I<S>>. Each character in I<S> is matched with the
 corresponding character supplied with the C<-delim> option. If the C<-cdelim>
 option has less characters than the C<-delim> option, the last character
