@@ -72,8 +72,10 @@ pattern name    => [qw( quoted -esc=\\ )],
 #
 my @bracket_pairs =
     map {ref $_ ? $_ :
-            /!/ ? [( s/!/TOP/r,   s/!/BOTTOM/r)]
-                : [(s/\?/LEFT/r, s/\?/RIGHT/r)]}
+            /!/ ? [(do {my $x = $_; $x =~ s/!/TOP/;    $x},
+                    do {my $x = $_; $x =~ s/!/BOTTOM/; $x})]
+                : [(do {my $x = $_; $x =~ s/\?/LEFT/;  $x},
+                    do {my $x = $_; $x =~ s/\?/RIGHT/; $x})]}
         "? PARENTHESIS",
         "? SQUARE BRACKET",
         "? CURLY BRACKET",
