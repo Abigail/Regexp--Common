@@ -14,6 +14,11 @@ unless ($r) {
     exit;
 }
 
+unless ($] >= 5.014) {
+    print "1..0 # SKIP Pattern not available on this version of Perl\n";
+    exit;
+}
+
 sub make_test {
     my ($name, $pat) = @_;
     my $keep = $$pat {-keep};

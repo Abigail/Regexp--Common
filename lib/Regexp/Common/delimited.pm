@@ -67,132 +67,135 @@ pattern name    => [qw( quoted -esc=\\ )],
         ;
 
 
-#
-# List from http://xahlee.info/comp/unicode_matching_brackets.html
-#
-my @bracket_pairs =
-    map {ref $_ ? $_ :
-            /!/ ? [(do {my $x = $_; $x =~ s/!/TOP/;    $x},
-                    do {my $x = $_; $x =~ s/!/BOTTOM/; $x})]
-                : [(do {my $x = $_; $x =~ s/\?/LEFT/;  $x},
-                    do {my $x = $_; $x =~ s/\?/RIGHT/; $x})]}
-        "? PARENTHESIS",
-        "? SQUARE BRACKET",
-        "? CURLY BRACKET",
-        "? DOUBLE QUOTATION MARK",
-        "? SINGLE QUOTATION MARK",
-        "SINGLE ?-POINTING ANGLE QUOTATION MARK",
-        "?-POINTING DOUBLE ANGLE QUOTATION MARK",
-        "FULLWIDTH ? PARENTHESIS",
-        "FULLWIDTH ? SQUARE BRACKET",
-        "FULLWIDTH ? CURLY BRACKET",
-        "FULLWIDTH ? WHITE PARENTHESIS",
-        "? WHITE PARENTHESIS",
-        "? WHITE SQUARE BRACKET",
-        "? WHITE CURLY BRACKET",
-        "? CORNER BRACKET",
-        "? ANGLE BRACKET",
-        "? DOUBLE ANGLE BRACKET",
-        "? BLACK LENTICULAR BRACKET",
-        "? TORTOISE SHELL BRACKET",
-        "? BLACK TORTOISE SHELL BRACKET",
-        "? WHITE CORNER BRACKET",
-        "? WHITE LENTICULAR BRACKET",
-        "? WHITE TORTOISE SHELL BRACKET",
-        "HALFWIDTH ? CORNER BRACKET",
-        "MATHEMATICAL ? WHITE SQUARE BRACKET",
-        "MATHEMATICAL ? ANGLE BRACKET",
-        "MATHEMATICAL ? DOUBLE ANGLE BRACKET",
-        "MATHEMATICAL ? FLATTENED PARENTHESIS",
-        "MATHEMATICAL ? WHITE TORTOISE SHELL BRACKET",
-        "? CEILING",
-        "? FLOOR",
-        "Z NOTATION ? IMAGE BRACKET",
-        "Z NOTATION ? BINDING BRACKET",
-        [   "HEAVY SINGLE TURNED COMMA QUOTATION MARK ORNAMENT",
-            "HEAVY SINGLE " .   "COMMA QUOTATION MARK ORNAMENT", ],
-        [   "HEAVY DOUBLE TURNED COMMA QUOTATION MARK ORNAMENT",
-            "HEAVY DOUBLE " .   "COMMA QUOTATION MARK ORNAMENT", ],
-        "MEDIUM ? PARENTHESIS ORNAMENT",
-        "MEDIUM FLATTENED ? PARENTHESIS ORNAMENT",
-        "MEDIUM ? CURLY BRACKET ORNAMENT",
-        "MEDIUM ?-POINTING ANGLE BRACKET ORNAMENT",
-        "HEAVY ?-POINTING ANGLE QUOTATION MARK ORNAMENT",
-        "HEAVY ?-POINTING ANGLE BRACKET ORNAMENT",
-        "LIGHT ? TORTOISE SHELL BRACKET ORNAMENT",
-        "ORNATE ? PARENTHESIS",
-        "! PARENTHESIS",
-        "! SQUARE BRACKET",
-        "! CURLY BRACKET",
-        "! TORTOISE SHELL BRACKET",
-        "PRESENTATION FORM FOR VERTICAL ? CORNER BRACKET",
-        "PRESENTATION FORM FOR VERTICAL ? WHITE CORNER BRACKET",
-        "PRESENTATION FORM FOR VERTICAL ? TORTOISE SHELL BRACKET",
-        "PRESENTATION FORM FOR VERTICAL ? BLACK LENTICULAR BRACKET",
-        "PRESENTATION FORM FOR VERTICAL ? WHITE LENTICULAR BRACKET",
-        "PRESENTATION FORM FOR VERTICAL ? ANGLE BRACKET",
-        "PRESENTATION FORM FOR VERTICAL ? DOUBLE ANGLE BRACKET",
-        "PRESENTATION FORM FOR VERTICAL ? SQUARE BRACKET",
-        "PRESENTATION FORM FOR VERTICAL ? CURLY BRACKET",
-        "?-POINTING ANGLE BRACKET",
-        "? ANGLE BRACKET WITH DOT",
-        "?-POINTING CURVED ANGLE BRACKET",
-        "SMALL ? PARENTHESIS",
-        "SMALL ? CURLY BRACKET",
-        "SMALL ? TORTOISE SHELL BRACKET",
-        "SUPERSCRIPT ? PARENTHESIS",
-        "SUBSCRIPT ? PARENTHESIS",
-        "? SQUARE BRACKET WITH UNDERBAR",
-        [    "LEFT SQUARE BRACKET WITH TICK IN TOP CORNER",
-            "RIGHT SQUARE BRACKET WITH TICK IN BOTTOM CORNER", ],
-        [    "LEFT SQUARE BRACKET WITH TICK IN BOTTOM CORNER",
-            "RIGHT SQUARE BRACKET WITH TICK IN TOP CORNER", ],
-        "? SQUARE BRACKET WITH QUILL",
-        "TOP ? HALF BRACKET",
-        "BOTTOM ? HALF BRACKET",
-        "? S-SHAPED BAG DELIMITER",
-        [    "LEFT ARC LESS-THAN BRACKET",
-            "RIGHT ARC GREATER-THAN BRACKET",  ],
-        [    "DOUBLE LEFT ARC GREATER-THAN BRACKET",
-            "DOUBLE RIGHT ARC LESS-THAN BRACKET",  ],
-        "? SIDEWAYS U BRACKET",
-        "? DOUBLE PARENTHESIS",
-        "? WIGGLY FENCE",
-        "? DOUBLE WIGGLY FENCE",
-        "? LOW PARAPHRASE BRACKET",
-        "? RAISED OMISSION BRACKET",
-        "? SUBSTITUTION BRACKET",
-        "? DOTTED SUBSTITUTION BRACKET",
-        "? TRANSPOSITION BRACKET",
-        [   "OGHAM FEATHER MARK",
-            "OGHAM REVERSED FEATHER MARK",  ],
-        [   "TIBETAN MARK GUG RTAGS GYON",
-            "TIBETAN MARK GUG RTAGS GYAS",  ],
-        [   "TIBETAN MARK ANG KHANG GYON",
-            "TIBETAN MARK ANG KHANG GYAS",  ],
-;
+my @bracket_pairs;
+if ($] >= 5.014) {
+    #
+    # List from http://xahlee.info/comp/unicode_matching_brackets.html
+    #
+    @bracket_pairs =
+        map {ref $_ ? $_ :
+                /!/ ? [(do {my $x = $_; $x =~ s/!/TOP/;    $x},
+                        do {my $x = $_; $x =~ s/!/BOTTOM/; $x})]
+                    : [(do {my $x = $_; $x =~ s/\?/LEFT/;  $x},
+                        do {my $x = $_; $x =~ s/\?/RIGHT/; $x})]}
+            "? PARENTHESIS",
+            "? SQUARE BRACKET",
+            "? CURLY BRACKET",
+            "? DOUBLE QUOTATION MARK",
+            "? SINGLE QUOTATION MARK",
+            "SINGLE ?-POINTING ANGLE QUOTATION MARK",
+            "?-POINTING DOUBLE ANGLE QUOTATION MARK",
+            "FULLWIDTH ? PARENTHESIS",
+            "FULLWIDTH ? SQUARE BRACKET",
+            "FULLWIDTH ? CURLY BRACKET",
+            "FULLWIDTH ? WHITE PARENTHESIS",
+            "? WHITE PARENTHESIS",
+            "? WHITE SQUARE BRACKET",
+            "? WHITE CURLY BRACKET",
+            "? CORNER BRACKET",
+            "? ANGLE BRACKET",
+            "? DOUBLE ANGLE BRACKET",
+            "? BLACK LENTICULAR BRACKET",
+            "? TORTOISE SHELL BRACKET",
+            "? BLACK TORTOISE SHELL BRACKET",
+            "? WHITE CORNER BRACKET",
+            "? WHITE LENTICULAR BRACKET",
+            "? WHITE TORTOISE SHELL BRACKET",
+            "HALFWIDTH ? CORNER BRACKET",
+            "MATHEMATICAL ? WHITE SQUARE BRACKET",
+            "MATHEMATICAL ? ANGLE BRACKET",
+            "MATHEMATICAL ? DOUBLE ANGLE BRACKET",
+            "MATHEMATICAL ? FLATTENED PARENTHESIS",
+            "MATHEMATICAL ? WHITE TORTOISE SHELL BRACKET",
+            "? CEILING",
+            "? FLOOR",
+            "Z NOTATION ? IMAGE BRACKET",
+            "Z NOTATION ? BINDING BRACKET",
+            [   "HEAVY SINGLE TURNED COMMA QUOTATION MARK ORNAMENT",
+                "HEAVY SINGLE " .   "COMMA QUOTATION MARK ORNAMENT", ],
+            [   "HEAVY DOUBLE TURNED COMMA QUOTATION MARK ORNAMENT",
+                "HEAVY DOUBLE " .   "COMMA QUOTATION MARK ORNAMENT", ],
+            "MEDIUM ? PARENTHESIS ORNAMENT",
+            "MEDIUM FLATTENED ? PARENTHESIS ORNAMENT",
+            "MEDIUM ? CURLY BRACKET ORNAMENT",
+            "MEDIUM ?-POINTING ANGLE BRACKET ORNAMENT",
+            "HEAVY ?-POINTING ANGLE QUOTATION MARK ORNAMENT",
+            "HEAVY ?-POINTING ANGLE BRACKET ORNAMENT",
+            "LIGHT ? TORTOISE SHELL BRACKET ORNAMENT",
+            "ORNATE ? PARENTHESIS",
+            "! PARENTHESIS",
+            "! SQUARE BRACKET",
+            "! CURLY BRACKET",
+            "! TORTOISE SHELL BRACKET",
+            "PRESENTATION FORM FOR VERTICAL ? CORNER BRACKET",
+            "PRESENTATION FORM FOR VERTICAL ? WHITE CORNER BRACKET",
+            "PRESENTATION FORM FOR VERTICAL ? TORTOISE SHELL BRACKET",
+            "PRESENTATION FORM FOR VERTICAL ? BLACK LENTICULAR BRACKET",
+            "PRESENTATION FORM FOR VERTICAL ? WHITE LENTICULAR BRACKET",
+            "PRESENTATION FORM FOR VERTICAL ? ANGLE BRACKET",
+            "PRESENTATION FORM FOR VERTICAL ? DOUBLE ANGLE BRACKET",
+            "PRESENTATION FORM FOR VERTICAL ? SQUARE BRACKET",
+            "PRESENTATION FORM FOR VERTICAL ? CURLY BRACKET",
+            "?-POINTING ANGLE BRACKET",
+            "? ANGLE BRACKET WITH DOT",
+            "?-POINTING CURVED ANGLE BRACKET",
+            "SMALL ? PARENTHESIS",
+            "SMALL ? CURLY BRACKET",
+            "SMALL ? TORTOISE SHELL BRACKET",
+            "SUPERSCRIPT ? PARENTHESIS",
+            "SUBSCRIPT ? PARENTHESIS",
+            "? SQUARE BRACKET WITH UNDERBAR",
+            [    "LEFT SQUARE BRACKET WITH TICK IN TOP CORNER",
+                "RIGHT SQUARE BRACKET WITH TICK IN BOTTOM CORNER", ],
+            [    "LEFT SQUARE BRACKET WITH TICK IN BOTTOM CORNER",
+                "RIGHT SQUARE BRACKET WITH TICK IN TOP CORNER", ],
+            "? SQUARE BRACKET WITH QUILL",
+            "TOP ? HALF BRACKET",
+            "BOTTOM ? HALF BRACKET",
+            "? S-SHAPED BAG DELIMITER",
+            [    "LEFT ARC LESS-THAN BRACKET",
+                "RIGHT ARC GREATER-THAN BRACKET",  ],
+            [    "DOUBLE LEFT ARC GREATER-THAN BRACKET",
+                "DOUBLE RIGHT ARC LESS-THAN BRACKET",  ],
+            "? SIDEWAYS U BRACKET",
+            "? DOUBLE PARENTHESIS",
+            "? WIGGLY FENCE",
+            "? DOUBLE WIGGLY FENCE",
+            "? LOW PARAPHRASE BRACKET",
+            "? RAISED OMISSION BRACKET",
+            "? SUBSTITUTION BRACKET",
+            "? DOTTED SUBSTITUTION BRACKET",
+            "? TRANSPOSITION BRACKET",
+            [   "OGHAM FEATHER MARK",
+                "OGHAM REVERSED FEATHER MARK",  ],
+            [   "TIBETAN MARK GUG RTAGS GYON",
+                "TIBETAN MARK GUG RTAGS GYAS",  ],
+            [   "TIBETAN MARK ANG KHANG GYON",
+                "TIBETAN MARK ANG KHANG GYAS",  ],
+    ;
 
-#
-# Filter out unknown characters; this may run on an older version
-# of Perl with an old version of Unicode.
-#
-@bracket_pairs = grep {defined charnames::string_vianame ($$_ [0]) &&
-                       defined charnames::string_vianame ($$_ [1])}
-                 @bracket_pairs;
+    #
+    # Filter out unknown characters; this may run on an older version
+    # of Perl with an old version of Unicode.
+    #
+    @bracket_pairs = grep {defined charnames::string_vianame ($$_ [0]) &&
+                           defined charnames::string_vianame ($$_ [1])}
+                     @bracket_pairs;
 
-if (@bracket_pairs) {
-    my  $delims = join "" => map {charnames::string_vianame ($$_ [0])}
-                                 @bracket_pairs;
-    my $cdelims = join "" => map {charnames::string_vianame ($$_ [1])}
-                                 @bracket_pairs;
+    if (@bracket_pairs) {
+        my  $delims = join "" => map {charnames::string_vianame ($$_ [0])}
+                                     @bracket_pairs;
+        my $cdelims = join "" => map {charnames::string_vianame ($$_ [1])}
+                                     @bracket_pairs;
 
-    pattern name   => [qw (bquoted -esc=\\)],
-            create => sub {my $flags = $_ [1];
-                           return gen_delimited ($delims, $flags -> {-esc},
-                                                $cdelims);
-                      },
-            version => 5.010,
-            ;
+        pattern name   => [qw (bquoted -esc=\\)],
+                create => sub {my $flags = $_ [1];
+                               return gen_delimited ($delims, $flags -> {-esc},
+                                                    $cdelims);
+                          },
+                version => 5.014,
+                ;
+    }
 }
 
 
