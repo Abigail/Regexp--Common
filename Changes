@@ -1,6 +1,6 @@
 Version 2016052803
 + POD nits (Debian Perl Group)
-+ Eliminat the use of s///r (Slaven Rezix)
++ Eliminate the use of s///r (Slaven Rezix)
 + Require 5.014 for the 'bquote' pattern.
 
 Version 2016052802 Sat May 28 01:40:43 CEST 2016
