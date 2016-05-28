@@ -135,10 +135,10 @@ pattern name    => [qw (num square)],
 
 pattern name    => [qw (num roman)],
         create  => '(?xi)(?=[MDCLXVI])
-                         (?k:M{0,3}
-                            (D?C{0,3}|CD|CM)?
-                            (L?X{0,3}|XL|XC)?
-                            (V?I{0,3}|IV|IX)?)'
+                         (?k:M{0,4}
+                            (?:C[DM]|D?C{0,4})?
+                            (?:X[LC]|L?X{0,4})?
+                            (?:I[VX]|V?I{0,4})?)'
         ;
 
 1;
@@ -403,11 +403,21 @@ This pattern is available for version 5.008 and up.
 =head2 C<$RE{num}{roman}>
 
 Returns a pattern that matches an integer written in Roman numbers.
-Case doesn't matter. Only the more modern style, that is, no more
-than three repetitions of a letter, is recognized. The largest number
-matched is I<MMMCMXCIX>, or 3999. Larger numbers cannot be expressed
-using ASCII characters. A future version will be able to deal with 
-the Unicode symbols to match larger Roman numbers.
+Case doesn't matter. There is no unique way of writing Roman numerals,
+but we will not match anything. We require the Roman numerals to 
+list the symbols in order (largest first). The symbols for thousand
+(C<< M >>), hundred (C<< C >>), ten (C<< X >>), and one (C<< I >>)
+can not be repeated more than four times. The symbols for five hundred
+(C<< D >>), fifty (C<< L >>), and five (C<< V >>) may not appear more
+than once. A sequence of four repeated characters may also be written
+as a subtraction: by using the repeated character just once, and have
+it followed by the symbol which is 5 or 10 as large. So, four can be
+written as C<< IIII >>, or as C<< IV >>, and nine may be written as
+C<< VIIII >> or C<< IX >>. This corresponds to most modern uses of 
+Roman numerals.
+
+The largest number which will be matched is 4999, or 
+C<< MMMMDCCCCLXXXXVIIII >>, or C<< MMMMCMXCIX >>.
 
 Under C<-keep>, the number will be captured in $1.
 
@@ -432,7 +442,7 @@ Send them in to I<regexp-common@abigail.be>.
 
 =head1 LICENSE and COPYRIGHT
 
-This software is Copyright (c) 2001 - 2013, Damian Conway and Abigail.
+This software is Copyright (c) 2001 - 2016, Damian Conway and Abigail.
 
 This module is free software, and maybe used under any of the following
 licenses:
