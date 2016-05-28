@@ -80,7 +80,7 @@ Do not use this module directly, but load it via I<Regexp::Common>.
 =head2 C<$RE{SEN}{USA}{SSN}{-sep}>
 
 Returns a pattern that matches an American Social Security Number (SSN).
-SSNs consist of three groups of numbers, separated by a hypen (C<->).
+SSNs consist of three groups of numbers, separated by a hyphen (C<->).
 This pattern only checks for a valid structure, that is, it validates
 whether a number is valid SSN, was a valid SSN, or maybe a valid SSN
 in the future. There are almost a billion possible SSNs, and about 
@@ -132,7 +132,7 @@ Send them in to I<regexp-common@abigail.be>.
 
 =head1 LICENSE and COPYRIGHT
 
-This software is Copyright (c) 2001 - 2009, Damian Conway and Abigail.
+This software is Copyright (c) 2001 - 2016, Damian Conway and Abigail.
 
 This module is free software, and maybe used under any of the following
 licenses:
