@@ -1,3 +1,6 @@
+Version 2016052805
++ Fix POD nit (RT 103850)
+
 Version 2016052804 Sat May 28 23:24:37 CEST 2016
 + Fix issues with matching Roman numerals, where the pattern wasn't greedy
   enough. (RT 104353)

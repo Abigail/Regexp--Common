@@ -291,7 +291,7 @@ Regexp::Common - Provide commonly requested regular expressions
  while (<>) {
      /$RE{num}{real}/               and print q{a number};
      /$RE{quoted}/                  and print q{a ['"`] quoted string};
-     /$RE{delimited}{-delim=>'/'}/  and print q{a /.../ sequence};
+    m[$RE{delimited}{-delim=>'/'}]  and print q{a /.../ sequence};
      /$RE{balanced}{-parens=>'()'}/ and print q{balanced parentheses};
      /$RE{profanity}/               and print q{a #*@%-ing word};
  }
