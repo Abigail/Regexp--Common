@@ -4,6 +4,7 @@ Version 2016052804 Sat May 28 23:24:37 CEST 2016
 + Allow Roman numerals to match sequences of 4 Is, Xs, Cs and Ms. This 
   raises the maximum number to be matched to 4999 (MMMMCMXCIX)
 + POD nits (Debian Perl Group)
++ 387994 tests in 67 files.
 
 Version 2016052803 Sat May 28 12:24:06 CEST 2016
 + POD nits (Debian Perl Group)
