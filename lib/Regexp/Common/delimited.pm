@@ -307,6 +307,8 @@ substitution, and transposition brackets.
 
 In a future update, pairs may be added (or deleted).
 
+This pattern requires perl 5.14.0 or higher.
+
 For a full list of bracket pairs, inspect the output of 
 C<< Regexp::Common::delimited::bracket_pair () >>, which returns
 a list of two element arrays, each holding the Unicode names of
