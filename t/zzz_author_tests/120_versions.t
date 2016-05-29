@@ -33,7 +33,9 @@ my $top   = -d "blib" ? "blib/lib" : "lib";
 my @files = `$FIND $top -name [a-zA-Z_]*.pm`;
 chomp @files;
 
-my $main_version = version "$top/Test/Regexp.pm";
+say "$top/Regexp/Common.pm";
+
+my $main_version = version "$top/Regexp/Common.pm";
 unless ($main_version) {
     fail "Cannot find a version in main file";
     done_testing;
@@ -57,12 +59,8 @@ foreach my $file (@files, "README") {
 
     pass "Found version $version in $base";
 
-    if ($file eq 'README') {
-        is $version, $main_version, "Version in README matches package version"
-    }
-    else {
-        ok $version le $main_version,
-          "      It does not exceed package version";
+    if ($version eq $main_version) {
+        is $version, $main_version, "Version in $base matches package version"
     }
 }
 
@@ -97,9 +95,8 @@ sub version {
     my $file = shift;
     open my $fh, "<", $file or return;
     while (<$fh>) {
-        return $1 if /^our \$VERSION = '([0-9]{10})';$/;
-        return $1 if /This is version ([0-9]{10}) /;      # README
-        return    if /     \$VERSION \s* =/x;
+        return $1 if /^(?:our )?\$VERSION = '([0-9]{10})';$/;
+        return $1 if /Release of version ([0-9]{10}) /;      # README
     }
     return;
 }
