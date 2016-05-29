@@ -1,6 +1,7 @@
-Version 2016052805
+Version 2016052901 Sun May 29 22:46:42 CEST 2016
 + Fix POD nit (RT 103850)
 + Don't run author only tests, unless AUTHOR_TESTING is set (RT 90600)
++ Added a 'strict' option to matching IPv4 addresses. (RT 93437)
 
 Version 2016052804 Sat May 28 23:24:37 CEST 2016
 + Fix issues with matching Roman numerals, where the pattern wasn't greedy

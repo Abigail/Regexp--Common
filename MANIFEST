@@ -51,6 +51,7 @@ t/comment/single_or_multiline.t
 t/delimited/101_delimited.t
 t/delimited/111_bquoted.t
 t/net/101_ipv4.t
+t/net/102_ipv4_strict.t
 t/net/111_ipv6.t
 t/net/121_mac.t
 t/net/131_domain.t

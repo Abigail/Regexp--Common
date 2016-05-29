@@ -10,10 +10,11 @@ $VERSION = '2016052804';
 
 
 my %IPunit = (
-    dec => q{(?k:25[0-5]|2[0-4][0-9]|[0-1]?[0-9]{1,2})},
-    oct => q{(?k:[0-3]?[0-7]{1,2})},
-    hex => q{(?k:[0-9a-fA-F]{1,2})},
-    bin => q{(?k:[0-1]{1,8})},
+    dec    => q{(?k:25[0-5]|2[0-4][0-9]|[0-1]?[0-9]{1,2})},
+    oct    => q{(?k:[0-3]?[0-7]{1,2})},
+    hex    => q{(?k:[0-9a-fA-F]{1,2})},
+    bin    => q{(?k:[0-1]{1,8})},
+    strict => q{(?k:2(?:5[0-5]?|[0-4][0-9]?|[6-9]?)|1[0-9]{0,2}|[3-9][0-9]?|0)},
 );
 my %MACunit = (
     %IPunit,
@@ -47,7 +48,7 @@ pattern name   => [qw (net MAC)],
         },
         ;
 
-foreach my $type (qw /dec oct hex bin/) {
+foreach my $type (qw /dec oct hex bin strict/) {
     pattern name   => [qw (net IPv4), $type, "-sep=$IPdefsep"],
             create => sub {my $sep = $_ [1] -> {-sep};
                            "(?k:$IPunit{$type}$sep$IPunit{$type}$sep" .
@@ -214,10 +215,21 @@ captures the final component of the address
 
 =head2 C<$RE{net}{IPv4}{dec}{-sep}>
 
-Returns a pattern that matches a valid IP address in "dotted decimal"
+Returns a pattern that matches a valid IP address in "dotted decimal".
+Leading 0s are allowed, as long as each component does not exceed 3
+digits.
 
 If C<< -sep=I<P> >> is specified the pattern I<P> is used as the separator.
 By default I<P> is C<qr/[.]/>. 
+
+=head2 C<$RE{net}{IPv4}{strict}{-sep}>
+
+Returns a pattern that matches a valid IP address in "dotted decimal",
+but disallow any leading 0s.
+
+If C<< -sep=I<P> >> is specified the pattern I<P> is used as the separator.
+By default I<P> is C<qr/[.]/>. 
+
 
 =head2 C<$RE{net}{IPv4}{hex}{-sep}>
 
