@@ -7,6 +7,11 @@ eval "use Test::More; 1" or do {
     exit;
 };
 
+unless ($ENV {AUTHOR_TESTING}) {
+    plan (skip_all => "AUTHOR tests");
+    exit;
+}
+
 eval "use Test::Pod 1.00; 1" or
       plan (skip_all => "Test::Pod required for testing POD");
 
