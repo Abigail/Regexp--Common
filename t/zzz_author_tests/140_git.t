@@ -1,15 +1,19 @@
 #!/usr/bin/perl
 
-use Test::More;
+BEGIN {
+    unless ($ENV {AUTHOR_TESTING}) {
+        print "1..0 # SKIP AUTHOR test\n";
+        exit;
+    }
+}
+
+use 5.10.0;
 
 use strict;
 use warnings;
 no  warnings 'syntax';
 
-unless ($ENV {AUTHOR_TESTING}) {
-    plan skip_all => "AUTHOR tests";
-    exit;
-}
+use Test::More;
 
 unless (-f ".git/config") {
     plan skip_all => "This is not a git repository";

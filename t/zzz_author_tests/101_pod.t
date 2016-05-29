@@ -1,16 +1,19 @@
 #!/usr/bin/perl
 
-use strict;
-
-eval "use Test::More; 1" or do {
-    print "1..0 # SKIP Test::More required\n";
-    exit;
-};
-
-unless ($ENV {AUTHOR_TESTING}) {
-    plan (skip_all => "AUTHOR tests");
-    exit;
+BEGIN {
+    unless ($ENV {AUTHOR_TESTING}) {
+        print "1..0 # SKIP AUTHOR test\n";
+        exit;
+    }
 }
+
+use 5.10.0;
+
+use strict;
+use warnings;
+no  warnings 'syntax';
+
+use Test::More;
 
 eval "use Test::Pod 1.00; 1" or
       plan (skip_all => "Test::Pod required for testing POD");
