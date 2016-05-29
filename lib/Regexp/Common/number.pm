@@ -7,7 +7,7 @@ use strict;
 use warnings;
 
 use vars qw /$VERSION/;
-$VERSION = '2016052804';
+$VERSION = '2016052901';
 
 
 sub _croak {
