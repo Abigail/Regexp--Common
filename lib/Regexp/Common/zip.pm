@@ -14,8 +14,18 @@ $VERSION = '2016053001';
 # in Unicode string.
 #
 
+#
+# ISO and Cept codes. ISO code is the second column, Cept code is
+# the third. First column matches either.
+#
+# http://cept.org/ecc/topics/numbering-networks/numbering-related-
+#        cooperation/the-cept-countries-joining-year-to-cept,
+#        -cept-and-iso-country-codes,-e164-and-e212-country-codes
+# (http://bit.ly/1Ue268b)
+#
 my %code = (
     Australia         =>  [qw /AUS? AU AUS/],
+    Austria           =>  [qw /AU?T AT AUT/],
     Belgium           =>  [qw /BE?  BE B/],
     Denmark           =>  [qw /DK   DK DK/],
     France            =>  [qw /FR?  FR F/],
@@ -184,6 +194,40 @@ pattern name    => [qw /zip US -prefix= -country= -extended= -sep=-/],
         },
         version => 5.00503,
         ;
+
+
+#
+# Postal codes are four digits, but not all combinations are used.
+#
+# Valid codes from:
+#       https://en.wikipedia.org/wiki/List_of_postal_codes_in_Austria
+# 
+pattern name   => ['zip', 'Austria' => qw /-prefix= -country=/],
+        create => sub {
+            my $pt  = _t $_ [1] {-prefix};
+            my $cn  = _c Austria => $_ [1] {-country};
+            my $pfx = "(?:(?k:$cn)-)";
+            my $pat = "(?|" .
+              "1(?:[0-8][0-9][0-9]|9[01])"              .     # 1000 - 1901
+              "2(?:[0-3][0-9][0-9]|"                    .     # 2000 - 2399
+                  "4(?:0[0-9]|1[0-3]|2[1-5]|3[1-9]|"    .     # 2400 - 2439
+                  "[4-6][0-9]|7[0-5]|8[1-9]|9[0-9])|"   .     # 2440 - 2499
+                  "[5-7][0-9][0-9]|"                    .     # 2500 - 2799
+                  "8(?:[0-7][0-9]|8[01]))|"             .     # 2800 - 2881
+              "3(?:0(?:0[1-9]|[1-9][0-9])|"             .     # 3001 - 3099
+                  "[12][0-9][0-9]|"                     .     # 3100 - 3299
+                  "3(?:[0-2][0-9]|3[0-5]))|"            .     # 3300 - 3335
+              "4(?:[01][0-9][0-9]|"                     .     # 4000 - 4199
+                  "2(?:[0-8][0-9]|9[0-4])|"             .     # 4200 - 4294
+                  "3(?:0[0-3]|[1-8][0-9]|9[0-2])|"      .     # 4300 - 4392
+                  "4(?:[0-1][0-9]|2[01]|3[1-9]|4[1-9]|" .     # 4400 - 4449
+                      "[5-7][0-9]|8[1-5]))"             .     # 4450 - 4481
+            ")";
+
+            "(?k:$pfx$pt(?k:$pat))";
+        }
+        ;
+
 
 
 # pattern name   => [qw /zip British/, "-sep= "],
