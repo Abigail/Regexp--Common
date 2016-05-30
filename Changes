@@ -1,5 +1,5 @@
 Version 2016053001 Mon May 30 14:12:17 CEST 2016
-+ No change at all, work around PAUSE isses.
++ No change at all, work around PAUSE issues.
 
 Version 2016052901 Sun May 29 22:46:42 CEST 2016
 + Fix POD nit (RT 103850)
