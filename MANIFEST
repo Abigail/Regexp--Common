@@ -96,6 +96,8 @@ t/URI/telnet.t
 t/URI/tv.t
 t/URI/wais.t
 t/URI/any.t
+t/zip/101_austria.t
+t/zip/102_austria.t
 t/zip/australia.t
 t/zip/belgium.t
 t/zip/denmark.t
