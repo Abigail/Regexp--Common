@@ -8,6 +8,9 @@ License, the Artistic License 2.0, the MIT license, or the BSD license.
 
 
 WARNINGS:
+       As of version 2016052801, $RE {delimited} and $RE {quoted} are
+       no longer supported on pre-5.10 Perl.s
+
        As of version 2013030901, $RE {balanced} is no longer supported 
        for pre-5.10 Perls.
 
