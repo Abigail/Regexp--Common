@@ -7,7 +7,7 @@ use strict;
 use warnings;
 
 use vars qw /$VERSION/;
-$VERSION = '2016052901';
+$VERSION = '2016053001';
 
 my @cards = (
     # Name           Prefix                    Length           mod 10

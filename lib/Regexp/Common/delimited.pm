@@ -8,7 +8,7 @@ use warnings;
 use charnames ':full';
 
 use vars qw /$VERSION/;
-$VERSION = '2016052901';
+$VERSION = '2016053001';
 
 sub gen_delimited {
 
