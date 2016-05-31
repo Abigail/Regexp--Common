@@ -14,10 +14,10 @@ sub gen_delimited {
 
     my ($dels, $escs, $cdels) = @_;
     # return '(?:\S*)' unless $dels =~ /\S/;
-    if (length $escs) {
+    if (defined $escs && length $escs) {
         $escs  .= substr  ($escs, -1) x (length ($dels) - length  ($escs));
     }
-    if (length $cdels) {
+    if (defined $cdels && length $cdels) {
         $cdels .= substr ($cdels, -1) x (length ($dels) - length ($cdels));
     }
     else {
@@ -28,7 +28,8 @@ sub gen_delimited {
     for (my $i = 0; $i < length $dels; $i ++) {
         my $del  = quotemeta substr  ($dels, $i, 1);
         my $cdel = quotemeta substr ($cdels, $i, 1);
-        my $esc = length($escs) ? quotemeta substr ($escs, $i, 1) : "";
+        my $esc  = defined $escs && length ($escs)
+                           ? quotemeta substr ($escs, $i, 1) : "";
         if ($cdel eq $esc) {
             push @pat =>
                 "(?k:$del)(?k:[^$cdel]*(?:(?:$cdel$cdel)[^$cdel]*)*)(?k:$cdel)";
