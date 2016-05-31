@@ -62,6 +62,7 @@ t/number/122_integer_places.t
 t/number/123_integer_places.t
 t/number/131_integer_sep.t
 t/number/141_integer_group.t
+t/number/701_squares.t
 t/number/801_roman.t
 t/number/decimal.t
 t/number/number.t
@@ -77,7 +78,6 @@ t/test_lingua_palindrome.t
 t/test_list.t
 t/test_no_import.t
 t/test_profanity.t
-t/test_squares.t
 t/test_sub.t
 t/test_sub_named.t
 t/test_ws.t
