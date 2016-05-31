@@ -1,0 +1,95 @@
+#!/opt/perl/bin/perl
+
+use 5.010;
+
+use strict;
+use warnings;
+no  warnings 'syntax';
+use autodie;
+
+use Fcntl 'SEEK_SET';
+
+sub find_copyright;
+sub fix_copyright;
+
+my $README  = "README";
+my @MODULES = `find lib -type f -name "*.pm"`;
+chomp @MODULES;
+push  @MODULES => $README;
+
+my ($year) = (localtime) [5] + 1900;
+
+my $COPYRIGHT_OK   = 1;
+my $COPYRIGHT_OLD  = 2;
+my $COPYRIGHT_NONE = 3;
+
+my $count   = 0;
+my $missing = 0;
+
+foreach my $module (@MODULES) {
+    my $r = find_copyright $module, $year;
+
+    if ($r == $COPYRIGHT_OK) {
+        ;
+    }
+    elsif ($r == $COPYRIGHT_OLD) {
+        say "Updating copyright notice in $module";
+        fix_copyright $module, $year;
+        $count ++;
+    }
+    elsif ($r == $COPYRIGHT_NONE) {
+        say "$module: notice missing";
+        $missing ++;
+    }
+    else {
+        say "$module: Huh?";
+    }
+}
+
+
+if ($count) {
+    say "Updated copyright notices in $count files.";
+}
+if ($missing) {
+    say "Missing copyright notices in $missing files.";
+}
+if (!$count && !$missing) {
+    say "All copyright notices are up to date.";
+}
+
+sub find_copyright {
+    my ($FILE, $YEAR) = @_;
+
+    open my $fh, "<", $FILE;
+    while (<$fh>) {
+        if (/Copyright \s+ (?:\(c\) \s+)? (?:2[0-9]{3}) \s*-\s* (2[0-9]{3})/x) {
+            my $found_year = $1;
+            if ($found_year == $YEAR) {
+                return $COPYRIGHT_OK;
+            }
+            else {
+                return $COPYRIGHT_OLD;
+            }
+        }
+    }
+    return $COPYRIGHT_NONE;
+}
+
+sub fix_copyright {
+    my ($FILE, $YEAR) = @_;
+    my  @lines;
+
+    open my $fh, "+<", $FILE;
+    while (<$fh>) {
+        s{(Copyright \s+ (?:\(c\) \s+)? (?:2[0-9]{3}) \s*-\s* )(2[0-9]{3})}
+         {$1$year}x;
+        push @lines => $_;
+    }
+    seek $fh, 0, SEEK_SET;
+
+    print $fh @lines;
+
+    close $fh;
+}
+
+__END__
