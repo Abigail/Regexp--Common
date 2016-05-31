@@ -1,4 +1,5 @@
 Version 2016053102
++ We ceased to support pre-5.10.0 perls.
 + Fix warnings for older perls ($RE {delimited})
 + Removed t/test_keep.t
 + Improved testing for square numbers.

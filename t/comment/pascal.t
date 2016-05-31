@@ -9,8 +9,6 @@ use t::Common qw /run_new_tests/;
 use warnings;
 
 
-BEGIN {$^W = 0 if $] < 5.006}
-
 my @open  = qw [{ (*];
 my @close = qw [} *)];
 
@@ -40,8 +38,7 @@ foreach my $start (@open) {
         # Create bad comments.
         my @bad_comments;
         # No terminating token.
-        # Not for pre 5.006 perls due to tests taking too much time.
-        push @bad_comments => map  {"$start$_"} @comments if $] >= 5.006;
+        push @bad_comments => map  {"$start$_"} @comments;
         # No starting token.
         push @bad_comments => map  {"$_$end"}
                               grep {index ($_, $start)} @comments;

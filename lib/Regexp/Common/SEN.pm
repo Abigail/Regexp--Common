@@ -1,12 +1,14 @@
 package Regexp::Common::SEN;
 
-use Regexp::Common qw /pattern clean no_defaults/;
+use 5.10.0;
 
 use strict;
 use warnings;
+no  warnings 'syntax';
 
-use vars qw /$VERSION/;
-$VERSION = '2016053101';
+use Regexp::Common qw /pattern clean no_defaults/;
+
+our $VERSION = '2016053101';
 
 =begin does_not_exist
 

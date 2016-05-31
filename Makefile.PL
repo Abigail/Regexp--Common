@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 
-use 5.00473;
+use 5.10.0;
 
 use strict;
 
@@ -16,7 +16,7 @@ my %args  = (
         'vars'                  => 0,
         'strict'                => 0,
     },
-    MIN_PERL_VERSION     =>  5.00473,
+    MIN_PERL_VERSION     =>  5.010,
     AUTHOR               => 'Abigail <regexp-common@abigail.be>',
     LICENSE              => 'mit',
     META_MERGE           => {

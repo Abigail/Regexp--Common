@@ -55,7 +55,7 @@ pass '-1234567';
 pass -1;
 pass -12;
 pass -1234567;
-fail 1.2 if $] > 5.00502;
+fail 1.2;
 fail "a"; 
 fail "";
 fail "1a";
@@ -335,7 +335,7 @@ pass "LiveLamb";
 fail "- 1234";
 fail "1,abc,def";
 fail "12,345.67A";
-fail "12,3C5,68" if $] > 5.00502;	# Regex bug
+fail "12,3C5,68";
 fail "1,23C5,5670";
 fail "1.234.567";
 

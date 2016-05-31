@@ -9,11 +9,10 @@ sub try{$P=qr/^$_[0]$/}sub fail{ok($S=$_[0]!~$P)}sub pass{ok($S=$_[0]=~$P)}
 use Regexp::Common qw (RE_balanced RE_num_real);
 ok;
 
-if ($] >= 5.010) {
-	try RE_balanced;
-	pass '(a(b))';
-	fail '(a(b)';
-}
+try RE_balanced;
+pass '(a(b))';
+fail '(a(b)';
+
 try RE_num_real;
 pass '-1.234e+567', qw( - 1.234 1 . 234 e +567 + 567 );
 

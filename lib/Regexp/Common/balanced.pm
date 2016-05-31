@@ -1,12 +1,14 @@
 package Regexp::Common::balanced; {
 
-use Regexp::Common qw /pattern clean no_defaults/;
+use 5.10.0;
 
 use strict;
 use warnings;
+no  warnings 'syntax';
 
-use vars qw /$VERSION/;
-$VERSION = '2016053101';
+use Regexp::Common qw /pattern clean no_defaults/;
+
+our $VERSION = '2016053101';
 
 my %closer = ( '{'=>'}', '('=>')', '['=>']', '<'=>'>' );
 my %cache;
@@ -67,7 +69,6 @@ pattern name    => [qw /balanced -parens=() -begin= -end=/],
             }
             return nested @$flag {qw /-begin -end/};
         },
-        version => 5.010,
         ;
 
 }
@@ -142,7 +143,6 @@ matched substring), regardless whether C<< {-keep} >> is used or not.
 Since version 2013030901 the pattern will make of the recursive construct
 C<< (?-1) >>, instead of using the problematic C<< (??{ }) >> construct.
 This fixes an problem that was introduced in the 5.17 development track.
-This also means the pattern is no longer available for Perls older than 5.010.
 
 =head1 SEE ALSO
 

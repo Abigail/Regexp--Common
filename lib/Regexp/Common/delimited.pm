@@ -1,14 +1,16 @@
 package Regexp::Common::delimited;
 
-use Regexp::Common qw /pattern clean no_defaults/;
+use 5.10.0;
 
 use strict;
 use warnings;
+no  warnings 'syntax';
+
+use Regexp::Common qw /pattern clean no_defaults/;
 
 use charnames ':full';
 
-use vars qw /$VERSION/;
-$VERSION = '2016053101';
+our $VERSION = '2016053101';
 
 sub gen_delimited {
 
@@ -57,14 +59,12 @@ pattern name    => [qw( delimited -delim= -esc=\\ -cdelim= )],
                               unless length $flags->{-delim};
                         return gen_delimited (@{$flags}{-delim, -esc, -cdelim});
                    },
-        version => 5.010,
         ;
 
 pattern name    => [qw( quoted -esc=\\ )],
         create  => sub {my $flags = $_[1];
                         return gen_delimited (q{"'`}, $flags -> {-esc});
                    },
-        version => 5.010,
         ;
 
 
@@ -284,13 +284,9 @@ captures the closing delimiter
 
 =back
 
-You must use at least version 5.10.0 to use these patterns.
-
 =head2 $RE{quoted}{-esc}
 
 A synonym for C<< $RE {delimited} {-delim => q {'"`}} {...} >>.
-
-You must use at least version 5.10.0 to use these patterns.
 
 =head2 $RE {bquoted} {-esc}
 

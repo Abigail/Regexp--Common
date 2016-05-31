@@ -8,7 +8,6 @@ sub try{$P=qr/^$_[0]$/}sub fail{ok($S=$_[0]!~$P)}sub pass{ok($S=$_[0]=~$P)}
 
 use Regexp::Common;
 ok;
-exit unless $] >= 5.010;
 
 # SIMPLE BALANCING ACT
 

@@ -1,12 +1,14 @@
 package Regexp::Common::net;
 
-use Regexp::Common qw /pattern clean no_defaults/;
+use 5.10.0;
 
 use strict;
 use warnings;
+no  warnings 'syntax';
 
-use vars qw /$VERSION/;
-$VERSION = '2016053101';
+use Regexp::Common qw /pattern clean no_defaults/;
+
+our $VERSION = '2016053101';
 
 
 my %IPunit = (
@@ -116,7 +118,6 @@ pattern name   => [qw (net IPv6), "-sep=$IPv6defsep", "-style=HeX"],
             local $" = "|";
             $cache6 {$style, $sep} = qq /(?k:(?|@re))/;
         },
-        version => 5.010
 ;
 
 
@@ -298,9 +299,6 @@ will transform a matching MAC address into so called canonical format.
 Canonical format means that every component of the address will be
 exactly two hexadecimals (with a leading zero if necessary), and the
 components will be separated by a colon.
-
-The C<subs> method will not work for binary MAC addresses if the
-Perl version predates 5.6.0.
 
 =head2 C<$RE{net}{MAC}{dec}{-sep}>
 

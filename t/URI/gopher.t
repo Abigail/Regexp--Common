@@ -97,7 +97,6 @@ sub create_parts {
     # Don't use an 'undef' here. It will create the same URI as for
     # the empty string, but {-keep} will return "".
     $good [3] = ["", qw {FNURD 0}, q {$_.+!*'(),:@&=%FF}];
-    pop @{$good [3]} if $] < 5.006;  # For speed.
     $bad  [3] = [qw {/ []}];
 
     # Search

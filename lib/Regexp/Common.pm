@@ -1,24 +1,15 @@
 package Regexp::Common;
 
-use 5.00473;
+use 5.10.0;
 use strict;
 
-BEGIN {
-    # This makes sure 'use warnings' doesn't bomb out on 5.005_*;
-    # warnings won't be enabled on those old versions though.
-    # Since all other files use this file, we can use 'use warnings'
-    # elsewhere as well, but *AFTER* 'use Regexp::Common'.
-    if ($] < 5.006) {
-        $INC {"warnings.pm"} = 1;
-        no strict 'refs';
-        *{"warnings::unimport"} = sub {0};
-    }
-}
-
 use warnings;
-use vars qw /$VERSION %RE %sub_interface $AUTOLOAD/;
+no  warnings 'syntax';
 
-$VERSION = '2016053101';
+our $VERSION = '2016053101';
+our %RE;
+our %sub_interface;
+our $AUTOLOAD;
 
 
 sub _croak {

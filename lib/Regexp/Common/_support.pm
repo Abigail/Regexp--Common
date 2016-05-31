@@ -1,20 +1,12 @@
 package Regexp::Common::_support;
 
-BEGIN {
-    # This makes sure 'use warnings' doesn't bomb out on 5.005_*;
-    # warnings won't be enabled on those old versions though.
-    if ($] < 5.006 && !exists $INC {"warnings.pm"}) {
-        $INC {"warnings.pm"} = 1;
-        no strict 'refs';
-        *{"warnings::unimport"} = sub {0};
-    }
-}
+use 5.10.0;
 
 use strict;
 use warnings;
+no  warnings 'syntax';
 
-use vars qw /$VERSION/;
-$VERSION = '2016053101';
+our $VERSION = '2016053101';
 
 #
 # Returns true/false, depending whether the given the argument

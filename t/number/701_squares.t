@@ -21,8 +21,7 @@ my $bits64 = $Config {use64bitint};
 # CPAN testers claim it fails on 5.8.8 and darwin 9.0.
 #
 $bits64 = 0 if $Config {osname} eq 'darwin' &&
-              ($Config {osvers} eq '9.0'    && $] == 5.008008  ||
-               $Config {osvers} eq '10.0'   && $] == 5.010);
+               $Config {osvers} eq '10.0'   && $] == 5.010;
 my $MAX_POWER = $bits64 ? 31 : 15;
 
 #

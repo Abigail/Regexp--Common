@@ -17,12 +17,10 @@ my $cept        = $RE {zip} {Denmark} {-country => "cept"};
 my $country     = $RE {zip} {Denmark} {-country => "DEN"};
 
 my ($prefix, $no_prefix, $iso_prefix, $cept_prefix);
-unless ($] < 5.00503) {
-    $prefix      = $RE {zip} {Denmark} {-prefix  => 'yes'};
-    $no_prefix   = $RE {zip} {Denmark} {-prefix  => 'no'};
-    $iso_prefix  = $iso  -> {-prefix => 'yes'};
-    $cept_prefix = $cept -> {-prefix => 'yes'};
-}
+$prefix      = $RE {zip} {Denmark} {-prefix  => 'yes'};
+$no_prefix   = $RE {zip} {Denmark} {-prefix  => 'no'};
+$iso_prefix  = $iso  -> {-prefix => 'yes'};
+$cept_prefix = $cept -> {-prefix => 'yes'};
 
 my @tests = (
     [ normal       => $normal      =>  {no_prefix      => NORMAL_PASS | FAIL,
@@ -55,7 +53,7 @@ push @tests => (
     ['cept prefix' => $cept_prefix =>  {no_prefix      => NORMAL_FAIL,
                                         iso_prefix     => NORMAL_PASS,
                                         cept_prefix    => NORMAL_PASS}],
-) unless $] < 5.00503;
+);
 
 my ($good, $bad) = create_parts;
 

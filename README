@@ -2,6 +2,11 @@
                Release of version 2016053101 of Regexp::Common
 ==============================================================================
 
+IMPORTANT NOTICE:
+       As of version 2016053102, we cease to support pre-5.10.0 perls.
+       5.10.0 was release over 8 years ago, and it just becomes too 
+       painful to support older perls.
+
 The main reason for version 2.122 is a change in the license. You now
 have the option to use this software under either the original Artistic
 License, the Artistic License 2.0, the MIT license, or the BSD license.

@@ -244,9 +244,6 @@ pass2 "    !This is a comment\n",   "!This is a comment\n";
 fail  "     !This is a comment\n";
 pass2 "      !This is a comment\n", "!This is a comment\n";
 
-exit if $] < 5.006;
-
-exit if $] < 5.008;
 
 try $RE{comment}{Beatnik};
 

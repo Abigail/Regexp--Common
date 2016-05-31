@@ -1,13 +1,15 @@
 package Regexp::Common::number;
 
-use Config;
-use Regexp::Common qw /pattern clean no_defaults/;
+use 5.10.0;
 
 use strict;
 use warnings;
+no  warnings 'syntax';
 
-use vars qw /$VERSION/;
-$VERSION = '2016053101';
+use Config;
+use Regexp::Common qw /pattern clean no_defaults/;
+
+our $VERSION = '2016053101';
 
 
 sub _croak {
@@ -116,9 +118,6 @@ pattern name    => [qw (num square)],
             #
             # CPAN testers claim it fails on 5.8.8 and darwin 9.0.
             #
-            $sixty_four_bits = 0 if $Config {osname} eq 'darwin' &&
-                                    $Config {osvers} eq '9.0'    &&
-                                    $] == 5.008008;
             my $num = $sixty_four_bits
                     ? '0*(?:(?:9(?:[0-1][0-9]{17}'  .
                              '|2(?:[0-1][0-9]{16}'  .
@@ -147,7 +146,6 @@ pattern name    => [qw (num square)],
                            '|4[0-7])))))))))|1?[0-9]{1,9}';
             qr {($num)(?(?{length $^N && sqrt ($^N) == int sqrt ($^N)})|(?!))}
         },
-        version => 5.008;
         ;
 
 pattern name    => [qw (num roman)],
@@ -414,8 +412,6 @@ Perl that is configured to use 64 bit integers. Otherwise, the limit
 is 2147483647. These restrictions were introduced in versions 2.116
 and 2.117 of Regexp::Common. Regardless whether C<-keep> was set,
 the matched number will be returned in C<$1>.
-
-This pattern is available for version 5.008 and up.
 
 =head2 C<$RE{num}{roman}>
 

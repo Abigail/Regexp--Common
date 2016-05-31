@@ -1,12 +1,14 @@
 package Regexp::Common::zip;
 
-use Regexp::Common qw /pattern clean no_defaults/;
+use 5.10.0;
 
 use strict;
 use warnings;
+no  warnings 'syntax';
 
-use vars qw /$VERSION/;
-$VERSION = '2016053101';
+use Regexp::Common qw /pattern clean no_defaults/;
+
+our $VERSION = '2016053101';
 
 
 #
@@ -192,7 +194,6 @@ pattern name    => [qw /zip US -prefix= -country= -extended= -sep=-/],
 
             "(?k:$pfx$pt(?k:$zip$ext$et))";
         },
-        version => 5.00503,
         ;
 
 
@@ -844,10 +845,6 @@ The last two digits of the 4 digit part of the postal code, indicating
 a segment or one side of a street. New in Regexp::Common 2.119.
 
 =back
-
-You need at least version 5.005_03 to be able to use US postal codes.
-Older versions contain a bug that let the pattern match invalid US
-postal codes.
 
 =head3 Questions
 

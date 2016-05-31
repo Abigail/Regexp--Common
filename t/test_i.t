@@ -25,11 +25,9 @@ my @data = (
     [[qw /num roman/]           => [qw /I i II ii XvIiI CXxxVIiI MmclXXviI/]],
 );
 
-if ($] >= 5.010) {
-    push @data => (
-        [[qw /balanced/] => ["()", "(a( )b)"]],
-    );
-}
+push @data => (
+    [[qw /balanced/] => ["()", "(a( )b)"]],
+);
 
 my $total  = 1;
    $total += 2 * @{$_ -> [1]} for @data;

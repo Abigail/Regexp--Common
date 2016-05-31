@@ -1,12 +1,14 @@
 package Regexp::Common::lingua;
 
-use Regexp::Common qw /pattern clean no_defaults/;
+use 5.10.0;
 
 use strict;
 use warnings;
+no  warnings 'syntax';
 
-use vars qw /$VERSION/;
-$VERSION = '2016053101';
+use Regexp::Common qw /pattern clean no_defaults/;
+
+our $VERSION = '2016053101';
 
 
 pattern name    => [qw /lingua palindrome -chars=[A-Za-z]/],
@@ -21,7 +23,6 @@ pattern name    => [qw /lingua palindrome -chars=[A-Za-z]/],
         #   print "[$ch]: ", $Regexp::Common::lingua::pd {$idx}, "\n";
         #   $Regexp::Common::lingua::pd {$idx};
         },
-        version => 5.006
         ;
 
 

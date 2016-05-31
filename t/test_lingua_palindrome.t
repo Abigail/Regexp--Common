@@ -8,14 +8,6 @@ use Regexp::Common;
 use warnings;
 
 
-BEGIN {
-    if ($] < 5.006) {
-        print "1..1\n";
-        print "ok 1\n";
-        exit;
-    }
-}
-
 my $count;
 
 my $palindrome = qr /^$RE{lingua}{palindrome}$/;

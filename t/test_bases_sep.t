@@ -282,7 +282,7 @@ fail "LiveLamb";
 fail "- 1234";
 pass "1,abc,def";
 pass "12,345.67A";
-fail "12,3C5,68" if $] > 5.00502;	# Regex bug
+fail "12,3C5,68";
 fail "1,23C5,5670";
 fail "1.234.567";
 
@@ -316,7 +316,7 @@ fail "LiveLamb";
 fail "- 1234";
 pass "1,abc,def";
 pass "12,345.67A";
-fail "12,3C5,68" if $] > 5.00502;	# Regex bug
+fail "12,3C5,68";
 fail "1,23C5,5670";
 fail "1.234.567";
 
@@ -355,6 +355,6 @@ pass "Li,veL,amb";
 fail "- 1234";
 pass "1,abc,def";
 pass "12,345.67A";
-fail "12,3C5,68" if $] > 5.00502;	# Regex bug
+fail "12,3C5,68";
 fail "1,23C5,5670";
 fail "1.234.567";

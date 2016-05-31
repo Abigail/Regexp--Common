@@ -83,8 +83,6 @@ sub create_parts {
 
     # Hosts.
     $good [2] = [qw /www.abigail.be www.PERL.com 127.0.0.1 w3.abigail.be/];
-    push @{$good [2]} => qw /a.b.c.d.e.f.g.h.i.j.k.x w--w--w.abigail.be/
-                             unless $] < 5.006;
     $bad  [2] = [qw /www.example..com w+w.example.com w--.example.com
                      127.0.0.0.1 -w.example.com www.example.1com/];
 

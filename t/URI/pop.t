@@ -66,7 +66,6 @@ sub create_parts {
 
     # Users
     $good [0] = [undef, qw /abigail/];
-    push  @{$good [0]} => qw /abigail%20&%20a%20camel=/ unless $] < 5.006;
     $bad  [0] = ["", qw /abigail%GG [abigail]/];
 
     # Auth_type
@@ -75,8 +74,6 @@ sub create_parts {
 
     # Hosts.
     $good [2] = [qw /pop3.abigail.be pop3.PERL.com 127.0.0.1/];
-    push @{$good [2]} => qw /a.b.c.d.e.f.g.h.i.j.k.x p--p--p.abigail.be/
-                         unless $] < 5.006;  # Speed.
     $bad  [2] = [qw /www.example..com w+w.example.com 127.0.0.0.1
                      w--.example.com -w.example.com www.example.1com/];
 

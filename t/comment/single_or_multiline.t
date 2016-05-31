@@ -8,7 +8,6 @@ use t::Common qw /run_new_tests ww/;
 
 use warnings;
 
-BEGIN {$^W = 0 if $] < 5.006;}
 
 
 
@@ -120,9 +119,7 @@ for (my $i = 0; $i < @mc_tokens; $i ++) {
     # No starting token.
     push @m_bad => map {"$_$end"} @comments;
     # No ending token.
-                         # Hack for old versions of Perl. The regexes will
-                         # work there, but it just takes too long to test them.
-    push @m_bad => map {"$start$_"} $] < 5.006 ? @no_eol : @comments;
+    push @m_bad => map {"$start$_"} @comments;
     # Double the comment.
     push @m_bad => map {"$start$_$end" x 2} @comments;
     # Leading garbage.

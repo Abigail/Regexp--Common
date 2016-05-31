@@ -4,14 +4,6 @@ use strict;
 use warnings;
 no  warnings 'syntax';
 
-BEGIN {
-    if ($] < 5.010) {
-        print "1..1\n";
-        print "ok 1  # \$RE {net} {IPv6} requires 5.010\n";
-        exit;
-    }
-}
-
 use Regexp::Common;
 
 my $count = 0;

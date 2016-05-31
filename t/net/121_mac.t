@@ -119,9 +119,7 @@ ok '08:09:0a:0b:0c:0d' eq
        $RE{net}{MAC}{dec} -> subs ('8:9:10:11:12:13');
 ok '08:09:0a:0b:0c:0d' eq
        $RE{net}{MAC}{oct} -> subs ('10:11:12:13:14:15');
-unless ($] < 5.006) {
-    ok '08:09:0a:0b:0c:0d' eq
-           $RE{net}{MAC}{bin} -> subs ('1000:1001:1010:1011:1100:1101');
-}
+ok '08:09:0a:0b:0c:0d' eq
+       $RE{net}{MAC}{bin} -> subs ('1000:1001:1010:1011:1100:1101');
 ok '8:9:a:b:c:g' eq
        $RE{net}{MAC}{hex} -> subs ('8:9:a:b:c:g');

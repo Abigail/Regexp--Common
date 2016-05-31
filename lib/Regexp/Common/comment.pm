@@ -1,12 +1,14 @@
 package Regexp::Common::comment;
 
-use Regexp::Common qw /pattern clean no_defaults/;
+use 5.10.0;
 
 use strict;
 use warnings;
+no  warnings 'syntax';
 
-use vars qw /$VERSION/;
-$VERSION = '2016053101';
+use Regexp::Common qw /pattern clean no_defaults/;
+
+our $VERSION = '2016053101';
 
 my @generic = (
     {languages => [qw /ABC Forth/],
@@ -208,7 +210,6 @@ foreach my $info (@plain_or_nested) {
                      exists $_ [1] -> {-keep} ? qr /($prefix$re)/
                                               : qr  /$prefix$re/
                 },
-            version => 5.006,
             ;
 }
 
@@ -298,7 +299,6 @@ pattern name    =>  [qw /comment Beatnik/],
                               $s  >= 5 && $s < 18})XXX|)}x;
             $re;
         },
-        version  => 5.008,
         ;
 }
 
@@ -317,7 +317,6 @@ pattern name    =>  [qw /comment Fortran fixed/],
 # the seventh column. Modern compilers may be more lenient.
 pattern name    =>  [qw /comment COBOL/],
         create  =>  '(?<=^......)(?k:(?k:[*])(?k:[^\n]*)(?k:\n))',
-        version =>  '5.008',
         ;
 
 1;
@@ -515,8 +514,7 @@ L<http://www.pmg.lcs.mit.edu/CLU.html>.
 Traditionally, comments in I<COBOL> are indicated by an asteriks in the
 seventh column. This is what the pattern matches. Modern compiler may
 more lenient though. See L<http://www.csis.ul.ie/cobol/Course/COBOLIntro.htm>,
-and L<http://www.csis.ul.ie/cobol/default.htm>. Due to a bug in the regexp
-engine of perl 5.6.x, this regexp is only available in version 5.8.0 and up.
+and L<http://www.csis.ul.ie/cobol/default.htm>.
 
 =item CQL
 
@@ -913,8 +911,7 @@ The I<SLIDE> language has two froms of comments. First there is the
 line comment, which starts with a C<#> and includes the rest of the
 line (just like Perl). Second, there is the multiline, nested comment,
 which are delimited by C<(*> and C<*)>. Under C{-keep}>, only 
-C<$1> is set, and is set to the entire comment. This pattern needs
-at least Perl version 5.6.0. See
+C<$1> is set, and is set to the entire comment. See
 L<http://www.cs.berkeley.edu/~ug/slide/docs/slide/spec/spec_frame_intro.shtml>.
 
 =item slrn
