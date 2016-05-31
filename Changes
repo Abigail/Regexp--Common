@@ -4,7 +4,7 @@ Version 2016060101 Wed Jun  1 00:34:17 CEST 2016
 + Removed t/test_keep.t
 + Improved testing for square numbers.
 + Updated the Copyright notices to include the current year.
-+ 482174 tests in 72 files.
++ 481918 tests in 72 files.
 
 Version 2016053101 Tue May 31 00:16:57 CEST 2016
 + Added a pattern for Austrian postal codes. (RT 53299)
