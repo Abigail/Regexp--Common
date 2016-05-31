@@ -73,7 +73,6 @@ t/test_bases_sep.t
 t/test_comments.t
 t/test_curry.t
 t/test_i.t
-t/test_keep.t
 t/test_lingua_palindrome.t
 t/test_list.t
 t/test_no_import.t
