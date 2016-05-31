@@ -1,9 +1,9 @@
 ==============================================================================
-               Release of version 2016053101 of Regexp::Common
+               Release of version 2016060101 of Regexp::Common
 ==============================================================================
 
 IMPORTANT NOTICE:
-       As of version 2016053102, we cease to support pre-5.10.0 perls.
+       As of version 2016060101, we cease to support pre-5.10.0 perls.
        5.10.0 was release over 8 years ago, and it just becomes too 
        painful to support older perls.
 

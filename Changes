@@ -1,4 +1,4 @@
-Version 2016053102
+Version 2016060101 Wed Jun  1 00:34:17 CEST 2016
 + We ceased to support pre-5.10.0 perls.
 + Fix warnings for older perls ($RE {delimited})
 + Removed t/test_keep.t

@@ -8,7 +8,7 @@ use strict;
 use warnings;
 
 use vars qw /$VERSION/;
-$VERSION = '2016053101';
+$VERSION = '2016060101';
 
 
 my $telnet_uri = "(?k:(?k:telnet)://(?:(?k:(?k:$user)(?::(?k:$password))?)\@)?" 

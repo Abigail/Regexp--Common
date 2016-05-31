@@ -13,7 +13,7 @@ our @EXPORT_OK = qw /register_uri/;
 
 use Regexp::Common qw /pattern clean no_defaults/;
 
-our $VERSION = '2016053101';
+our $VERSION = '2016060101';
 
 # Use 'require' here, not 'use', so we delay running them after we are compiled.
 # We also do it using an 'eval'; this saves us from have repeated similar
