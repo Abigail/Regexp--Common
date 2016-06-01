@@ -26,6 +26,24 @@ foreach (@list) {
 
 @list = sort {$a <=> $b} keys %zips;
 
-say for @list;
+for (my $i = 0; $i < @list; $i ++) {
+    my $j = $i;
+    for (; ($j + 1) < @list &&
+                      $list [$j + 1] - $list [$i] == $j + 1 - $i; $j ++) {
+        ;
+    }
+    if ($i == $j) {
+        say $list [$i];
+    }
+    else {
+        say $list [$i], "-", $list [$j];
+    }
+    $i = $j;
+}
+
+
+
+
+# say for @list;
 
 __END__
