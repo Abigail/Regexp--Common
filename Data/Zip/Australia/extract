@@ -16,7 +16,10 @@ my @list = map {/\b([0-9]{4}])$/ ? $1 : ()} `$PDF2TXT $file -`;
    @list = `$PDF2TXT $file -`;
 
 my %zips;
+my $postcodes = 0;
 foreach (@list) {
+    $postcodes ++ if /^Postcodes$/;
+    next unless $postcodes >= 2;
     next if /\bBoxes/i;   # Don't trigger on 'PO Boxes'.
     $zips {$1} = 1 if /\s([0-9]{4})$/;
 }
