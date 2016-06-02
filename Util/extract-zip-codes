@@ -25,6 +25,14 @@ GetOptions "country|c=s"    =>  \my $country,
            "type=s"         =>  \my $type,
 ;
 
+$file //= shift;
+
+if ($file && !defined $country) {
+    if ($file =~ /^(..)-/) {
+        $country = $1;
+    }
+}
+
 
 die "Both --country and --file are required\n" unless defined $country &&
                                                       defined $file;
