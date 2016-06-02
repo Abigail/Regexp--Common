@@ -70,8 +70,9 @@ sub _c {
 
 my %zip = (
     Australia   =>
-        # Postal codes of the form 'DDDD'. 0800 - 9999 are used.
-        # A leading 0 may be omitted.
+        # Postal codes of the form 'DDDD'. Not all codes are used;
+        # postal codes in use are updated quarterly, and can be 
+        # found at https://postcode.auspost.com.au/free_display.html?id=1
         #
         # https://en.wikipedia.org/wiki/Postcodes_in_Australia
         #
@@ -177,6 +178,16 @@ my %zip = (
                "9(?:0[1-79]|1[0-9]|2[0-69]|3[1-69]|4[1-7]|5[1-9]|"     .
                    "6[013-9]|7[09]|8[1-9]|9[0-27]))"                   .
 
+          "|7(?:0(?:0[0-24-9]|1[0-25-9]|2[0-7]|30|5[0-5])|"            .
+               "1(?:09|1[23679]|20|39|40|5[015]|6[23]|7[0-9]|"         .
+                   "8[02-7]|90)|"                                      .
+               "2(?:09|1[0-6]|4[89]|5[02-9]|6[0-578]|7[05-7]|9[0-2])|" .
+               "3(?:0[0-7]|1[056]|2[0-25]|3[01])|"                     .
+               "4(?:6[6-9]|70))"                                       .
+
+          "|8(?:0(?:0[1-9]|1[0-2]))"                                   .
+
+          "|9726"                                                      .
 
           #
           # Place this last, because the leading 0 is optional; if
@@ -514,15 +525,9 @@ The country code prefix.
 
 The postal code without the country prefix.
 
-=item $4
-
-The state or territory.
-
-=item $5
-
-The last two digits.
-
 =back
+
+As of version 2016060301, no C<< $4 >> or C<< $5 >> will be set.
 
 =head2 C<< $RE {zip} {Austria} >>
 
@@ -1007,9 +1012,9 @@ Postal code information.
 
 Links to Postcode Pages.
 
-=item L<http://www1.auspost.com.au/postcodes/>
+=item L<https://postcode.auspost.com.au/free_display.html?id=1>
 
-Information about Australian postal codes.
+All Australian postal codes in use.
 
 =item L<http://hdusps.esecurecare.net/cgi-bin/hdusps.cfg/php/enduser/std_adp.php?p_faqid=1014>
 

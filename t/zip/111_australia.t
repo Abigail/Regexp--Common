@@ -163,11 +163,22 @@ my @valid = ((map {sprintf "%04d" => $_}
               6931 .. 6936, 6939,         6941 .. 6947, 6951 .. 6961,
               6963 .. 6970, 6979,         6981 .. 6992, 6997,
 
+              7000 .. 7002, 7004 .. 7012, 7015 .. 7027, 7030,
+              7050 .. 7055, 7109,         7112 .. 7113, 7116 .. 7117,
+              7119 .. 7120, 7139 .. 7140, 7150 .. 7151, 7155,
+              7162 .. 7163, 7170 .. 7180, 7182 .. 7187, 7190,
+              7209 .. 7216, 7248 .. 7250, 7252 .. 7265, 7267 .. 7268,
+              7270,         7275 .. 7277, 7290 .. 7292, 7300 .. 7307,
+              7310,         7315 .. 7316, 7320 .. 7322, 7325,
+              7330 .. 7331, 7466 .. 7470,
 
+              8001 .. 8012,
+
+              9726,
 );
 
 my %valid        =   map {$_  =>  1} @valid;
-my %invalid      =   map {$_  =>  1} grep {!$valid {$_}} "0000" .. "6999";
+my %invalid      =   map {$_  =>  1} grep {!$valid {$_}} "0000" .. "9999";
 my @invalid      =  sort {$a <=> $b} keys %invalid;
 
 
@@ -185,6 +196,12 @@ foreach my $valid (@valid) {
     $Test -> match ($valid,
                    [$valid, undef, $valid],
                    test => "Postal code $valid");
+    if ($valid =~ /^0/) {
+        my $shorter = substr $valid, 1;
+        $Test -> match ($shorter,
+                       [$shorter, undef, $shorter],
+                       test => "Postal code $valid with leading 0 omitted");
+    }
 }
 
 #
