@@ -527,7 +527,7 @@ The postal code without the country prefix.
 
 =back
 
-As of version 2016060301, no C<< $4 >> or C<< $5 >> will be set.
+As of version 2016060201, no C<< $4 >> or C<< $5 >> will be set.
 
 =head2 C<< $RE {zip} {Austria} >>
 
