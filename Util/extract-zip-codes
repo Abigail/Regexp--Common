@@ -1,0 +1,207 @@
+#!/opt/perl/bin/perl
+
+use 5.010;
+
+use strict;
+use warnings;
+no  warnings 'syntax';
+
+use feature  'current_sub';
+use feature  'signatures';
+no  warnings 'experimental::signatures';
+
+use Getopt::Long;
+
+sub extract_raw_data;
+sub extract_belgium_data;
+sub make_pattern;
+sub make_ranges;
+
+GetOptions "country|c=s"    =>  \my $country,
+           "file|f=s"       =>  \my $file,
+           "type=s"         =>  \my $type,
+;
+
+
+die "Both --country and --file are required\n" unless defined $country &&
+                                                      defined $file;
+$type //= "regexp";
+
+my @list = extract_raw_data $file, $country;
+
+
+if ($type =~ /^(?:regexp?|pattern)$/) {
+    say make_pattern @list;
+}
+elsif ($type =~ /^(ranges?)$/) {
+    say make_ranges @list;
+}
+else {
+    die "No idea what to do with type $type\n";
+}
+
+
+#
+# Find the country, and dispatch
+#
+sub extract_raw_data ($file, $country) {
+    die "Cannot read file $file\n" unless -f $file;
+
+    my @list;
+
+    if ($country =~ /^(?:Belgium|BE)$/i) {
+        @list = extract_belgium_data $file;
+    }
+
+    else {
+        die "Failed to recognize country $country\n";
+    }
+
+    my %seen;
+    sort {$a <=> $b} grep {!$seen {$_} ++} @list;
+}
+
+
+#
+# Extract zip codes for Belgium. They're in the second columns of a 
+# tab separated file.
+#
+sub extract_belgium_data ($file) {
+    open my $fh, "<", $file or die "open $file: $!";
+
+    my @list;
+
+    while (<$fh>) {
+        my (undef, $zip) = split;
+        push @list => $zip;
+    }
+
+    return @list;
+}
+
+
+
+
+#
+# Given a list of digits, return a character class matching them
+#
+sub character_class (@list) {
+    my %seen;
+    @list = sort {$a <=> $b} grep {!$seen {$_} ++} @list;
+
+    if (@list == 0) {return ""}
+    if (@list == 1) {return $list [0]}
+    my $out = "[";
+    for (my $i = 0; $i < @list; $i ++) {
+        my $j = $i + 2;
+        if ($j < @list && $list [$j] - $list [$i] == 2) {
+            while ($j + 1 < @list &&
+                            $list [$j + 1] - $list [$i] == $j + 1 - $i) {
+                $j ++;
+            }
+            $out .= $list [$i] . "-" . $list [$j];
+            $i = $j;
+        }
+        else {
+            $out .= $list [$i];
+        }
+    }
+    $out .= "]";
+    return $out;
+}
+
+
+#
+# Given a list of numbers (all of the same length), return a regular
+# expression matching them
+#
+sub make_pattern (@list) {
+    my %seen;
+    @list = sort {$a <=> $b} grep {!$seen {$_} ++} @list;
+
+    return "" unless @list;
+    return $list [0] if @list == 1;
+
+    my $length = length ($list [0]);
+    for (my $i = 1; $i < @list; $i ++) {
+        die "All elements must be of the same length (@list)\n"
+             unless length $list [$i] == $length;
+    }
+
+    #
+    # Is there a common prefix?
+    #
+    my $common_prefix = $list [0];
+    for (my $i = 0; $i < @list && length $common_prefix; $i ++) {
+        my $c = 0;
+        $c ++ while $c < length $common_prefix &&
+                    substr ($common_prefix, 0, $c + 1) eq
+                    substr ($list [$i], 0, $c + 1);
+        $common_prefix = substr $common_prefix, 0, $c;
+    }
+
+    #
+    # Chop off the common prefix
+    #
+    if (length $common_prefix) {
+        my $c = length $common_prefix;
+        foreach my $elem (@list) {
+            substr ($elem, 0, $c) = "";
+        }
+    }
+
+    #
+    # If what's left, is one character wide, return a character class
+    #
+    if (length ($list [0]) == 1) {
+        return $common_prefix . character_class @list;
+    }
+
+    #
+    # Else, bucketize on first character, recurse and combine.
+    #
+    my %buckets;
+    foreach my $elem (@list) {
+        my ($head, $tail) = $elem =~ /^(.)(.+)$/s;
+        die "\$elem = $elem" unless defined $head;
+        push @{$buckets {$head}} => $tail;
+    }
+
+    my @clauses;
+
+    foreach my $head (sort {$a <=> $b} keys %buckets) {
+        my $pattern = &{+__SUB__} (@{$buckets {$head}});
+        push @clauses => "$head$pattern";
+    }
+
+    local $" = "|";
+    return "$common_prefix(?:@clauses)";
+}
+
+
+#
+# Turn a sort list of integers in ranges.
+#
+sub make_ranges (@list) {
+    my $out;
+
+    for (my $i = 0; $i < @list; $i ++) {
+        my $j = $i;
+        for (; ($j + 1) < @list &&
+                          $list [$j + 1] - $list [$i] == $j + 1 - $i; $j ++) {
+            ;
+        }
+        if ($i == $j) {
+            $out .= $list [$i] . ",\n";
+        }
+        else {
+            $out .= $list [$i] . " .. " . $list [$j] . ",\n";
+        }
+        $i = $j;
+    }
+    return $out;
+}
+
+
+
+__END__
