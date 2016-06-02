@@ -188,6 +188,11 @@ my $Test = Test::Regexp:: -> new -> init (
     name          => "Australian zip codes",
 );
 
+my $Test_lax = Test::Regexp:: -> new -> init (
+    pattern       =>  $RE {zip} {Australia} {-lax},
+    keep_pattern  =>  $RE {zip} {Australia} {-keep} {-lax},
+    name          => "Australian zip codes, leading zero optional",
+);
 
 #
 # Test all valid numbers
@@ -196,11 +201,15 @@ foreach my $valid (@valid) {
     $Test -> match ($valid,
                    [$valid, undef, $valid],
                    test => "Postal code $valid");
+    $Test_lax -> match ($valid,
+                       [$valid, undef, $valid],
+                       test => "Postal code $valid");
     if ($valid =~ /^0/) {
         my $shorter = substr $valid, 1;
-        $Test -> match ($shorter,
-                       [$shorter, undef, $shorter],
-                       test => "Postal code $valid with leading 0 omitted");
+        $Test -> no_match  ($shorter, reason => "Leading 0 not optional");
+        $Test_lax -> match ($shorter,
+                           [$shorter, undef, $shorter],
+                           test => "Postal code $valid with leading 0 omitted");
     }
 }
 
@@ -208,21 +217,24 @@ foreach my $valid (@valid) {
 # Test all invalid 4-digit numbers
 #
 foreach my $invalid (@invalid) {
-    $Test -> no_match ($invalid, reason => "Unused zip code $invalid");
+    $Test     -> no_match ($invalid, reason => "Unused zip code $invalid");
+    $Test_lax -> no_match ($invalid, reason => "Unused zip code $invalid");
 }
 
 
 #
 # Can we prefix the zip code?
 #
-$Test -> match ("AU-0909",
-               ["AU-0909", "AU", "0909"],
-               test => "Use iso prefix");
+foreach my $test_obj ($Test, $Test_lax) {
+    $test_obj -> match ("AU-0909",
+                       ["AU-0909", "AU", "0909"],
+                       test => "Use iso prefix");
 
-$Test -> match ("AUS-0909",
-               ["AUS-0909", "AUS", "0909"],
-               test => "Use cept prefix");
+    $test_obj -> match ("AUS-0909",
+                       ["AUS-0909", "AUS", "0909"],
+                       test => "Use cept prefix");
 
-$Test -> no_match ("AUT-0909", reason => "Invalid prefix");
+    $test_obj -> no_match ("AUT-0909", reason => "Invalid prefix");
+}
 
 done_testing;

@@ -1,3 +1,7 @@
+Version 2016060202 
++ Removed the optional leading 0 from Australian postal codes -- use -lax
+  to enable this feature.
+
 Version 2016060201 Thu Jun  2 02:58:35 CEST 2016
 + Improved Australian zip code pattern; pattern matches current zip codes
 + Tests for Australian zip now use Test::Regexp.
