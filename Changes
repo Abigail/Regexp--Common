@@ -1,6 +1,7 @@
 Version 2016060201 Thu Jun  2 02:58:35 CEST 2016
 + Improved Australian zip code pattern; pattern matches current zip codes
 + Tests for Australian zip now use Test::Regexp.
++ Stop distributing author tests.
 
 Version 2016060101 Wed Jun  1 00:34:17 CEST 2016
 + We ceased to support pre-5.10.0 perls.
