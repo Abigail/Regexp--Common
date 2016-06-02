@@ -8,7 +8,7 @@ no  warnings 'syntax';
 
 use Regexp::Common qw /pattern clean no_defaults/;
 
-our $VERSION = '2016060101';
+our $VERSION = '2016060201';
 
 sub gen_list_pattern {
     my ($pat, $sep, $lsep) = @_;

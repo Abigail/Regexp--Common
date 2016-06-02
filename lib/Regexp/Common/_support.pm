@@ -6,7 +6,7 @@ use strict;
 use warnings;
 no  warnings 'syntax';
 
-our $VERSION = '2016060101';
+our $VERSION = '2016060201';
 
 #
 # Returns true/false, depending whether the given the argument
