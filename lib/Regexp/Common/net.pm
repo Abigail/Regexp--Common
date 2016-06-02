@@ -36,9 +36,10 @@ my $IPdefsep   = '[.]';
 my $MACdefsep  =  ':';
 my $IPv6defsep =  ':';
 
+my $IPv4_re = join $IPdefsep, ($IPunit{dec}) x 4;
+
 pattern name   => [qw (net IPv4)],
-        create => "(?k:$IPunit{dec}$IPdefsep$IPunit{dec}$IPdefsep" .
-                      "$IPunit{dec}$IPdefsep$IPunit{dec})",
+        create => "(?k:$IPv4_re)",
         ;
 
 pattern name   => [qw (net MAC)],
@@ -145,7 +146,27 @@ pattern name   => [qw (net domain -nospace= -rfc1101=)],
         },
         ;
 
+#
+# Taken straight from Regexp::IPv6 v0.03
+#
+my $IPv6_group = "[0-9a-fA-F]{1,4}";
+my @IPv6_tail = (
+    ":",
+    "(?k::(?k:$IPv6_group)?|$IPv4_re)",
+    ":(?k:$IPv4_re|$IPv6_group(?k::$IPv6_group)?|)",
+    "(?k::$IPv4_re|:$IPv6_group(?k::$IPv4_re|(?k::$IPv6_group){0,2})|:)",
+    "(?k:(?k::$IPv6_group){0,2}(?k::$IPv4_re|(?k::$IPv6_group){1,2})|:)",
+    "(?k:(?k::$IPv6_group){0,3}(?k::$IPv4_re|(?k::$IPv6_group){1,2})|:)",
+    "(?k:(?k::$IPv6_group){0,4}(?k::$IPv4_re|(?k::$IPv6_group){1,2})|:)"
+);
 
+my $IPv6_re = $IPv6_group;
+$IPv6_re = "$IPv6_group:(?k:$IPv6_re|$_)" for @IPv6_tail;
+$IPv6_re = qq/:(?k::$IPv6_group){0,5}(?k:(?k::$IPv6_group){1,2}|:$IPv4_re)|$IPv6_re/;
+
+pattern name   => [qw (net IPv6)],
+        create => "(?k:$IPv6_re)",
+        ;
 
 1;
 
@@ -165,6 +186,7 @@ Regexp::Common::net -- provide regexes for IPv4 addresses.
         /$RE{net}{IPv4}{oct}{-sep => ':'}/ and
                                print "Colon separated octal IP address";
         /$RE{net}{IPv4}{bin}/  and print "Dotted binary IP address";
+        /$RE{net}{IPv6}/       and print "IPv6 address";
         /$RE{net}{MAC}/        and print "MAC address";
         /$RE{net}{MAC}{oct}{-sep => " "}/ and
                                print "Space separated octal MAC address";
@@ -254,6 +276,10 @@ Returns a pattern that matches a valid IP address in "dotted binary"
 
 If C<< -sep=I<P> >> is specified the pattern I<P> is used as the separator.
 By default I<P> is C<qr/[.]/>.
+
+=head2 C<$RE{net}{IPv6}>
+
+Returns a pattern that matches a valid B<IPv6> address.
 
 =head2 C<$RE{net}{MAC}>
 

@@ -727,7 +727,7 @@ Provides regexes for lists.
 
 =item Regexp::Common::net
 
-Provides regexes for IPv4 addresses and MAC addresses.
+Provides regexes for IPv4, IPv6 addresses and MAC addresses.
 
 =item Regexp::Common::number
 
