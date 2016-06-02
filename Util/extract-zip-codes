@@ -12,7 +12,10 @@ no  warnings 'experimental::signatures';
 
 use Getopt::Long;
 
+my $PDF2TXT = "/opt/local/bin/pdftotext";
+
 sub extract_raw_data;
+sub extract_australia_data;
 sub extract_belgium_data;
 sub make_pattern;
 sub make_ranges;
@@ -52,6 +55,9 @@ sub extract_raw_data ($file, $country) {
     if ($country =~ /^(?:Belgium|BE)$/i) {
         @list = extract_belgium_data $file;
     }
+    elsif ($country =~ /^(?:Australia|Aus?)$/i) {
+        @list = extract_australia_data $file;
+    }
 
     else {
         die "Failed to recognize country $country\n";
@@ -59,6 +65,26 @@ sub extract_raw_data ($file, $country) {
 
     my %seen;
     sort {$a <=> $b} grep {!$seen {$_} ++} @list;
+}
+
+
+#
+# Extract zip codes for Australia. They're in a PDF file.
+#
+sub extract_australia_data ($file) {
+    my @list;
+    my @lines = `$PDF2TXT $file -`;
+
+    my $postcodes = 0;
+    my %zips;
+    foreach my $line (@lines) {
+        $postcodes ++ if $line =~ /^Postcodes$/;
+        next unless $postcodes >= 2;
+        next if $line =~ /\bBoxes/i;   # Don't trigger on 'PO Boxes'.
+        $zips {$1} = 1 if $line =~ /\s([0-9]{4})$/;
+    }
+
+    keys %zips;
 }
 
 
