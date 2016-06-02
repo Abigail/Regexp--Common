@@ -519,7 +519,7 @@ solid evidence the leading 0 is optional. So, we now require there
 always to be four digit -- unless the C<< {-lax} >> option is given,
 then a possibly leading 0 is optional.
 
-Regexp::Common 2.107 and before used C<$RE{zip}{Australia}>. This is
+Regexp::Common 2.107 and before used C<$RE{zip}{Australian}>. This is
 still supported.
 
 If C<{-keep}> is used, the following variables will be set:
