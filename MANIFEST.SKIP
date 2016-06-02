@@ -6,6 +6,7 @@ Releases
 fix_versions
 fix_copyright
 Data/*
+Util/*
 t/000_boilerplate
 t/zzz_author_tests/101_pod.t
 t/zzz_author_tests/102_pod_coverage.t
