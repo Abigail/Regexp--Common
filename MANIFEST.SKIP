@@ -7,4 +7,8 @@ fix_versions
 fix_copyright
 Data/*
 t/000_boilerplate
-t/zzz_90_kwalitee.t
+t/zzz_author_tests/101_pod.t
+t/zzz_author_tests/102_pod_coverage.t
+t/zzz_author_tests/120_versions.t
+t/zzz_author_tests/130_permissions.t
+t/zzz_author_tests/140_git.t

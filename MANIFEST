@@ -110,8 +110,3 @@ t/zip/italy.t
 t/zip/spain.t
 t/zip/us.t
 t/zip/zip.t
-t/zzz_author_tests/101_pod.t
-t/zzz_author_tests/102_pod_coverage.t
-t/zzz_author_tests/120_versions.t
-t/zzz_author_tests/130_permissions.t
-t/zzz_author_tests/140_git.t
