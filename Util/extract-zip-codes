@@ -60,7 +60,7 @@ sub extract_raw_data ($file, $country) {
 
     my @list;
 
-    if ($country =~ /^(?:Belgium|BE|Denmark|DK)$/i) {
+    if ($country =~ /^(?:Belgium|BE|Denmark|DK|Greenland|GL)$/i) {
         @list = extract_geonames_data $file;
     }
     elsif ($country =~ /^(?:Australia|Aus?)$/i) {

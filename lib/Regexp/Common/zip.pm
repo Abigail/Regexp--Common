@@ -32,7 +32,7 @@ my %code = (
     Denmark           =>  [qw /DK   DK DK/],
     France            =>  [qw /FR?  FR F/],
     Germany           =>  [qw /DE?  DE D/],
-    Greenland         =>  [qw /DK   DK DK/],
+    Greenland         =>  [qw /GL   GL GL/],
     Italy             =>  [qw /IT?  IT I/],
     Netherlands       =>  [qw /NL   NL NL/],
     Norway            =>  [qw /NO?  NO N/],
@@ -336,9 +336,19 @@ my %zip = (
                     # distribution region. Other digits indicate the
                     # distribution district and postal town.
 
-    Greenland   =>  "(?k:(?k:39)(?k:[0-9]{2}))",
-                    # Postal codes of Greenland are part of the Danish
-                    # system. Codes in Greenland start with 39.
+    #
+    # Postal codes of Greenland use a slice of the Danish postal code system.
+    # Greenlands postal code consist of 4 digits, the first two being 39.
+    # Except Santas postal code. He uses 2412.
+    #
+    # Data from: http://download.geonames.org/export/zip/GL.zip
+    #
+    Greenland   =>
+      "(?k:2412"                                                             .
+         "|39(?:0[05]|1[0-359]|2[0-4]|3[02]|40|5[0-35]|6[124]|"              .
+               "7[0-2]|8[0245]|92)"                                          .
+    ")",
+
 
     Italy       =>  "(?k:(?k:[0-9])(?k:[0-9])(?k:[0-9])(?k:[0-9])(?k:[0-9]))",
                     # First digit: region.
@@ -890,10 +900,13 @@ The distribution district and postal town.
 =head2 C<$RE{zip}{Greenland}>
 
 Returns a pattern that recognizes postal codes from Greenland.
-Greenland, being part of Denmark, uses Danish postal codes.
-All postal codes of Greenland start with 39.
-The (optional) country prefix is I<DK>, which is both
-the ISO country code and the CEPT code.
+Greenland, uses the Danish postal codes system. Postal codes starting
+with 39 are reserved for Greenland, and all Greenlandic postal codes
+start with 39. Except the postal code for Santa. He uses 2412.
+
+The (optional) country prefix is I<GL>, which is use both as
+the ISO country code and the CEPT code. Earlier versions used
+I<DK> as the prefix.
 
 If C<{-keep}> is used, the following variables will be set:
 
@@ -910,14 +923,6 @@ The country code prefix.
 =item $3
 
 The postal code without the country prefix.
-
-=item $4
-
-39, being the distribution region and distribution district for Greenland.
-
-=item $5
-
-The last two digits of the postal code.
 
 =back
 

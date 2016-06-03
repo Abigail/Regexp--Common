@@ -1,8 +1,9 @@
 Version 2016060202 
 + Removed the optional leading 0 from Australian postal codes -- use -lax
   to enable this feature.
-+ Improved the pattern for Belgian postal codes, only matching actual
-  valid codes. This implies rewriting its tests from scratch.
++ Improved the pattern for Belgian, Danish, and Greenlandic postal codes,
+  only matching actual valid codes. This implies rewriting their tests
+  from scratch.
 
 Version 2016060201 Thu Jun  2 02:58:35 CEST 2016
 + Improved Australian zip code pattern; pattern matches current zip codes
