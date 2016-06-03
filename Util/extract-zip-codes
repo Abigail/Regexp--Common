@@ -16,7 +16,7 @@ my $PDF2TXT = "/opt/local/bin/pdftotext";
 
 sub extract_raw_data;
 sub extract_australia_data;
-sub extract_belgium_data;
+sub extract_geonames_data;
 sub make_pattern;
 sub make_ranges;
 
@@ -60,8 +60,8 @@ sub extract_raw_data ($file, $country) {
 
     my @list;
 
-    if ($country =~ /^(?:Belgium|BE)$/i) {
-        @list = extract_belgium_data $file;
+    if ($country =~ /^(?:Belgium|BE|Denmark|DK)$/i) {
+        @list = extract_geonames_data $file;
     }
     elsif ($country =~ /^(?:Australia|Aus?)$/i) {
         @list = extract_australia_data $file;
@@ -97,10 +97,10 @@ sub extract_australia_data ($file) {
 
 
 #
-# Extract zip codes for Belgium. They're in the second columns of a 
+# Extract zip codes for various countries. They're in the second columns of a 
 # tab separated file.
 #
-sub extract_belgium_data ($file) {
+sub extract_geonames_data ($file) {
     open my $fh, "<", $file or die "open $file: $!";
 
     my @list;
@@ -193,19 +193,20 @@ sub make_pattern (@list) {
 
     #
     # Else, bucketize on first character, recurse and combine.
+    # Note that we put the head in the buckets, so we can take
+    # advantages if there's a longer common prefix.
     #
     my %buckets;
     foreach my $elem (@list) {
-        my ($head, $tail) = $elem =~ /^(.)(.+)$/s;
-        die "\$elem = $elem" unless defined $head;
-        push @{$buckets {$head}} => $tail;
+        my $head = substr $elem => 0, 1;
+        push @{$buckets {$head}} => $elem;
     }
 
     my @clauses;
 
     foreach my $head (sort {$a <=> $b} keys %buckets) {
         my $pattern = &{+__SUB__} (@{$buckets {$head}});
-        push @clauses => "$head$pattern";
+        push @clauses => "$pattern";
     }
 
     local $" = "|";
