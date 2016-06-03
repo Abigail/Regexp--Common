@@ -6,6 +6,7 @@ no  warnings 'syntax';
 
 use Regexp::Common;
 use Test::More;
+use t::zip::Zip;
 
 my $r = eval "require Test::Regexp; 1";
 
@@ -14,7 +15,24 @@ unless ($r) {
     exit;
 }
 
-my @valid = map {sprintf "%04d" => $_}
+
+test_zips country         =>  "Denmark",
+          name            =>  "Danish zip codes",
+          prefix          => {
+              iso         =>  "DK",
+              cept        =>  "DK",
+              invalid     =>  "DE",
+          },
+          prefix_test_set => [5550, 7100],
+;
+
+
+done_testing;
+
+
+sub valid_zip_codes {
+    map {sprintf "%04d" => $_}
+
      800,    900,    917,    960,    999 .. 1000,
 
     1050 .. 1074,   1092 .. 1093,   1095,   1098,   1100 .. 1107,
@@ -115,48 +133,7 @@ my @valid = map {sprintf "%04d" => $_}
     9620,           9631 .. 9632,   9640,   9670,   9681,   9690,
     9700,   9740,   9750,   9760,   9800,   9830,   9850,   9870,
     9881,   9900,   9940,   9970,   9981 .. 9982,   9990,
-;
-
-my %valid        =   map {$_  =>  1} @valid;
-my %invalid      =   map {$_  =>  1} grep {!$valid {$_}} "0000" .. "9999";
-my @invalid      =  sort {$a <=> $b} keys %invalid;
-
-
-my $Test = Test::Regexp:: -> new -> init (
-    pattern       =>  $RE {zip} {Denmark},
-    keep_pattern  =>  $RE {zip} {Denmark} {-keep},
-    name          => "Danish zip codes",
-);
-
-
-#
-# Test all valid numbers
-#
-foreach my $valid (@valid) {
-    $Test -> match ($valid,
-                   [$valid, undef, $valid],
-                   test => "Postal code $valid");
-}
-
-#
-# Test all invalid 4-digit numbers
-#
-foreach my $invalid (@invalid) {
-    $Test     -> no_match ($invalid, reason => "Unused zip code $invalid");
 }
 
 
-#
-# Can we prefix the zip code?
-#
-$Test -> match ("DK-4640",
-               ["DK-4640", "DK", "4640"],
-                 test => "Use iso prefix");
-
-$Test -> match ("DK-4640",
-               ["DK-4640", "DK", "4640"],
-                 test => "Use cept prefix");
-
-$Test -> no_match ("FR-4640", reason => "Invalid prefix");
-
-done_testing;
+__END__

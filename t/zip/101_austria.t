@@ -6,6 +6,7 @@ no  warnings 'syntax';
 
 use Regexp::Common;
 use Test::More;
+use t::zip::Zip;
 
 my $r = eval "require Test::Regexp; 1";
 
@@ -14,7 +15,22 @@ unless ($r) {
     exit;
 }
 
-my @valid = (
+
+test_zips country         =>  "Austria",
+          name            =>  "Austrian zip codes",
+          prefix          => {
+              iso         =>  "AT",
+              cept        =>  "AUT",
+              invalid     =>  "FR",
+          },
+          prefix_test_set => [2491, 5114],
+;
+
+
+done_testing;
+
+
+sub valid_zip_codes {
     1000 .. 1901,
     
     2000 .. 2413,   2421 .. 2425,   2431 .. 2472,   2473 .. 2475,
@@ -38,49 +54,7 @@ my @valid = (
 
     9000 .. 9322,   9323,           9324 .. 9781,   9782,
     9800 .. 9873,   9900 .. 9992,
-);
-
-my %valid        =   map {$_  =>  1} @valid;
-my %invalid      =   map {$_  =>  1} grep {!$valid {$_}} 1000 .. 9999;
-my @invalid      =  sort {$a <=> $b} keys %invalid;
-unshift @invalid => "0000" .. "0999";
-
-
-my $Test = Test::Regexp:: -> new -> init (
-    pattern       =>  $RE {zip} {Austria},
-    keep_pattern  =>  $RE {zip} {Austria} {-keep},
-    name          => "Austrian zip codes",
-);
-
-
-#
-# Test all valid numbers
-#
-foreach my $valid (@valid) {
-    $Test -> match ($valid,
-                   [$valid, undef, $valid],
-                   test => "Postal code $valid");
-}
-
-#
-# Test all invalid 4-digit numbers
-#
-foreach my $invalid (@invalid) {
-    $Test -> no_match ($invalid, reason => "Unused zip code $invalid");
 }
 
 
-#
-# Can we prefix the zip code?
-#
-$Test -> match ("AT-9900",
-               ["AT-9900", "AT", "9900"],
-               test => "Use iso prefix");
-
-$Test -> match ("AUT-9900",
-               ["AUT-9900", "AUT", "9900"],
-               test => "Use cept prefix");
-
-$Test -> no_match ("AU-9900", reason => "Invalid prefix");
-
-done_testing;
+__END__

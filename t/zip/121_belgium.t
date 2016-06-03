@@ -6,6 +6,7 @@ no  warnings 'syntax';
 
 use Regexp::Common;
 use Test::More;
+use t::zip::Zip;
 
 my $r = eval "require Test::Regexp; 1";
 
@@ -14,7 +15,22 @@ unless ($r) {
     exit;
 }
 
-my @valid = (
+
+test_zips country         =>  "Belgium",
+          name            =>  "Belgian zip codes",
+          prefix          => {
+              iso         =>  "BE",
+              cept        =>  "B",
+              invalid     =>  "FR",
+          },
+          prefix_test_set => [4480, 5555],
+;
+
+
+done_testing;
+
+
+sub valid_zip_codes {
     1000,           1005 .. 1012,   1020,           1030 .. 1031,
     1040 .. 1041,   1043 .. 1045,   1047 .. 1050,   1060,   1070,
     1080 .. 1083,   1090,   1100,   1105,   1110,   1120,   1130,
@@ -157,48 +173,7 @@ my @valid = (
     9910,           9920 .. 9921,   9930 .. 9932,   9940,   9950,
     9960 .. 9961,   9968,           9970 .. 9971,   9980 .. 9982,
     9988,           9990 .. 9992,
-);
-
-my %valid        =   map {$_  =>  1} @valid;
-my %invalid      =   map {$_  =>  1} grep {!$valid {$_}} "0000" .. "9999";
-my @invalid      =  sort {$a <=> $b} keys %invalid;
-
-
-my $Test = Test::Regexp:: -> new -> init (
-    pattern       =>  $RE {zip} {Belgium},
-    keep_pattern  =>  $RE {zip} {Belgium} {-keep},
-    name          => "Belgian zip codes",
-);
-
-
-#
-# Test all valid numbers
-#
-foreach my $valid (@valid) {
-    $Test -> match ($valid,
-                   [$valid, undef, $valid],
-                   test => "Postal code $valid");
-}
-
-#
-# Test all invalid 4-digit numbers
-#
-foreach my $invalid (@invalid) {
-    $Test     -> no_match ($invalid, reason => "Unused zip code $invalid");
 }
 
 
-#
-# Can we prefix the zip code?
-#
-$Test -> match ("BE-3128",
-               ["BE-3128", "BE", "3128"],
-                 test => "Use iso prefix");
-
-$Test -> match ("B-3128",
-               ["B-3128", "B", "3128"],
-                 test => "Use cept prefix");
-
-$Test -> no_match ("FR-3128", reason => "Invalid prefix");
-
-done_testing;
+__END__
