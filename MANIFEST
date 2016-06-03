@@ -102,7 +102,8 @@ t/zip/111_australia.t
 t/zip/112_australia.t
 t/zip/121_belgium.t
 t/zip/122_belgium.t
-t/zip/denmark.t
+t/zip/131_denmark.t
+t/zip/132_denmark.t
 t/zip/france.t
 t/zip/germany.t
 t/zip/greenland.t
