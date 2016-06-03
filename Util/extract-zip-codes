@@ -224,9 +224,17 @@ sub make_pattern (@list) {
     $pat =~ s/^\(\?:/      (?k:/;
     $pat =~ s/\n\)\)\n?/)\n    )\n/;
 
-    $pat =~ s/^(\s*)(.+)\n/$1"$2"\n/gm;
-
     my @lines = split /\n/ => $pat;
+
+    @lines = map {length ($_) < 74 ? $_
+                                   : do {/^(.{1,71}\|)(.+)/
+                                         ? ($1, "                  $2") : $_}}
+                  @lines;
+
+    # Put inside quotes
+    s/^(\s*)(.+)$/$1"$2"/ for @lines;
+
+    # Add concat operator, lined up
     foreach my $line (@lines) {
         next unless $line =~ /\S/;
         if (length $line < 76) {
