@@ -22,6 +22,7 @@ my %args  = (
     AUTHOR               => 'Abigail <regexp-common@abigail.be>',
     LICENSE              => 'mit',
     META_MERGE           => {
+        license          => [qw [mit bsd artistic_1 artistic_2]],
         build_requires   => {
             'ExtUtils::MakeMaker' => 0,
             'strict'              => 0,
