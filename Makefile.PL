@@ -13,15 +13,24 @@ my %args  = (
     VERSION_FROM         => 'lib/Regexp/Common.pm',
     ABSTRACT_FROM        => 'lib/Regexp/Common.pm',
     PREREQ_PM            => {
-        'vars'                  => 0,
-        'strict'                => 0,
+        'vars'                    => 0,
+        'strict'                  => 0,
+        'warnings'                => 0,
+        'Config'                  => 0,
     },
     MIN_PERL_VERSION     =>  5.010,
     AUTHOR               => 'Abigail <regexp-common@abigail.be>',
     LICENSE              => 'mit',
     META_MERGE           => {
+        build_requires   => {
+            'ExtUtils::MakeMaker' => 0,
+            'strict'              => 0,
+            'warnings'            => 0,
+        },
         test_requires    => {
-            'strict'     => 0,
+            'strict'              => 0,
+            'warnings'            => 0,
+            'Test::More'          => 0,
         },
         resources        => {
             repository   => 'git://github.com/Abigail/Regexp--Common.git',
@@ -34,11 +43,7 @@ my %args  = (
     },
 );
 
-$args {META_MERGE} {build_requires} ||= {
-    'ExtUtils::MakeMaker' =>  0,
-    %{$args {META_MERGE} {test_requires}}
-};
-    
+
 $args {META_MERGE} {configure_requires} ||=
     $args {META_MERGE} {build_requires};
     
