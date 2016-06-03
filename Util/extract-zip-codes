@@ -60,15 +60,11 @@ sub extract_raw_data ($file, $country) {
 
     my @list;
 
-    if ($country =~ /^(?:Belgium|BE|Denmark|DK|Greenland|GL)$/i) {
-        @list = extract_geonames_data $file;
-    }
-    elsif ($country =~ /^(?:Australia|Aus?)$/i) {
+    if ($country =~ /^(?:Australia|Aus?)$/i) {
         @list = extract_australia_data $file;
     }
-
     else {
-        die "Failed to recognize country $country\n";
+        @list = extract_geonames_data $file;
     }
 
     my %seen;
