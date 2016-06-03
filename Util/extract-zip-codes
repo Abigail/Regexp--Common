@@ -282,11 +282,11 @@ sub make_ranges (@list) {
                 $out .= "        ";
                 $col ++;
             }
-            $out .= "   " . $$entry [0] . " .. " . $$entry [1];
+            $out .= sprintf "   %4d .. %4d" => $$entry [0], $$entry [1];
             $col ++;
         }
         else {
-            $out .= "   " . $entry;
+            $out .= sprintf "   %4d" => $entry;
         }
         $out .= ",";
 
