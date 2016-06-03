@@ -149,7 +149,7 @@ sub character_class (@list) {
 # Given a list of numbers (all of the same length), return a regular
 # expression matching them
 #
-sub make_pattern (@list) {
+sub _make_pattern (@list) {
     my %seen;
     @list = sort {$a <=> $b} grep {!$seen {$_} ++} @list;
 
@@ -210,7 +210,38 @@ sub make_pattern (@list) {
     }
 
     local $" = "|";
-    return "$common_prefix(?:@clauses)";
+    my $pat = "$common_prefix(?:@clauses)";
+    $pat .= "\n" if length $list [0] == 2;
+    return $pat;
+}
+
+
+sub make_pattern (@list) {
+    my $pat = _make_pattern @list;
+
+    #
+    # Do some post-processing. For now, assume we have 4 digits.
+    #
+
+    $pat =~ s/\n\|/|\n              /g;
+    $pat =~ s/\n\)\|/)\n\n         |/g;
+    $pat =~ s/^\(\?:/      (?k:/;
+    $pat =~ s/\n\)\)\n?/)\n    )\n/;
+
+    $pat =~ s/^(\s*)(.+)\n/$1"$2"\n/gm;
+
+    my @lines = split /\n/ => $pat;
+    foreach my $line (@lines) {
+        next unless $line =~ /\S/;
+        if (length $line < 76) {
+            $line .= " " x (76 - length $line);
+        }
+        $line .= " .";
+    }
+    $pat = join "\n" => @lines;
+    $pat =~ s/\s*\.$/\n/;
+
+    return $pat;
 }
 
 
