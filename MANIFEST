@@ -37,6 +37,7 @@ lib/Regexp/Common/URI/tv.pm
 lib/Regexp/Common/URI/wais.pm
 lib/Regexp/Common/whitespace.pm
 lib/Regexp/Common/zip.pm
+LICENSE
 MANIFEST
 Makefile.PL
 README
