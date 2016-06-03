@@ -23,15 +23,41 @@ my %args  = (
     LICENSE              => 'mit',
     META_MERGE           => {
         license          => [qw [mit bsd artistic_1 artistic_2]],
-        build_requires   => {
-            'ExtUtils::MakeMaker' => 0,
-            'strict'              => 0,
-            'warnings'            => 0,
-        },
-        test_requires    => {
-            'strict'              => 0,
-            'warnings'            => 0,
-            'Test::More'          => 0,
+
+        #
+        # This section is provided for laughts and giggles only.
+        # It seems to be completely and utterly ignored when
+        # running "perl Makefile.PL", and extracting the information
+        # from PREREQ_PM instead.
+        #
+        # The result will be that less and less tests will be run,
+        # as we're are moving towards using Test::Regexp, which is
+        # never going to be a prerequisite to running Regexp::Common.
+        #
+        prereqs          => {
+            configure        => {
+                requires         => {
+                    'ExtUtils::MakeMaker' => 0,
+                    'strict'              => 0,
+                    'warnings'            => 0,
+                },
+            },
+            runtime          => {
+                requires         => {
+                    'vars'                => 0,
+                    'strict'              => 0,
+                    'warnings'            => 0,
+                    'Config'              => 0,
+                },
+            },
+            test             => {
+                requires         => {
+                    'Test::More'          => 0,
+                },
+                recommends       => {
+                    'Test::Regexp'        => 0,
+                },
+            },
         },
         resources        => {
             repository   => 'git://github.com/Abigail/Regexp--Common.git',
@@ -45,9 +71,6 @@ my %args  = (
 );
 
 
-$args {META_MERGE} {configure_requires} ||=
-    $args {META_MERGE} {build_requires};
-    
 my %filter = (
     MIN_PERL_VERSION     => '6.48',
     META_MERGE           => '6.46',
