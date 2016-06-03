@@ -121,6 +121,8 @@ my %zip = (
     # the province; the others distribution sectors. Postal codes do not
     # start with a zero. Not all combinations are in use.
     #
+    # Data from http://download.geonames.org/export/zip/BE.zip
+    #
     Belgium  =>
       "(?k:1(?:0(?:0[05-9]|1[0-2]|20|3[01]|4[013-57-9]|50|60|70|8[0-3]|90)|" .
               "1(?:0[05]|10|20|30|40|50|60|70|80|90)|"                       .
@@ -1107,6 +1109,10 @@ All Australian postal codes in use.
 Information about US postal codes.
 
 =item L<http://en.wikipedia.org/wiki/Postal_code>
+
+=item L<http://download.geonames.org/export/zip/>
+
+Lots of zip files with active postal codes.
 
 =back
 
