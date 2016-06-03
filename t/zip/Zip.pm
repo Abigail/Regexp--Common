@@ -146,7 +146,7 @@ sub test_zips {
 
         my $invalid_zip = "$prefix_invalid-$zip";
         foreach my $test ($Test, $Test_none, $Test_iso, $Test_cept) {
-            $test -> no_match ("$prefix_invalid-zip",
+            $test -> no_match ("$prefix_invalid-$zip",
                                 reason => "Invalid prefix");
         }
     }
