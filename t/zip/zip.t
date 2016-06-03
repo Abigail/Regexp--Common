@@ -19,12 +19,13 @@ my %tests_t = (
 # Cut and paste from Regexp::Common::zip
 #
 my %code = (
+    Austria           =>  [qw /AU?T AT AUT/],
     Australia         =>  [qw /AUS? AU AUS/],
     Belgium           =>  [qw /BE?  BE B/],
     Denmark           =>  [qw /DK   DK DK/],
     France            =>  [qw /FR?  FR F/],
     Germany           =>  [qw /DE?  DE D/],
-    Greenland         =>  [qw /DK   DK DK/],
+    Greenland         =>  [qw /GL   GL GL/],
     Italy             =>  [qw /IT?  IT I/],
     Netherlands       =>  [qw /NL   NL NL/],
     Norway            =>  [qw /NO?  NO N/],
