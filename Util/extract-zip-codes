@@ -261,6 +261,7 @@ sub make_pattern (@list) {
 #
 sub make_ranges (@list) {
     my @out;
+    my $w = length $list [-1];
 
     for (my $i = 0; $i < @list; $i ++) {
         my $j = $i;
@@ -286,14 +287,14 @@ sub make_ranges (@list) {
         }
         if (ref $entry) {
             if ($col % 2) {
-                $out .= "        ";
+                $out .= "    " . (" " x $w);
                 $col ++;
             }
-            $out .= sprintf "   %4d .. %4d" => $$entry [0], $$entry [1];
+            $out .= sprintf "   %${w}d .. %${w}d" => $$entry [0], $$entry [1];
             $col ++;
         }
         else {
-            $out .= sprintf "   %4d" => $entry;
+            $out .= sprintf "   %${w}d" => $entry;
         }
         $out .= ",";
 
