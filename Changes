@@ -4,6 +4,7 @@ Version 2016060202
 + Improved the patterns for Belgian, Danish, Greenlandic and Norwegian
   postal codes, only matching actual valid codes.
   This implies rewriting their tests from scratch.
++ Added a pattern for postal codes for Liechtenstein
 
 Version 2016060201 Thu Jun  2 02:58:35 CEST 2016
 + Improved Australian zip code pattern; pattern matches current zip codes

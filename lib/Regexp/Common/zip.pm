@@ -33,6 +33,7 @@ my %code = (
     France            =>  [qw /FR?  FR F/],
     Germany           =>  [qw /DE?  DE D/],
     Greenland         =>  [qw /GL   GL GL/],
+    Liechtenstein     =>  [qw /LIE? LI LIE/],
     Italy             =>  [qw /IT?  IT I/],
     Netherlands       =>  [qw /NL   NL NL/],
     Norway            =>  [qw /NO?  NO N/],
@@ -349,13 +350,25 @@ my %zip = (
                "7[0-2]|8[0245]|92)"                                          .
     ")",
 
-
     Italy       =>  "(?k:(?k:[0-9])(?k:[0-9])(?k:[0-9])(?k:[0-9])(?k:[0-9]))",
                     # First digit: region.
                     # Second digit: province.
                     # Third digit: capital/province (odd for capital).
                     # Fourth digit: route.
                     # Fifth digit: place on route (0 for small places)
+
+
+
+    #
+    # The numbering system for postal codes of Liechtenstein is part of
+    # the numbering system for Swiss postal codes. Four digits are used
+    # and all postal codes in Liechtenstein start with 94, the third
+    # digit an 8 or a 9.
+    #
+    # Data from: http://download.geonames.org/export/zip/LI.zip
+    #
+    Liechtenstein => "(?k:94(?:8[5-8]|9[0-8]))",
+
 
     #
     # Postal codes in Norway use 4 digits. Leading 0s happen, but not all
@@ -1167,6 +1180,33 @@ The route.
 The place on the route.
 
 =back
+
+=head2 C<< $RE {zip} {Liechtenstein} >>
+
+Returns a pattern which recognizes postal codes used in Liechtenstein.
+Liechtenstein uses postal codes from the Swiss postal code system.
+This system uses four digits. Postal codes which start with 94, and
+use 8 or 9 as a third digit are postal codes for Liechtenstein.
+
+If C<{-keep}> is used, the following variables will be set:
+
+=over 4
+
+=item $1
+
+The entire postal code.
+
+=item $2
+
+The country code prefix.
+
+=item $3
+
+The postal code without the country prefix.
+
+=back
+
+The ISO country prefix is I<< LI >>, the CEPT country prefix is I<< LIE >>.
 
 =head2 C<$RE{zip}{Netherlands}>
 
