@@ -106,6 +106,13 @@ sub extract_geonames_data ($file) {
         push @list => $zip;
     }
 
+    if ($file =~ /^li/) {
+        push @list => "9489";               # Missing postal code.
+    }
+    elsif ($file =~ /^ch/) {
+        @list = grep {$_ ne "9489"} @list;  # Postal code belongs to LI.
+    }
+
     return @list;
 }
 

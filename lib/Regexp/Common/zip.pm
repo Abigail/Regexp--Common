@@ -367,7 +367,13 @@ my %zip = (
     #
     # Data from: http://download.geonames.org/export/zip/LI.zip
     #
-    Liechtenstein => "(?k:94(?:8[5-8]|9[0-8]))",
+    # The file above does not include 9489 (instead, a different file
+    # reports it to be in CH), but 9489 is the postal code for Schaan Log,
+    # which is located in Liechtenstein.
+    #
+    # http://postal-codes.findthedata.com/l/57083/9489-Schaan-Log
+    #
+    Liechtenstein => "(?k:94(?:8[5-9]|9[0-8]))",
 
 
     #

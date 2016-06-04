@@ -23,7 +23,7 @@ test_zips country         =>  "Liechtenstein",
               cept        =>  "LIE",
               invalid     =>  "CH",
           },
-          prefix_test_set => [9488, 9490],
+          prefix_test_set => [9489, 9490],
 ;
 
 
@@ -31,7 +31,7 @@ done_testing;
 
 
 sub valid_zip_codes {
-    9485 .. 9488,   9490 .. 9498
+    9485 .. 9498
 }
 
 
