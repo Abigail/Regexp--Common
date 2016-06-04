@@ -72,6 +72,14 @@ my %args  = (
 );
 
 
+$args {BUILD_REQUIRES}     = $args {PREREQ_PM};
+$args {CONFIGURE_REQUIRES} = $args {PREREQ_PM};
+$args {TEST_REQUIRES}      = {
+                                 %{$args {PREREQ_PM}}, 
+                                 "Test::More"  => 0,
+                             };
+
+
 my %filter = (
     MIN_PERL_VERSION     => '6.48',
     META_MERGE           => '6.46',
