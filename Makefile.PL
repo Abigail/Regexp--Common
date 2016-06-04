@@ -22,6 +22,7 @@ my %args  = (
     AUTHOR               => 'Abigail <regexp-common@abigail.be>',
     LICENSE              => 'mit',
     META_MERGE           => {
+       "meta-spec"       => {version => 2},
         license          => [qw [mit bsd artistic_1 artistic_2]],
 
         #
