@@ -109,6 +109,7 @@ t/zip/181_italy.t
 t/zip/191_germany.t
 t/zip/201_luxembourg.t
 t/zip/211_france.t
+t/zip/221_monaco.t
 t/zip/netherlands.t
 t/zip/spain.t
 t/zip/us.t

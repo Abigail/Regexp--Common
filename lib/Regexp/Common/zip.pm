@@ -36,6 +36,7 @@ my %code = (
     Italy             =>  [qw /IT?  IT I/],
     Liechtenstein     =>  [qw /LIE? LI LIE/],
     Luxembourg        =>  [qw /LU?  LU L/],
+    Monaco            =>  [qw /MC   MC MC/],
     Netherlands       =>  [qw /NL   NL NL/],
     Norway            =>  [qw /NO?  NO N/],
     Spain             =>  [qw /ES?  ES E/],
@@ -1921,6 +1922,18 @@ my %zip = (
                   "8[02]|9[0-39]))"                                          .
     ")",
 
+
+    #
+    # Postal codes of Monaco are part of the system used for France.
+    # Monaco uses postal codes starting with 980. 98000 is for all
+    # physical addresses, while numbers ending in 01 - 99 are reserved
+    # for special deliveries.
+    #
+    # http://www.upu.int/fileadmin/documentsFiles/activities/
+    #                                                addressingUnit/mcoEn.pdf
+    #
+    Monaco => "(?k:980[0-9][0-9])",
+
     #
     # Postal codes in Norway use 4 digits. Leading 0s happen, but not all
     # combinations are used.
@@ -2866,6 +2879,32 @@ The postal code without the country prefix.
 =back
 
 The ISO country prefix is I<< LI >>, the CEPT country prefix is I<< LIE >>.
+
+=head2 C<< $RE {zip {Monaco} >>
+
+Returns a pattern for postal codes used in Monaco. Monaco uses a range
+from the system used in France. They are 5 digits, starting with I<< 980 >>.
+The number I<< 98000 >> is used for physical addresses. Numbers ending
+in C<< 01 >> to C<< 99 >> are used for special deliveries.
+
+The ISO country code is I<< MC >>.
+
+If C<{-keep}> is used, the following variables will be set:
+
+=over 4
+
+=item $1
+
+The entire postal code.
+
+=item $2
+
+The country code prefix.
+
+=item $3
+
+The postal code without the country prefix.
+
 
 =head2 C<$RE{zip}{Netherlands}>
 
