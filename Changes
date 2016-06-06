@@ -2,7 +2,8 @@ Version 2016060202
 + Removed the optional leading 0 from Australian postal codes -- use -lax
   to enable this feature.
 + Improved the patterns for Belgian, Danish, Greenlandic, Swiss, Italian,
-  German, and Norwegian postal codes, only matching actual valid codes.
+  German, French, and Norwegian postal codes, only matching actual
+  valid codes.
   This implies rewriting their tests from scratch.
 + Added patterns for postal codes for Liechtenstein and Luxembourg.
 
