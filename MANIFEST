@@ -107,6 +107,7 @@ t/zip/161_liechtenstein.t
 t/zip/171_switzerland.t
 t/zip/181_italy.t
 t/zip/191_germany.t
+t/zip/201_luxembourg.t
 t/zip/france.t
 t/zip/netherlands.t
 t/zip/spain.t
