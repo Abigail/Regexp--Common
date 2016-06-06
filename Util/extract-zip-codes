@@ -16,6 +16,7 @@ my $PDF2TXT = "/opt/local/bin/pdftotext";
 
 sub extract_raw_data;
 sub extract_australia_data;
+sub extract_luxembourg_data;
 sub extract_geonames_data;
 sub make_pattern;
 sub make_ranges;
@@ -63,6 +64,9 @@ sub extract_raw_data ($file, $country) {
     if ($country =~ /^(?:Australia|Aus?)$/i) {
         @list = extract_australia_data $file;
     }
+    elsif ($country =~ /^(?:Luxembourg|Lu)$/i) {
+        @list = extract_luxembourg_data $file;
+    }
     else {
         @list = extract_geonames_data $file;
     }
@@ -91,6 +95,26 @@ sub extract_australia_data ($file) {
     keys %zips;
 }
 
+
+#
+# Extract Luxembourg data. This data is the third column of a csv file,
+# which uses a semi colon as separator, and quotes all values in all 
+# columns (using double quotes)
+#
+sub extract_luxembourg_data ($file) {
+    open my $fh, "<", $file or die "open $file: $!";
+    <$fh>;  # Ignore first line with column headers.
+
+    my @list;
+
+    while (<$fh>) {
+        /^"[^"]+";"[^"]+";"L-([0-9]{4})"/
+            or die "Failed to parse $_";
+        push @list => $1;
+    }
+
+    return @list;
+}
 
 #
 # Extract zip codes for various countries. They're in the second columns of a 
@@ -328,6 +352,8 @@ sub make_ranges (@list) {
     $out .= "\n" unless $out =~ /\n$/;
     $out;
 }
+
+
 
 
 
