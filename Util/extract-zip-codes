@@ -152,9 +152,9 @@ sub character_class (@list) {
 # Given a list of numbers (all of the same length), return a regular
 # expression matching them
 #
-sub _make_pattern (@list) {
+sub _make_pattern ($list, $split_size) {
     my %seen;
-    @list = sort {$a <=> $b} grep {!$seen {$_} ++} @list;
+    my @list = sort {$a <=> $b} grep {!$seen {$_} ++} @$list;
 
     return "" unless @list;
     return $list [0] if @list == 1;
@@ -208,19 +208,19 @@ sub _make_pattern (@list) {
     my @clauses;
 
     foreach my $head (sort {$a <=> $b} keys %buckets) {
-        my $pattern = &{+__SUB__} (@{$buckets {$head}});
+        my $pattern = &{+__SUB__} ($buckets {$head}, $split_size);
         push @clauses => "$pattern";
     }
 
     local $" = "|";
     my $pat = "$common_prefix(?:@clauses)";
-    $pat .= "\n" if length $list [0] == 2;
+    $pat .= "\n" if length ($list [0]) == $split_size;
     return $pat;
 }
 
 
 sub make_pattern (@list) {
-    my $pat = _make_pattern @list;
+    my $pat = _make_pattern \@list, length ($list [0]) - 2;
 
     #
     # Do some post-processing. For now, assume we have 4 digits.
@@ -233,10 +233,20 @@ sub make_pattern (@list) {
 
     my @lines = split /\n/ => $pat;
 
-    @lines = map {length ($_) < 74 ? $_
-                                   : do {/^(.{1,71}\|)(.+)/
-                                         ? ($1, "                  $2") : $_}}
-                  @lines;
+    my @lines2;
+    foreach my $line (@lines) {
+        if (length ($line) < 74) {
+            push @lines2 => $line;
+            next;
+        }
+        if ($line =~ /^(.{1,71}\|)(.+)/) {
+            push @lines2 => $1;
+            $line = "                  $2";
+            redo;
+        }
+        push @lines => $line;
+    }
+    @lines = @lines2;
 
     # Put inside quotes
     s/^(\s*)(.+)$/$1"$2"/ for @lines;
