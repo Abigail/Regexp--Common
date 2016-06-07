@@ -43,6 +43,7 @@ my %code = (
     Spain             =>  [qw /ES?  ES E/],
     Switzerland       =>  [qw /CH   CH CH/],
     USA               =>  [qw /USA? US USA/],
+   'Vatican City'     =>  [qw /VA   VA VA/],
 );
 
 # Returns the empty string if the argument is undefined, the argument otherwise.
@@ -2297,6 +2298,15 @@ my %zip = (
               "6(?:0[1246-8]|1[2-5]|2[0-2]|3[013]|4[23]|5[0-25-8]))"         .
     ")",
 
+
+    #
+    # Vatican City uses a single postal code, taken from the Italian
+    # system for postal codes; and this code is shared with parts of Rome.
+    #
+    # Data from: http://download.geonames.org/export/zip/CH.zip
+    #
+   'Vatican City' => "(?k:00120)",
+
 );
 
 my %alternatives = (
@@ -3173,6 +3183,32 @@ Can the 4 digit part of the zip code (in theory) start with 00?
 Can the 4 digit part of the zip code (in theory) end with 00?
 
 =back
+
+=head2 C<< $RE {zip} {'Vatican City'}
+
+Vatican City uses a single postal code; taken from the Italian 
+system of postal codes, and sharing the single code with a part
+of Rome.
+
+If C<{-keep}> is used, the following variables will be set:
+
+=over 4
+
+=item $1
+
+The entire postal code.
+
+=item $2
+
+The country code prefix.
+
+=item $3
+
+The postal code without the country prefix.
+
+=back
+
+The country prefix for Vatican City is C<< VA >>.
 
 =head1 SEE ALSO
 
