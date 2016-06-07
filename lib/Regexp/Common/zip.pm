@@ -39,6 +39,7 @@ my %code = (
     Monaco            =>  [qw /MC   MC MC/],
     Netherlands       =>  [qw /NL   NL NL/],
     Norway            =>  [qw /NO?  NO N/],
+   'San Marino'       =>  [qw /SM   SM SM/],
     Spain             =>  [qw /ES?  ES E/],
     Switzerland       =>  [qw /CH   CH CH/],
     USA               =>  [qw /USA? US USA/],
@@ -1587,7 +1588,8 @@ my %zip = (
 
 
     #
-    # Postal codes for Italy use 5 digits, with leading 0s.
+    # Postal codes for Italy use 5 digits, with leading 0s. Codes starting
+    # with 4789 belong to San Marino.
     #
     # Data from: http://download.geonames.org/export/zip/IT.zip
     # 
@@ -2127,6 +2129,16 @@ my %zip = (
               "8(?:0[02]|1[015]|2[06]|4[056])|"                              .
               "9(?:00|1[024-7]|25|3[05]|5[01]|60|8[0-2]|9[01]))"             .
     ")",
+
+
+    #
+    # San Marino uses a slice of the postal codes for Italy. 
+    # Any postal code starting with 4789, followed by another 
+    # digit is from San Marino
+    #
+    # Data: http://download.geonames.org/export/zip/SM.zip
+    #
+   'San Marino' => "(?k:4789[0-9])",
 
 
     Spain       =>  "(?k:(?k:0[1-9]|[1-4][0-9]|5[0-2])(?k:[0-9])(?k:[0-9]{2}))",
@@ -2832,6 +2844,10 @@ and even for the province itself. The fourth digit indicates the
 route, and the fifth a place on the route (0 for small places, 
 alphabetically for the rest).
 
+Codes starting with 4789 are postal codes for San Marino; they are
+not recognized by the pattern. Use C<< $RE {zip} {'San Marino'} >>
+instead.
+
 The country prefix is either I<IT> (the ISO country code), or
 I<I> (the CEPT code).
 
@@ -2970,6 +2986,33 @@ The country code prefix.
 The postal code without the country prefix.
 
 =back
+
+=head2 C<< $RE {zip} {'San Marino'} >>
+
+Postal codes of San Marino use a slice from the Italian postal codes.
+Any code starting 4789, followed by another digit belongs to San Marino.
+
+The country prefix for San Marino is I<< SM >>.
+
+
+If C<{-keep}> is used, the following variables will be set:
+
+=over 4
+
+=item $1
+
+The entire postal code.
+
+=item $2
+
+The country code prefix.
+
+=item $3
+
+The postal code without the country prefix.
+
+=back
+
 
 =head2 C<< $RE{zip}{Spain} >>
 
