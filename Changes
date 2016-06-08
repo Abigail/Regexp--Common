@@ -7,6 +7,7 @@ Version 2016060801 Wed Jun  8 14:40:04 CEST 2016
   This implies rewriting their tests from scratch.
 + Added patterns for postal codes for Liechtenstein, Luxembourg,
   Monaco, San Marino, and Vatican City.
++ 2315992 tests in 73 files.
 
 Version 2016060201 Thu Jun  2 02:58:35 CEST 2016
 + Improved Australian zip code pattern; pattern matches current zip codes
