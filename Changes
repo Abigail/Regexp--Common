@@ -1,4 +1,4 @@
-Version 2016060202 
+Version 2016060801 Wed Jun  8 14:40:04 CEST 2016
 + Removed the optional leading 0 from Australian postal codes -- use -lax
   to enable this feature.
 + Improved the patterns for Belgian, Danish, Greenlandic, Swiss, Italian,

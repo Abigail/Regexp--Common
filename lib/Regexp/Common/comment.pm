@@ -8,7 +8,7 @@ no  warnings 'syntax';
 
 use Regexp::Common qw /pattern clean no_defaults/;
 
-our $VERSION = '2016060201';
+our $VERSION = '2016060801';
 
 my @generic = (
     {languages => [qw /ABC Forth/],

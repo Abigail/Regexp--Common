@@ -10,7 +10,7 @@ use Regexp::Common qw /pattern clean no_defaults/;
 
 use charnames ':full';
 
-our $VERSION = '2016060201';
+our $VERSION = '2016060801';
 
 sub gen_delimited {
 
