@@ -462,7 +462,7 @@ licenses:
 
  1) The Perl Artistic License.     See the file COPYRIGHT.AL.
  2) The Perl Artistic License 2.0. See the file COPYRIGHT.AL2.
- 3) The BSD Licence.               See the file COPYRIGHT.BSD.
- 4) The MIT Licence.               See the file COPYRIGHT.MIT.
+ 3) The BSD License.               See the file COPYRIGHT.BSD.
+ 4) The MIT License.               See the file COPYRIGHT.MIT.
 
 =cut
