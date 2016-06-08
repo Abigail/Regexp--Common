@@ -2787,6 +2787,8 @@ The country code prefix.
 
 The postal code without the country prefix.
 
+=back
+
 =head2 C<$RE{zip}{Germany}>
 
 Returns a pattern that recognizes German postal codes. German postal
@@ -2931,6 +2933,7 @@ The country code prefix.
 
 The postal code without the country prefix.
 
+=back
 
 =head2 C<$RE{zip}{Netherlands}>
 
@@ -3184,7 +3187,7 @@ Can the 4 digit part of the zip code (in theory) end with 00?
 
 =back
 
-=head2 C<< $RE {zip} {'Vatican City'}
+=head2 C<< $RE {zip} {'Vatican City'} >>
 
 Vatican City uses a single postal code; taken from the Italian 
 system of postal codes, and sharing the single code with a part
