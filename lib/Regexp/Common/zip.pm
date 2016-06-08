@@ -2586,14 +2586,14 @@ The following common options are used:
 =head2 C<{-prefix=[yes|no|allow]}> and C<{-country=PAT}>.
 
 Postal codes can be prefixed with a country abbreviation. That is,
-a dutch postal code of B<1234 AB> can also be written as B<NL-1234 AB>.
+a Dutch postal code of B<1234 AB> can also be written as B<NL-1234 AB>.
 By default, all the patterns will allow the prefixes. But this can be
 changed with the C<-prefix> option. With C<-prefix=yes>, the returned
 pattern requires a country prefix, while C<-prefix=no> disallows a
 prefix. Any argument that doesn't start with a C<y> or a C<n> allows a
 country prefix, but doesn't require them.
 
-The prefixes used are, unfortunally, not always the same. Officially,
+The prefixes used are, unfortunately, not always the same. Officially,
 ISO country codes need to be used, but the usage of I<CEPT> codes (the
 same ones as used on cars) is common too. By default, each postal code
 will recognize a country prefix that's either the ISO standard or the
@@ -2642,7 +2642,7 @@ postal codes consist of four digits; the first two digits, which range
 from '10' to '97', indicate the state, although there are exceptions.
 Territories use '02' or '08' as starting digits. '0909' is the only 
 postal code starting with '09' - this is the postal code for the
-Nothern Territory University). The (optional) country
+Northern Territory University). The (optional) country
 prefixes are I<AU> (ISO country code) and I<AUS> (CEPT code).
 
 It the past, it was claimed that for postal codes starting with a 0,
@@ -2677,7 +2677,7 @@ As of version 2016060201, no C<< $4 >> or C<< $5 >> will be set.
 
 =head2 C<< $RE {zip} {Austria} >>
 
-Returns a pattern which recognizes Austian postal codes. Austrian postal
+Returns a pattern which recognizes Austrian postal codes. Austrian postal
 codes consists of 4 digits, but not all possibilities are used. This
 pattern matches the postal codes in use. The (optional) country prefixes
 are I<AT> (ISO country code) and I<AUT> (CEPT code).
@@ -3030,7 +3030,7 @@ The postal code without the country prefix.
 =head2 C<< $RE{zip}{Spain} >>
 
 Returns a pattern that recognizes Spanish postal codes. Spanish postal
-codes consist of 5 digits. The first 2 indicate one of Spains fifties
+codes consist of 5 digits. The first 2 indicate one of Spain's fifties
 provinces (in alphabetical order), starting with C<00>. The third digit
 indicates a main city or the main delivery rounds. The last two digits
 are the delivery area, secondary delivery route or a link to rural areas.
@@ -3073,7 +3073,7 @@ or a link to rural areas.
 
 Returns a pattern that recognizes Swiss postal codes. Swiss postal
 codes consist of 4 digits, but not all combinations are used. Postal
-codes starting with 948 and 949 are for location in Liechtentstein,
+codes starting with 948 and 949 are for location in Liechtenstein,
 and will not be recognized by the pattern for Swiss postal codes.
 Use C<< $RE {zip} {Liechtenstein} >> for those.
 
@@ -3260,7 +3260,7 @@ Find postal codes.
 Damian Conway S<(I<damian@conway.org>)> and
 Abigail S<(I<regexp-common@abigail.be>)>.
 
-=head1 MAINTAINANCE
+=head1 MAINTENANCE
 
 This package is maintained by Abigail S<(I<regexp-common@abigail.be>)>.
 
@@ -3278,7 +3278,7 @@ licenses:
 
  1) The Perl Artistic License.     See the file COPYRIGHT.AL.
  2) The Perl Artistic License 2.0. See the file COPYRIGHT.AL2.
- 3) The BSD Licence.               See the file COPYRIGHT.BSD.
- 4) The MIT Licence.               See the file COPYRIGHT.MIT.
+ 3) The BSD License.               See the file COPYRIGHT.BSD.
+ 4) The MIT License.               See the file COPYRIGHT.MIT.
 
 =cut
