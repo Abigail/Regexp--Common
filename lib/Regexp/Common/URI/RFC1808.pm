@@ -132,7 +132,7 @@ Fielding, R.: I<Relative Uniform Resource Locators (URL)>. June 1995.
 
 Damian Conway (damian@conway.org)
 
-=head1 MAINTAINANCE
+=head1 MAINTENANCE
 
 This package is maintained by Abigail S<(I<regexp-common@abigail.be>)>.
 

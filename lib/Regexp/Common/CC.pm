@@ -100,7 +100,7 @@ Luhn formula
 Damian Conway S<(I<damian@conway.org>)> and
 Abigail S<(I<regexp-common@abigail.be>)>.
 
-=head1 MAINTAINANCE
+=head1 MAINTENANCE
 
 This package is maintained by Abigail S<(I<regexp-common@abigail.be>)>.
 

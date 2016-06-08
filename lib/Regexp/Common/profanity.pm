@@ -91,7 +91,7 @@ L<Regexp::Common> for a general description of how to use this interface.
 
 Damian Conway (damian@conway.org)
 
-=head1 MAINTAINANCE
+=head1 MAINTENANCE
 
 This package is maintained by Abigail S<(I<regexp-common@abigail.be>)>.
 

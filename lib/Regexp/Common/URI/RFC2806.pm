@@ -172,7 +172,7 @@ June 1999.
 
 Damian Conway (damian@conway.org)
 
-=head1 MAINTAINANCE
+=head1 MAINTENANCE
 
 This package is maintained by Abigail S<(I<regexp-common@abigail.be>)>.
 
