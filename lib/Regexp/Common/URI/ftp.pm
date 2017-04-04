@@ -9,7 +9,7 @@ use strict;
 use warnings;
 
 use vars qw /$VERSION/;
-$VERSION = '2016060801';
+$VERSION = '2017040401';
 
 
 my $ftp_uri = "(?k:(?k:ftp)://(?:(?k:$userinfo)(?k:)\@)?(?k:$host)" .
