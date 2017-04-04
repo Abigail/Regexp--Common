@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 
 use strict;
-use lib  qw {blib/lib};
+use lib  qw {blib/lib}, ".";
 
 use Regexp::Common qw /RE_num_decimal/;
 use t::Common;

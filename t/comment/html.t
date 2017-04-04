@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 
 use strict;
-use lib "blib/lib";
+use lib "blib/lib", ".";
 
 use Regexp::Common qw /RE_comment_HTML/;
 use t::Common qw /run_new_tests cross/;

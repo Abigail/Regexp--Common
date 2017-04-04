@@ -1,7 +1,7 @@
 package t::Common;
 
 use strict;
-use lib  qw {blib/lib};
+use lib  qw {blib/lib}, ".";
 use vars qw /@ISA @EXPORT @EXPORT_OK $DEBUG/;
 
 use Regexp::Common;

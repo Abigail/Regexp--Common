@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 
 use strict;
-use lib  qw {blib/lib};
+use lib  qw {blib/lib}, ".";
 
 use Regexp::Common qw /RE_zip_US/;
 use t::Common qw /run_new_tests cross gimme sample pdd/;
