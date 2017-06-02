@@ -153,7 +153,7 @@ __END__
 
 =head1 NAME
 
-Regexp::Common::net -- provide regexes for IPv4 addresses.
+Regexp::Common::net -- provide regexes for IPv4, IPv6, and MAC addresses.
 
 =head1 SYNOPSIS
 
@@ -177,7 +177,7 @@ of the works of this interface.
 
 Do not use this module directly, but load it via I<Regexp::Common>.
 
-This modules gives you regular expressions for various style IPv4 
+This modules gives you regular expressions for various style IPv4, IPv6,
 and MAC (or ethernet) addresses.
 
 =head2 C<$RE{net}{IPv4}>
@@ -335,7 +335,7 @@ By default I<P> is C<qr/:/>.
 =head2 C<< $RE{net}{IPv6}{-sep => ':'}{-style => 'HeX'} >>
 
 Returns a pattern matching IPv6 numbers. An IPv6 address consists of
-eigth groups of four hexadecimal digits, separated by colons. In each
+eight groups of four hexadecimal digits, separated by colons. In each
 group, leading zeros may be omitted. Two or more consecutive groups
 consisting of only zeros may be omitted (including any colons separating
 them), resulting into two sets of groups, separated by a double colon.
