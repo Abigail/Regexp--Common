@@ -8,7 +8,7 @@ no  warnings 'syntax';
 
 use Regexp::Common qw /pattern clean no_defaults/;
 
-our $VERSION = '2017040401';
+our $VERSION = '2017060201';
 
 my %closer = ( '{'=>'}', '('=>')', '['=>']', '<'=>'>' );
 my %cache;

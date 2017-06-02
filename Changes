@@ -1,4 +1,4 @@
-Version 2017040401 Tue Apr  4 11:20:45 CEST 2017
+Version 2017060201 Fri Jun  2 23:48:32 CEST 2017
 + Prepare for 5.26: don't rely on '.' being present in @INC when testing.
 
 Version 2016060801 Wed Jun  8 14:40:04 CEST 2016
