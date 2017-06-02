@@ -4,6 +4,8 @@ use strict;
 use warnings;
 no  warnings 'syntax';
 
+use lib ".";
+
 use Regexp::Common;
 use Test::More;
 use t::zip::Zip;
