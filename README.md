@@ -1,0 +1,119 @@
+# Regexp::Common
+
+`Regexp::Common` - Provide commonly requested regular expressions
+
+## WARNINGS
+
+As of version 2016060101, we cease to support pre-5.10.0 perls.
+5.10.0 was release over 8 years ago, and it just becomes too
+painful to support older perls.
+
+The main reason for version 2.122 is a change in the license. You now
+have the option to use this software under either the original Artistic
+License, the Artistic License 2.0, the MIT license, or the BSD license.
+
+As of version 2016052801, `$RE{delimited}` and `$RE{quoted}` are
+no longer supported on pre-5.10 perls.
+
+As of version 2013030901, `$RE{balanced}` is no longer supported
+for pre-5.10 perls.
+
+### INCOMPATIBLE CHANGE in version 2.119:
+The `$N` settings for the -keep option of US postal codes
+`($RE {zip} {US} {-keep})` have been changed. See the `Regexp::Common::zip`
+for details.
+
+### INCOMPATIBLE CHANGE in version 2.113:
+`Regexp::Common` used to set `$;` to `=`. This no longer happens, because
+setting `$;` breaks `Filter::Simple`. This means that regexps
+of the form `$RE{foo}{"-flag=value"}` no longer work! They need
+to be written as `$RE{foo}{"-flag$;value"}` or as `$RE{foo}{-flag => "value"}`.
+
+When defining patterns using the pattern function, a `=` still needs to be used
+to separate the flag from its default value. This has not been changed.
+
+We are very sorry for the inconvenience.
+
+## SYNOPSIS
+
+```perl
+use Regexp::Common;
+
+while (<>) {
+    /$RE{num}{real}/
+        and print q{a number\n};
+    /$RE{quoted}/
+        and print q{a ['"`] quoted string\n};
+    /$RE{delimited}{-delim=>'/'}/
+        and print q{a /.../ sequence\n};
+    /$RE{balanced}{-parens=>'()'}/
+        and print q{balanced parentheses\n};
+    /$RE{profanity}/
+        and print q{a #*@%-ing word\n};
+}
+```
+
+## DESCRIPTION
+
+By default, this module exports a single hash (`%RE`) that stores or
+generates commonly needed regular expressions. Patterns currently
+provided include:
+
+* balanced parentheses and brackets
+* delimited text (with escapes)
+* integers and floating-point numbers in any base (up to 36)
+* comments in 44 languages
+    * offensive language
+* lists of any pattern
+* IPv4 addresses
+    * URIs.
+    * Zip codes.
+
+Future releases of the module will also provide patterns for the
+following:
+* email addresses
+* HTML/XML tags
+* mail headers (including multiline ones),
+* more URIs
+* telephone numbers of various countries
+* currency (universal 3 letter format, Latin-1, currency names)
+* dates
+* binary formats (e.g. UUencoded, MIMEd)
+* credit card numbers
+
+## INSTALLATION
+
+It's all pure Perl, so just put the .pm files in their appropriate
+local Perl subdirectory.
+
+Alternatively, use the common approach:
+1. untar the archive
+1. run `perl Makefile.PL`
+1. run `make`
+1. run `make test`
+1. run `make install`
+
+## AUTHORS
+
+Damian Conway (damian@cs.monash.edu.au) and Abigail (regexp-common@abigail.be)
+
+## MAINTAINER
+
+Abigail (regexp-common@abigail.be)
+
+## COPYRIGHT and LICENSE
+
+This software is Copyright (c) 2001 - 2017, Damian Conway and Abigail.
+
+This module is free software, and maybe used under any of the following
+licenses:
+
+1. The Perl Artistic License. See the file `COPYRIGHT.AL`.
+1. The Perl Artistic License 2.0. See the file `COPYRIGHT.AL2`.
+1. The BSD License. See the file `COPYRIGHT.BSD`.
+1. The MIT License. See the file `COPYRIGHT.MIT`.
+
+## AVAILABILITY
+
+`Regexp::Common` has also been uploaded to
+[CPAN](https://metacpan.org/pod/Regexp::Common).
