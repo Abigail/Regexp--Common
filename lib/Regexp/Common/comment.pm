@@ -4,197 +4,272 @@ use 5.10.0;
 
 use strict;
 use warnings;
-no  warnings 'syntax';
+no warnings 'syntax';
 
 use Regexp::Common qw /pattern clean no_defaults/;
 
-our $VERSION = '2017060201';
+# VERSION
 
 my @generic = (
-    {languages => [qw /ABC Forth/],
-     to_eol    => ['\\\\']},   # This is for just a *single* backslash.
+    {
+        languages => [qw /ABC Forth/],
+        to_eol    => ['\\\\']
+    },    # This is for just a *single* backslash.
 
-    {languages => [qw /Ada Alan Eiffel lua/],
-     to_eol    => ['--']},
-
-    {languages => [qw /Advisor/],
-     to_eol    => ['#|//']},
-
-    {languages => [qw /Advsys CQL Lisp LOGO M MUMPS REBOL Scheme
-                       SMITH zonefile/],
-     to_eol    => [';']},
-
-    {languages => ['Algol 60'],
-     from_to   => [[qw /comment ;/]]},
-
-    {languages => [qw {ALPACA B C C-- LPC PL/I}],
-     from_to   => [[qw {/* */}]]},
-
-    {languages => [qw /awk fvwm2 Icon m4 mutt Perl Python QML
-                       R Ruby shell Tcl/],
-     to_eol    => ['#']},
-
-    {languages => [[BASIC => 'mvEnterprise']],
-     to_eol    => ['[*!]|REM']},
-
-    {languages => [qw /Befunge-98 Funge-98 Shelta/],
-     id        => [';']},
-
-    {languages => ['beta-Juliet', 'Crystal Report', 'Portia', 'Ubercode'],
-     to_eol    => ['//']},
-
-    {languages => ['BML'],
-     from_to   => [['<?_c', '_c?>']],
+    {
+        languages => [qw /Ada Alan Eiffel lua/],
+        to_eol    => ['--']
     },
 
-    {languages => [qw /C++/, 'C#', qw /Cg ECMAScript FPL Java JavaScript/],
-     to_eol    => ['//'],
-     from_to   => [[qw {/* */}]]},
+    {
+        languages => [qw /Advisor/],
+        to_eol    => ['#|//']
+    },
 
-    {languages => [qw /CLU LaTeX slrn TeX/],
-     to_eol    => ['%']},
+    {
+        languages => [
+            qw /Advsys CQL Lisp LOGO M MUMPS REBOL Scheme
+              SMITH zonefile/
+        ],
+        to_eol => [';']
+    },
 
-    {languages => [qw /False/],
-     from_to   => [[qw !{ }!]]},
+    {
+        languages => ['Algol 60'],
+        from_to   => [ [qw /comment ;/] ]
+    },
 
-    {languages => [qw /Fortran/],
-     to_eol    => ['!']},
+    {
+        languages => [qw {ALPACA B C C-- LPC PL/I}],
+        from_to   => [ [qw {/* */}] ]
+    },
 
-    {languages => [qw /Haifu/],
-     id        => [',']},
+    {
+        languages => [
+            qw /awk fvwm2 Icon m4 mutt Perl Python QML
+              R Ruby shell Tcl/
+        ],
+        to_eol => ['#']
+    },
 
-    {languages => [qw /ILLGOL/],
-     to_eol    => ['NB']},
+    {
+        languages => [ [ BASIC => 'mvEnterprise' ] ],
+        to_eol    => ['[*!]|REM']
+    },
 
-    {languages => [qw /INTERCAL/],
-     to_eol    => [q{(?:(?:PLEASE(?:\s+DO)?|DO)\s+)?(?:NOT|N'T)}]},
+    {
+        languages => [qw /Befunge-98 Funge-98 Shelta/],
+        id        => [';']
+    },
 
-    {languages => [qw /J/],
-     to_eol    => ['NB[.]']},
+    {
+        languages => [ 'beta-Juliet', 'Crystal Report', 'Portia', 'Ubercode' ],
+        to_eol    => ['//']
+    },
 
-    {languages => [qw /JavaDoc/],
-     from_to   => [[qw {/** */}]]},
+    {
+        languages => ['BML'],
+        from_to   => [ [ '<?_c', '_c?>' ] ],
+    },
 
-    {languages => [qw /Nickle/],
-     to_eol    => ['#'],
-     from_to   => [[qw {/* */}]]},
+    {
+        languages => [ qw /C++/, 'C#', qw /Cg ECMAScript FPL Java JavaScript/ ],
+        to_eol    => ['//'],
+        from_to   => [ [qw {/* */}] ]
+    },
 
-    {languages => [qw /Oberon/],
-     from_to   => [[qw /(* *)/]]},
-     
-    {languages => [[qw /Pascal Delphi/], [qw /Pascal Free/], [qw /Pascal GPC/]],
-     to_eol    => ['//'],
-     from_to   => [[qw !{ }!], [qw !(* *)!]]},
+    {
+        languages => [qw /CLU LaTeX slrn TeX/],
+        to_eol    => ['%']
+    },
 
-    {languages => [[qw /Pascal Workshop/]],
-     id        => [qw /"/],
-     from_to   => [[qw !{ }!], [qw !(* *)!], [qw !/* */!]]},
+    {
+        languages => [qw /False/],
+        from_to   => [ [qw !{ }!] ]
+    },
 
-    {languages => [qw /PEARL/],
-     to_eol    => ['!'],
-     from_to   => [[qw {/* */}]]},
+    {
+        languages => [qw /Fortran/],
+        to_eol    => ['!']
+    },
 
-    {languages => [qw /PHP/],
-     to_eol    => ['#', '//'],
-     from_to   => [[qw {/* */}]]},
+    {
+        languages => [qw /Haifu/],
+        id        => [',']
+    },
 
-    {languages => [qw !PL/B!],
-     to_eol    => ['[.;]']},
+    {
+        languages => [qw /ILLGOL/],
+        to_eol    => ['NB']
+    },
 
-    {languages => [qw !PL/SQL!],
-     to_eol    => ['--'],
-     from_to   => [[qw {/* */}]]},
+    {
+        languages => [qw /INTERCAL/],
+        to_eol    => [q{(?:(?:PLEASE(?:\s+DO)?|DO)\s+)?(?:NOT|N'T)}]
+    },
 
-    {languages => [qw /Q-BAL/],
-     to_eol    => ['`']},
+    {
+        languages => [qw /J/],
+        to_eol    => ['NB[.]']
+    },
 
-    {languages => [qw /Smalltalk/],
-     id        => ['"']},
+    {
+        languages => [qw /JavaDoc/],
+        from_to   => [ [qw {/** */}] ]
+    },
 
-    {languages => [qw /SQL/],
-     to_eol    => ['-{2,}']},
+    {
+        languages => [qw /Nickle/],
+        to_eol    => ['#'],
+        from_to   => [ [qw {/* */}] ]
+    },
 
-    {languages => [qw /troff/],
-     to_eol    => ['\\\"']},
+    {
+        languages => [qw /Oberon/],
+        from_to   => [ [qw /(* *)/] ]
+    },
 
-    {languages => [qw /vi/],
-     to_eol    => ['"']},
+    {
+        languages =>
+          [ [qw /Pascal Delphi/], [qw /Pascal Free/], [qw /Pascal GPC/] ],
+        to_eol  => ['//'],
+        from_to => [ [qw !{ }!], [qw !(* *)!] ]
+    },
 
-    {languages => [qw /*W/],
-     from_to   => [[qw {|| !!}]]},
+    {
+        languages => [ [qw /Pascal Workshop/] ],
+        id        => [qw /"/],
+        from_to   => [ [qw !{ }!], [qw !(* *)!], [qw !/* */!] ]
+    },
 
-    {languages => [qw /ZZT-OOP/],
-     to_eol    => ["'"]},
+    {
+        languages => [qw /PEARL/],
+        to_eol    => ['!'],
+        from_to   => [ [qw {/* */}] ]
+    },
+
+    {
+        languages => [qw /PHP/],
+        to_eol    => [ '#', '//' ],
+        from_to   => [ [qw {/* */}] ]
+    },
+
+    {
+        languages => [qw !PL/B!],
+        to_eol    => ['[.;]']
+    },
+
+    {
+        languages => [qw !PL/SQL!],
+        to_eol    => ['--'],
+        from_to   => [ [qw {/* */}] ]
+    },
+
+    {
+        languages => [qw /Q-BAL/],
+        to_eol    => ['`']
+    },
+
+    {
+        languages => [qw /Smalltalk/],
+        id        => ['"']
+    },
+
+    {
+        languages => [qw /SQL/],
+        to_eol    => ['-{2,}']
+    },
+
+    {
+        languages => [qw /troff/],
+        to_eol    => ['\\\"']
+    },
+
+    {
+        languages => [qw /vi/],
+        to_eol    => ['"']
+    },
+
+    {
+        languages => [qw /*W/],
+        from_to   => [ [qw {|| !!}] ]
+    },
+
+    {
+        languages => [qw /ZZT-OOP/],
+        to_eol    => ["'"]
+    },
 );
 
 my @plain_or_nested = (
-   [Caml         =>  undef,       "(*"  => "*)"],
-   [Dylan        =>  "//",        "/*"  => "*/"],
-   [Haskell      =>  "-{2,}",     "{-"  => "-}"],
-   [Hugo         =>  "!(?!\\\\)", "!\\" => "\\!"],
-   [SLIDE        =>  "#",         "(*"  => "*)"],
-  ['Modula-2'    =>  undef,       "(*"  => "*)"],
-  ['Modula-3'    =>  undef,       "(*"  => "*)"],
+    [ Caml       => undef,       "(*"  => "*)" ],
+    [ Dylan      => "//",        "/*"  => "*/" ],
+    [ Haskell    => "-{2,}",     "{-"  => "-}" ],
+    [ Hugo       => "!(?!\\\\)", "!\\" => "\\!" ],
+    [ SLIDE      => "#",         "(*"  => "*)" ],
+    [ 'Modula-2' => undef,       "(*"  => "*)" ],
+    [ 'Modula-3' => undef,       "(*"  => "*)" ],
 );
 
 #
 # Helper subs.
 #
 
-sub combine      {
+sub combine {
     local $_ = join "|", @_;
-    if (@_ > 1) {
+    if ( @_ > 1 ) {
         s/\(\?k:/(?:/g;
         $_ = "(?k:$_)";
     }
-    $_
+    $_;
 }
 
-sub to_eol  ($)  {"(?k:(?k:$_[0])(?k:[^\\n]*)(?k:\\n))"}
-sub id      ($)  {"(?k:(?k:$_[0])(?k:[^$_[0]]*)(?k:$_[0]))"}  # One char only!
-sub from_to      {
-    my ($begin, $end) = @_;
+sub to_eol ($) { "(?k:(?k:$_[0])(?k:[^\\n]*)(?k:\\n))" }
+sub id ($)     { "(?k:(?k:$_[0])(?k:[^$_[0]]*)(?k:$_[0]))" }    # One char only!
 
-    my $qb  = quotemeta $begin;
-    my $qe  = quotemeta $end;
-    my $fe  = quotemeta substr $end   => 0, 1;
-    my $te  = quotemeta substr $end   => 1;
+sub from_to {
+    my ( $begin, $end ) = @_;
+
+    my $qb = quotemeta $begin;
+    my $qe = quotemeta $end;
+    my $fe = quotemeta substr $end => 0, 1;
+    my $te = quotemeta substr $end => 1;
 
     "(?k:(?k:$qb)(?k:(?:[^$fe]+|$fe(?!$te))*)(?k:$qe))";
 }
 
-
 my $count = 0;
+
 sub nested {
-    my ($begin, $end) = @_;
+    my ( $begin, $end ) = @_;
 
-    $count ++;
-    my $r = '(??{$Regexp::Common::comment ['. $count . ']})';
+    $count++;
+    my $r = '(??{$Regexp::Common::comment [' . $count . ']})';
 
-    my $qb  = quotemeta $begin;
-    my $qe  = quotemeta $end;
-    my $fb  = quotemeta substr $begin => 0, 1;
-    my $fe  = quotemeta substr $end   => 0, 1;
+    my $qb = quotemeta $begin;
+    my $qe = quotemeta $end;
+    my $fb = quotemeta substr $begin => 0, 1;
+    my $fe = quotemeta substr $end   => 0, 1;
 
-    my $tb  = quotemeta substr $begin => 1;
-    my $te  = quotemeta substr $end   => 1;
+    my $tb = quotemeta substr $begin => 1;
+    my $te = quotemeta substr $end   => 1;
 
     use re 'eval';
 
     my $re;
-    if ($fb eq $fe) {
+    if ( $fb eq $fe ) {
         $re = qr /(?:$qb(?:(?>[^$fb]+)|$fb(?!$tb)(?!$te)|$r)*$qe)/;
     }
     else {
-        local $"      =  "|";
-        my   @clauses =  "(?>[^$fb$fe]+)";
+        local $" = "|";
+        my @clauses = "(?>[^$fb$fe]+)";
         push @clauses => "$fb(?!$tb)" if length $tb;
         push @clauses => "$fe(?!$te)" if length $te;
-        push @clauses =>  $r;
-        $re           =   qr /(?:$qb(?:@clauses)*$qe)/;
+        push @clauses => $r;
+        $re = qr /(?:$qb(?:@clauses)*$qe)/;
     }
 
-    $Regexp::Common::comment [$count] = qr/$re/;
+    $Regexp::Common::comment[$count] = qr/$re/;
 }
 
 #
@@ -202,125 +277,124 @@ sub nested {
 #
 
 foreach my $info (@plain_or_nested) {
-    my ($language, $mark, $begin, $end) = @$info;
-    pattern name    => [comment => $language],
-            create  =>
-                sub {my $re     = nested $begin => $end;
-                     my $prefix = defined $mark ? $mark . "[^\n]*\n|" : "";
-                     exists $_ [1] -> {-keep} ? qr /($prefix$re)/
-                                              : qr  /$prefix$re/
-                },
-            ;
+    my ( $language, $mark, $begin, $end ) = @$info;
+    pattern
+      name   => [ comment => $language ],
+      create => sub {
+        my $re     = nested $begin => $end;
+        my $prefix = defined $mark ? $mark . "[^\n]*\n|" : "";
+        exists $_[1]->{-keep}
+          ? qr /($prefix$re)/
+          : qr  /$prefix$re/;
+      },
+      ;
 }
-
 
 foreach my $group (@generic) {
-    my $pattern = combine +(map {to_eol   $_} @{$group -> {to_eol}}),
-                           (map {from_to @$_} @{$group -> {from_to}}),
-                           (map {id       $_} @{$group -> {id}}),
-                  ;
-    foreach my $language  (@{$group -> {languages}}) {
-        pattern name    => [comment => ref $language ? @$language : $language],
-                create  => $pattern,
-                ;
+    my $pattern = combine +( map { to_eol $_ } @{ $group->{to_eol} } ),
+      ( map { from_to @$_ } @{ $group->{from_to} } ),
+      ( map { id $_ } @{ $group->{id} } ),
+      ;
+    foreach my $language ( @{ $group->{languages} } ) {
+        pattern
+          name   => [ comment => ref $language ? @$language : $language ],
+          create => $pattern,
+          ;
     }
 }
-                
 
-    
 #
 # Other languages.
 #
 
 # http://www.pascal-central.com/docs/iso10206.txt
-pattern name    => [qw /comment Pascal/],
-        create  => '(?k:' . '(?k:[{]|[(][*])'
-                          . '(?k:[^}*]*(?:[*](?![)])[^}*]*)*)'
-                          . '(?k:[}]|[*][)])'
-                          . ')'
-        ;
+pattern
+  name   => [qw /comment Pascal/],
+  create => '(?k:'
+  . '(?k:[{]|[(][*])'
+  . '(?k:[^}*]*(?:[*](?![)])[^}*]*)*)'
+  . '(?k:[}]|[*][)])' . ')';
 
 # http://www.templetons.com/brad/alice/language/
-pattern name    =>  [qw /comment Pascal Alice/],
-        create  =>  '(?k:(?k:[{])(?k:[^}\n]*)(?k:[}]))'
-        ;
-
+pattern
+  name   => [qw /comment Pascal Alice/],
+  create => '(?k:(?k:[{])(?k:[^}\n]*)(?k:[}]))';
 
 # http://westein.arb-phys.uni-dortmund.de/~wb/a68s.txt
-pattern name    => [qw (comment), 'Algol 68'],
-        create  => q {(?k:(?:#[^#]*#)|}                           .
-                   q {(?:\bco\b(?:[^c]+|\Bc|\bc(?!o\b))*\bco\b)|} .
-                   q {(?:\bcomment\b(?:[^c]+|\Bc|\bc(?!omment\b))*\bcomment\b))}
-        ;
-
+pattern
+  name   => [ qw (comment), 'Algol 68' ],
+  create => q {(?k:(?:#[^#]*#)|}
+  . q {(?:\bco\b(?:[^c]+|\Bc|\bc(?!o\b))*\bco\b)|}
+  . q {(?:\bcomment\b(?:[^c]+|\Bc|\bc(?!omment\b))*\bcomment\b))};
 
 # See rules 91 and 92 of ISO 8879 (SGML).
 # Charles F. Goldfarb: "The SGML Handbook".
 # Oxford: Oxford University Press. 1990. ISBN 0-19-853737-9.
 # Ch. 10.3, pp 390.
-pattern name    => [qw (comment HTML)],
-        create  => q {(?k:(?k:<!)(?k:(?:--(?k:[^-]*(?:-[^-]+)*)--\s*)*)(?k:>))},
-        ;
+pattern
+  name   => [qw (comment HTML)],
+  create => q {(?k:(?k:<!)(?k:(?:--(?k:[^-]*(?:-[^-]+)*)--\s*)*)(?k:>))},
+  ;
 
-
-pattern name    => [qw /comment SQL MySQL/],
-        create  => q {(?k:(?:#|-- )[^\n]*\n|} .
-                   q {/\*(?:(?>[^*;"']+)|"[^"]*"|'[^']*'|\*(?!/))*(?:;|\*/))},
-        ;
+pattern
+  name   => [qw /comment SQL MySQL/],
+  create => q {(?k:(?:#|-- )[^\n]*\n|}
+  . q {/\*(?:(?>[^*;"']+)|"[^"]*"|'[^']*'|\*(?!/))*(?:;|\*/))},
+  ;
 
 # Anything that isn't <>[]+-.,
 # http://home.wxs.nl/~faase009/Ha_BF.html
-pattern name    => [qw /comment Brainfuck/],
-        create  => '(?k:[^<>\[\]+\-.,]+)'
-        ;
+pattern
+  name   => [qw /comment Brainfuck/],
+  create => '(?k:[^<>\[\]+\-.,]+)';
 
 # Squeak is a variant of Smalltalk-80.
 # http://www.squeak.
 # http://mucow.com/squeak-qref.html
-pattern name    => [qw /comment Squeak/],
-        create  => '(?k:(?k:")(?k:[^"]*(?:""[^"]*)*)(?k:"))'
-        ;
+pattern
+  name   => [qw /comment Squeak/],
+  create => '(?k:(?k:")(?k:[^"]*(?:""[^"]*)*)(?k:"))';
 
 #
 # Scores of less than 5 or above 17....
 # http://www.cliff.biffle.org/esoterica/beatnik.html
-@Regexp::Common::comment::scores = (1,  3,  3,  2,  1,  4,  2,  4,  1,  8,
-                                    5,  1,  3,  1,  1,  3, 10,  1,  1,  1,
-                                    1,  4,  4,  8,  4, 10);
+@Regexp::Common::comment::scores = (
+    1, 3, 3,  2, 1, 4, 2, 4, 1, 8, 5, 1, 3, 1,
+    1, 3, 10, 1, 1, 1, 1, 4, 4, 8, 4, 10
+);
 {
-my ($s, $x);
-pattern name    =>  [qw /comment Beatnik/],
-        create  =>  sub {
-            use re 'eval';
-            my $re = qr {\b([A-Za-z]+)\b
+    my ( $s, $x );
+    pattern
+      name   => [qw /comment Beatnik/],
+      create => sub {
+        use re 'eval';
+        my $re = qr {\b([A-Za-z]+)\b
                          (?(?{($s, $x) = (0, lc $^N);
                               $s += $Regexp::Common::comment::scores
                                     [ord (chop $x) - ord ('a')] while length $x;
                               $s  >= 5 && $s < 18})XXX|)}x;
-            $re;
-        },
-        ;
+        $re;
+      },
+      ;
 }
-
 
 # http://www.cray.com/craydoc/manuals/007-3692-005/html-007-3692-005/
 #  (Goto table of contents/3.3 Source Form)
 # Fortran, in fixed format. Comments start with a C, c or * in the first
 # column, or a ! anywhere, but the sixth column. Then end with a newline.
-pattern name    =>  [qw /comment Fortran fixed/],
-        create  =>  '(?k:(?k:(?:^[Cc*]|(?<!^.....)!))(?k:[^\n]*)(?k:\n))'
-        ;
-
+pattern
+  name   => [qw /comment Fortran fixed/],
+  create => '(?k:(?k:(?:^[Cc*]|(?<!^.....)!))(?k:[^\n]*)(?k:\n))';
 
 # http://www.csis.ul.ie/cobol/Course/COBOLIntro.htm
 # Traditionally, comments in COBOL were indicated with an asteriks in
 # the seventh column. Modern compilers may be more lenient.
-pattern name    =>  [qw /comment COBOL/],
-        create  =>  '(?<=^......)(?k:(?k:[*])(?k:[^\n]*)(?k:\n))',
-        ;
+pattern
+  name   => [qw /comment COBOL/],
+  create => '(?<=^......)(?k:(?k:[*])(?k:[^\n]*)(?k:\n))',
+  ;
 
 1;
-
 
 __END__
 
@@ -452,15 +526,15 @@ L<http://www.catseye.mb.ca/esoteric/b-juliet/index.html>.
 The esotoric language I<Befunge-98> uses comments that start and end
 with a C<;>. See L<http://www.catseye.mb.ca/esoteric/befunge/98/spec98.html>.
 
-=item BML                 
+=item BML
 
 I<BML>, or I<Better Markup Language> is an HTML templating language that
 uses comments starting with C<< <?c_ >>, and ending with C<< c_?> >>.
-See L<http://www.livejournal.com/doc/server/bml.index.html>.               
+See L<http://www.livejournal.com/doc/server/bml.index.html>.
 
 =item Brainfuck
 
-The minimal language I<Brainfuck> uses only eight characters, 
+The minimal language I<Brainfuck> uses only eight characters,
 C<E<lt>>, C<E<gt>>, C<[>, C<]>, C<+>, C<->, C<.> and C<,>.
 Any other characters are considered comments. With C<{-keep}>,
 C<$1> is set to the entire comment.
@@ -730,7 +804,7 @@ of the line. See also L<http://www.lua.org/manual/manual.html>.
 =item M, MUMPS
 
 In C<M> (aka C<MUMPS>), comments start with a semi-colon, and last
-till the end of a line. The language specification requires the 
+till the end of a line. The language specification requires the
 semi-colon to be preceded by one or more I<linestart character>s.
 Those characters default to a space, but that's configurable. This
 requirement, of preceding the comment with linestart characters is
@@ -785,7 +859,7 @@ pattern for comments of several implementations.
 
 =item C<$RE{comment}{Pascal}>
 
-This is the pattern that recognizes comments according to the Pascal ISO 
+This is the pattern that recognizes comments according to the Pascal ISO
 standard. This standard says that comments start with either C<{>, or
 C<(*>, and end with C<}> or C<*)>. This means that C<{*)> and C<(*}>
 are considered to be comments. Many Pascal applications don't allow this.
@@ -804,12 +878,12 @@ The I<Delphi Pascal>, I<Free Pascal> and the I<Gnu Pascal Compiler>
 implementations of Pascal all have comments that either start with
 C<//> and last till the end of the line, are delimited with C<{>
 and C<}> or are delimited with C<(*> and C<*)>. Patterns for those
-comments are given by C<$RE{comment}{Pascal}{Delphi}>, 
+comments are given by C<$RE{comment}{Pascal}{Delphi}>,
 C<$RE{comment}{Pascal}{Free}> and C<$RE{comment}{Pascal}{GPC}>
 respectively. These patterns only set C<$1> when C<{-keep}> is used,
 which will then include the entire comment.
 
-See L<http://info.borland.com/techpubs/delphi5/oplg/>, 
+See L<http://info.borland.com/techpubs/delphi5/oplg/>,
 L<http://www.freepascal.org/docs-html/ref/ref.html> and
 L<http://www.gnu-pascal.de/gpc/>.
 
@@ -828,7 +902,7 @@ See L<http://docs.sun.com/db/doc/802-5762>.
 =item PEARL
 
 Comments in I<PEARL> start with a C<!> and last till the end of the
-line, or start with C</*> and end with C<*/>. With C<{-keep}>, 
+line, or start with C</*> and end with C<*/>. With C<{-keep}>,
 C<$1> will be set to the entire comment.
 
 =item PHP
@@ -839,7 +913,7 @@ C<$1> will be set to the entire comment.
 
 =item PL/B
 
-In I<PL/B>, comments start with either C<.> or C<;>, and end with the 
+In I<PL/B>, comments start with either C<.> or C<;>, and end with the
 next newline. See L<http://www.mmcctech.com/pl-b/plb-0010.htm>.
 
 =item PL/I
@@ -910,7 +984,7 @@ a C<;>. See L<http://www.catseye.mb.ca/esoteric/shelta/index.html>.
 The I<SLIDE> language has two froms of comments. First there is the
 line comment, which starts with a C<#> and includes the rest of the
 line (just like Perl). Second, there is the multiline, nested comment,
-which are delimited by C<(*> and C<*)>. Under C{-keep}>, only 
+which are delimited by C<(*> and C<*)>. Under C{-keep}>, only
 C<$1> is set, and is set to the entire comment. See
 L<http://www.cs.berkeley.edu/~ug/slide/docs/slide/spec/spec_frame_intro.shtml>.
 
@@ -936,11 +1010,11 @@ C<">. Double quotes can appear inside comments by doubling them.
 =item SQL
 
 Standard I<SQL> uses comments starting with two or more dashes, and
-ending at the end of the line. 
+ending at the end of the line.
 
 I<MySQL> does not follow the standard. Instead, it allows comments
 that start with a C<#> or C<-- > (that's two dashes and a space)
-ending with the following newline, and comments starting with 
+ending with the following newline, and comments starting with
 C</*>, and ending with the next C<;> or C<*/> that isn't inside
 single or double quotes. A pattern for this is returned by
 C<$RE{comment}{SQL}{MySQL}>. With C<{-keep}>, only C<$1> will
@@ -981,7 +1055,7 @@ end of the line.
 
 =item ZZT-OOP
 
-The in-game language I<ZZT-OOP> uses comments that start with a C<'> 
+The in-game language I<ZZT-OOP> uses comments that start with a C<'>
 character, and end at the following newline. See
 L<http://dave2.rocketjump.org/rad/zzthelp/lang.html>.
 

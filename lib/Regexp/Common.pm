@@ -4,13 +4,12 @@ use 5.10.0;
 use strict;
 
 use warnings;
-no  warnings 'syntax';
+no warnings 'syntax';
 
-our $VERSION = '2017060201';
+# VERSION
 our %RE;
 our %sub_interface;
 our $AUTOLOAD;
-
 
 sub _croak {
     require Carp;
@@ -23,244 +22,247 @@ sub _carp {
 }
 
 sub new {
-    my ($class, @data) = @_;
+    my ( $class, @data ) = @_;
     my %self;
     tie %self, $class, @data;
     return \%self;
 }
 
 sub TIEHASH {
-    my ($class, @data) = @_;
+    my ( $class, @data ) = @_;
     bless \@data, $class;
 }
 
 sub FETCH {
-    my ($self, $extra) = @_;
-    return bless ref($self)->new(@$self, $extra), ref($self);
+    my ( $self, $extra ) = @_;
+    return bless ref($self)->new( @$self, $extra ), ref($self);
 }
 
-my %imports = map {$_ => "Regexp::Common::$_"}
-              qw /balanced CC     comment   delimited lingua list
-                  net      number profanity SEN       URI    whitespace
-                  zip/;
+my %imports = map { $_ => "Regexp::Common::$_" }
+  qw /balanced CC     comment   delimited lingua list
+  net      number profanity SEN       URI    whitespace
+  zip/;
 
 sub import {
-    shift;  # Shift off the class.
+    shift;    # Shift off the class.
     tie %RE, __PACKAGE__;
     {
         no strict 'refs';
-        *{caller() . "::RE"} = \%RE;
+        *{ caller() . "::RE" } = \%RE;
     }
 
     my $saw_import;
     my $no_defaults;
     my %exclude;
-    foreach my $entry (grep {!/^RE_/} @_) {
-        if ($entry eq 'pattern') {
+    foreach my $entry ( grep { !/^RE_/ } @_ ) {
+        if ( $entry eq 'pattern' ) {
             no strict 'refs';
-            *{caller() . "::pattern"} = \&pattern;
+            *{ caller() . "::pattern" } = \&pattern;
             next;
         }
+
         # This used to prevent $; from being set. We still recognize it,
         # but we won't do anything.
-        if ($entry eq 'clean') {
+        if ( $entry eq 'clean' ) {
             next;
         }
-        if ($entry eq 'no_defaults') {
-            $no_defaults ++;
+        if ( $entry eq 'no_defaults' ) {
+            $no_defaults++;
             next;
         }
-        if (my $module = $imports {$entry}) {
-            $saw_import ++;
+        if ( my $module = $imports{$entry} ) {
+            $saw_import++;
             eval "require $module;";
             die $@ if $@;
             next;
         }
-        if ($entry =~ /^!(.*)/ && $imports {$1}) {
-            $exclude {$1} ++;
+        if ( $entry =~ /^!(.*)/ && $imports{$1} ) {
+            $exclude{$1}++;
             next;
         }
+
         # As a last resort, try to load the argument.
-        my $module = $entry =~ /^Regexp::Common/
-                            ? $entry
-                            : "Regexp::Common::" . $entry;
+        my $module =
+            $entry =~ /^Regexp::Common/
+          ? $entry
+          : "Regexp::Common::" . $entry;
         eval "require $module;";
         die $@ if $@;
     }
 
-    unless ($saw_import || $no_defaults) {
-        foreach my $module (values %imports) {
-            next if $exclude {$module};
+    unless ( $saw_import || $no_defaults ) {
+        foreach my $module ( values %imports ) {
+            next if $exclude{$module};
             eval "require $module;";
             die $@ if $@;
         }
     }
 
     my %exported;
-    foreach my $entry (grep {/^RE_/} @_) {
-        if ($entry =~ /^RE_(\w+_)?ALL$/) {
+    foreach my $entry ( grep { /^RE_/ } @_ ) {
+        if ( $entry =~ /^RE_(\w+_)?ALL$/ ) {
             my $m  = defined $1 ? $1 : "";
             my $re = qr /^RE_${m}.*$/;
-            while (my ($sub, $interface) = each %sub_interface) {
-                next if $exported {$sub};
+            while ( my ( $sub, $interface ) = each %sub_interface ) {
+                next if $exported{$sub};
                 next unless $sub =~ /$re/;
                 {
                     no strict 'refs';
-                    *{caller() . "::$sub"} = $interface;
+                    *{ caller() . "::$sub" } = $interface;
                 }
-                $exported {$sub} ++;
+                $exported{$sub}++;
             }
         }
         else {
-            next if $exported {$entry};
+            next if $exported{$entry};
             _croak "Can't export unknown subroutine &$entry"
-                unless $sub_interface {$entry};
+              unless $sub_interface{$entry};
             {
                 no strict 'refs';
-                *{caller() . "::$entry"} = $sub_interface {$entry};
+                *{ caller() . "::$entry" } = $sub_interface{$entry};
             }
-            $exported {$entry} ++;
+            $exported{$entry}++;
         }
     }
 }
 
 sub AUTOLOAD { _croak "Can't $AUTOLOAD" }
 
-sub DESTROY {}
+sub DESTROY { }
 
 my %cache;
 
 my $fpat = qr/^(-\w+)/;
 
 sub _decache {
-        my @args = @{tied %{$_[0]}};
-        my @nonflags = grep {!/$fpat/} @args;
-        my $cache = get_cache(@nonflags);
-        _croak "Can't create unknown regex: \$RE{"
-            . join("}{",@args) . "}"
-                unless exists $cache->{__VAL__};
-        _croak "Perl $] does not support the pattern "
-            . "\$RE{" . join("}{",@args)
-            . "}.\nYou need Perl $cache->{__VAL__}{version} or later"
-                unless ($cache->{__VAL__}{version}||0) <= $];
-        my %flags = ( %{$cache->{__VAL__}{default}},
-                      map { /$fpat\Q$;\E(.*)/ ? ($1 => $2)
-                          : /$fpat/           ? ($1 => undef)
-                          :                     ()
-                          } @args);
-        $cache->{__VAL__}->_clone_with(\@args, \%flags);
+    my @args     = @{ tied %{ $_[0] } };
+    my @nonflags = grep { !/$fpat/ } @args;
+    my $cache    = get_cache(@nonflags);
+    _croak "Can't create unknown regex: \$RE{" . join( "}{", @args ) . "}"
+      unless exists $cache->{__VAL__};
+    _croak "Perl $] does not support the pattern " . "\$RE{"
+      . join( "}{", @args )
+      . "}.\nYou need Perl $cache->{__VAL__}{version} or later"
+      unless ( $cache->{__VAL__}{version} || 0 ) <= $];
+    my %flags = (
+        %{ $cache->{__VAL__}{default} },
+        map {
+                /$fpat\Q$;\E(.*)/ ? ( $1 => $2 )
+              : /$fpat/           ? ( $1 => undef )
+              : ()
+        } @args
+    );
+    $cache->{__VAL__}->_clone_with( \@args, \%flags );
 }
 
 use overload q{""} => \&_decache;
 
-
 sub get_cache {
-        my $cache = \%cache;
-        foreach (@_) {
-                $cache = $cache->{$_}
-                      || ($cache->{$_} = {});
-        }
-        return $cache;
+    my $cache = \%cache;
+    foreach (@_) {
+        $cache = $cache->{$_}
+          || ( $cache->{$_} = {} );
+    }
+    return $cache;
 }
 
 sub croak_version {
-        my ($entry, @args) = @_;
+    my ( $entry, @args ) = @_;
 }
 
 sub pattern {
-        my %spec = @_;
-        _croak 'pattern() requires argument: name => [ @list ]'
-                unless $spec{name} && ref $spec{name} eq 'ARRAY';
-        _croak 'pattern() requires argument: create => $sub_ref_or_string'
-                unless $spec{create};
+    my %spec = @_;
+    _croak 'pattern() requires argument: name => [ @list ]'
+      unless $spec{name} && ref $spec{name} eq 'ARRAY';
+    _croak 'pattern() requires argument: create => $sub_ref_or_string'
+      unless $spec{create};
 
-        if (ref $spec{create} ne "CODE") {
-                my $fixed_str = "$spec{create}";
-                $spec{create} = sub { $fixed_str }
+    if ( ref $spec{create} ne "CODE" ) {
+        my $fixed_str = "$spec{create}";
+        $spec{create} = sub { $fixed_str }
+    }
+
+    my @nonflags;
+    my %default;
+    foreach ( @{ $spec{name} } ) {
+        if (/$fpat=(.*)/) {
+            $default{$1} = $2;
         }
-
-        my @nonflags;
-        my %default;
-        foreach ( @{$spec{name}} ) {
-                if (/$fpat=(.*)/) {
-                        $default{$1} = $2;
-                }
-                elsif (/$fpat\s*$/) {
-                        $default{$1} = undef;
-                }
-                else {
-                        push @nonflags, $_;
-                }
+        elsif (/$fpat\s*$/) {
+            $default{$1} = undef;
         }
-
-        my $entry = get_cache(@nonflags);
-
-        if ($entry->{__VAL__}) {
-                _carp "Overriding \$RE{"
-                   . join("}{",@nonflags)
-                   . "}";
+        else {
+            push @nonflags, $_;
         }
+    }
 
-        $entry->{__VAL__} = bless {
-                                create  => $spec{create},
-                                match   => $spec{match} || \&generic_match,
-                                subs    => $spec{subs}  || \&generic_subs,
-                                version => $spec{version},
-                                default => \%default,
-                            }, 'Regexp::Common::Entry';
+    my $entry = get_cache(@nonflags);
 
-        foreach (@nonflags) {s/\W/X/g}
-        my $subname = "RE_" . join ("_", @nonflags);
-        $sub_interface{$subname} = sub {
-                push @_ => undef if @_ % 2;
-                my %flags = @_;
-                my $pat = $spec{create}->($entry->{__VAL__},
-                               {%default, %flags}, \@nonflags);
-                if (exists $flags{-keep}) { $pat =~ s/\Q(?k:/(/g; }
-                else { $pat =~ s/\Q(?k:/(?:/g; }
-                return exists $flags {-i} ? qr /(?i:$pat)/ : qr/$pat/;
-        };
+    if ( $entry->{__VAL__} ) {
+        _carp "Overriding \$RE{" . join( "}{", @nonflags ) . "}";
+    }
 
-        return 1;
+    $entry->{__VAL__} = bless {
+        create  => $spec{create},
+        match   => $spec{match} || \&generic_match,
+        subs    => $spec{subs}  || \&generic_subs,
+        version => $spec{version},
+        default => \%default,
+      },
+      'Regexp::Common::Entry';
+
+    foreach (@nonflags) { s/\W/X/g }
+    my $subname = "RE_" . join( "_", @nonflags );
+    $sub_interface{$subname} = sub {
+        push @_ => undef if @_ % 2;
+        my %flags = @_;
+        my $pat   = $spec{create}
+          ->( $entry->{__VAL__}, { %default, %flags }, \@nonflags );
+        if   ( exists $flags{-keep} ) { $pat =~ s/\Q(?k:/(/g; }
+        else                          { $pat =~ s/\Q(?k:/(?:/g; }
+        return exists $flags{-i} ? qr /(?i:$pat)/ : qr/$pat/;
+    };
+
+    return 1;
 }
 
-sub generic_match {$_ [1] =~  /$_[0]/}
-sub generic_subs  {$_ [1] =~ s/$_[0]/$_[2]/}
+sub generic_match { $_[1] =~ /$_[0]/ }
+sub generic_subs  { $_[1] =~ s/$_[0]/$_[2]/ }
 
 sub matches {
-        my ($self, $str) = @_;
-        my $entry = $self -> _decache;
-        $entry -> {match} -> ($entry, $str);
+    my ( $self, $str ) = @_;
+    my $entry = $self->_decache;
+    $entry->{match}->( $entry, $str );
 }
 
 sub subs {
-        my ($self, $str, $newstr) = @_;
-        my $entry = $self -> _decache;
-        $entry -> {subs} -> ($entry, $str, $newstr);
-        return $str;
+    my ( $self, $str, $newstr ) = @_;
+    my $entry = $self->_decache;
+    $entry->{subs}->( $entry, $str, $newstr );
+    return $str;
 }
 
-
 package Regexp::Common::Entry;
+
 # use Carp;
 
 use overload
-    q{""} => sub {
-        my ($self) = @_;
-        my $pat = $self->{create}->($self, $self->{flags}, $self->{args});
-        if (exists $self->{flags}{-keep}) {
-            $pat =~ s/\Q(?k:/(/g;
-        }
-        else {
-            $pat =~ s/\Q(?k:/(?:/g;
-        }
-        if (exists $self->{flags}{-i})   { $pat = "(?i)$pat" }
-        return $pat;
-    };
+  q{""} => sub {
+    my ($self) = @_;
+    my $pat = $self->{create}->( $self, $self->{flags}, $self->{args} );
+    if ( exists $self->{flags}{-keep} ) {
+        $pat =~ s/\Q(?k:/(/g;
+    }
+    else {
+        $pat =~ s/\Q(?k:/(?:/g;
+    }
+    if ( exists $self->{flags}{-i} ) { $pat = "(?i)$pat" }
+    return $pat;
+  };
 
 sub _clone_with {
-    my ($self, $args, $flags) = @_;
-    bless { %$self, args=>$args, flags=>$flags }, ref $self;
+    my ( $self, $args, $flags ) = @_;
+    bless { %$self, args => $args, flags => $flags }, ref $self;
 }
 
 1;
@@ -275,7 +277,7 @@ Regexp::Common - Provide commonly requested regular expressions
 
 =head1 SYNOPSIS
 
- # STANDARD USAGE 
+ # STANDARD USAGE
 
  use Regexp::Common;
 
@@ -359,12 +361,12 @@ L<"Subroutine-based interface">.
 
 To access a particular pattern, C<%RE> is treated as a hierarchical hash of
 hashes (of hashes...), with each successive key being an identifier. For
-example, to access the pattern that matches real numbers, you 
+example, to access the pattern that matches real numbers, you
 specify:
 
         $RE{num}{real}
-        
-and to access the pattern that matches integers: 
+
+and to access the pattern that matches integers:
 
         $RE{num}{int}
 
@@ -442,7 +444,7 @@ new patterns with "optional" capturing brackets that respond to C<-keep>.
 Some patterns or subpatterns only match lowercase or uppercase letters.
 If one wants the do case insensitive matching, one option is to use
 the C</i> regexp modifier, or the special sequence C<(?i)>. But if the
-functional interface is used, one does not have this option. The 
+functional interface is used, one does not have this option. The
 C<-i> switch solves this problem; by using it, the pattern will do
 case insensitive matching.
 
@@ -477,7 +479,7 @@ Regexp::Common allows you do write this:
         $changed = $RE{some}{pattern}->subs($original=>$replacement);
 
 Apart from reducing precedence-angst, this approach has the added
-advantages that the substitution behaviour can be optimized from the 
+advantages that the substitution behaviour can be optimized from the
 regular expression, and the replacement string can be provided by
 default (see L<"Adding new regular expressions">).
 
@@ -550,7 +552,7 @@ whose pattern names have first keys I<key1> ... I<keyn>.
 =head2 Adding new regular expressions
 
 You can add your own regular expressions to the C<%RE> hash at run-time,
-using the exportable C<pattern> subroutine. It expects a hash-like list of 
+using the exportable C<pattern> subroutine. It expects a hash-like list of
 key/value pairs that specify the behaviour of the pattern. The various
 possible argument pairs are:
 
@@ -596,10 +598,10 @@ or a reference to a subroutine that will be called to create the pattern:
                             },
                 ;
 
-If the subroutine version is used, the subroutine will be called with 
+If the subroutine version is used, the subroutine will be called with
 three arguments: a reference to the pattern object itself, a reference
 to a hash containing the flags and their values,
-and a reference to an array containing the non-flag keys. 
+and a reference to an array containing the non-flag keys.
 
 Whatever the subroutine returns is stringified as the pattern.
 
@@ -751,7 +753,7 @@ Provides regexes for zip codes.
 
 Future releases of the module will also provide patterns for the following:
 
-        * email addresses 
+        * email addresses
         * HTML/XML tags
         * more numerical matchers,
         * mail headers (including multiline ones),
@@ -776,7 +778,7 @@ tests will be especially welcome.
 The subroutine-based interface didn't recognize the requested subroutine.
 Often caused by a spelling mistake or an incompletely specified name.
 
-        
+
 =item C<Can't create unknown regex: $RE{...}>
 
 Regexp::Common doesn't have a generator for the requested pattern.
@@ -849,8 +851,8 @@ that is that old. You might consider upgrading your perl.
 
 =item *
 
-The various patterns are not anchored. That is, a pattern like 
-C<< $RE {num} {int} >> will match against "abc4def", because a 
+The various patterns are not anchored. That is, a pattern like
+C<< $RE {num} {int} >> will match against "abc4def", because a
 substring of the subject matches. This is by design, and not a
 bug. If you want the pattern to be anchored, use something like:
 

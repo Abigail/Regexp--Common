@@ -3,24 +3,23 @@ package Regexp::Common::URI::prospero;
 use Regexp::Common               qw /pattern clean no_defaults/;
 use Regexp::Common::URI          qw /register_uri/;
 use Regexp::Common::URI::RFC1738 qw /$host $port $ppath $fieldname $fieldvalue
-                                     $fieldspec/;
+  $fieldspec/;
 
 use strict;
 use warnings;
 
-use vars qw /$VERSION/;
-$VERSION = '2017060201';
-
+# VERSION
 
 my $scheme = 'prospero';
-my $uri    = "(?k:(?k:$scheme)://(?k:$host)(?::(?k:$port))?" .
-             "/(?k:$ppath)(?k:$fieldspec*))";
+my $uri    = "(?k:(?k:$scheme)://(?k:$host)(?::(?k:$port))?"
+  . "/(?k:$ppath)(?k:$fieldspec*))";
 
 register_uri $scheme => $uri;
 
-pattern name    => [qw (URI prospero)],
-        create  => $uri,
-        ;
+pattern
+  name   => [qw (URI prospero)],
+  create => $uri,
+  ;
 
 1;
 

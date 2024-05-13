@@ -3,32 +3,32 @@ package Regexp::Common::URI::news;
 use Regexp::Common               qw /pattern clean no_defaults/;
 use Regexp::Common::URI          qw /register_uri/;
 use Regexp::Common::URI::RFC1738 qw /$grouppart $group $article
-                                     $host $port $digits/;
+  $host $port $digits/;
 
 use strict;
 use warnings;
 
-use vars qw /$VERSION/;
-$VERSION = '2017060201';
-
+# VERSION
 
 my $news_scheme = 'news';
 my $news_uri    = "(?k:(?k:$news_scheme):(?k:$grouppart))";
 
 my $nntp_scheme = 'nntp';
-my $nntp_uri    = "(?k:(?k:$nntp_scheme)://(?k:(?k:(?k:$host)(?::(?k:$port))?)" 
-                . "/(?k:$group)(?:/(?k:$digits))?))";
+my $nntp_uri    = "(?k:(?k:$nntp_scheme)://(?k:(?k:(?k:$host)(?::(?k:$port))?)"
+  . "/(?k:$group)(?:/(?k:$digits))?))";
 
 register_uri $news_scheme => $news_uri;
 register_uri $nntp_scheme => $nntp_uri;
 
-pattern name    => [qw (URI news)],
-        create  => $news_uri,
-        ;
+pattern
+  name   => [qw (URI news)],
+  create => $news_uri,
+  ;
 
-pattern name    => [qw (URI NNTP)],
-        create  => $nntp_uri,
-        ;
+pattern
+  name   => [qw (URI NNTP)],
+  create => $nntp_uri,
+  ;
 
 1;
 

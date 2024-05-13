@@ -2,29 +2,27 @@ package Regexp::Common::URI::fax;
 
 use Regexp::Common               qw /pattern clean no_defaults/;
 use Regexp::Common::URI          qw /register_uri/;
-use Regexp::Common::URI::RFC2806 qw /$fax_subscriber 
-                                     $fax_subscriber_no_future/;
+use Regexp::Common::URI::RFC2806 qw /$fax_subscriber
+  $fax_subscriber_no_future/;
 
 use strict;
 use warnings;
 
-use vars qw /$VERSION/;
-$VERSION = '2017060201';
+# VERSION
 
-
-my $fax_scheme  = 'fax';
-my $fax_uri     = "(?k:(?k:$fax_scheme):(?k:$fax_subscriber))";
-my $fax_uri_nf  = "(?k:(?k:$fax_scheme):(?k:$fax_subscriber_no_future))";
+my $fax_scheme = 'fax';
+my $fax_uri    = "(?k:(?k:$fax_scheme):(?k:$fax_subscriber))";
+my $fax_uri_nf = "(?k:(?k:$fax_scheme):(?k:$fax_subscriber_no_future))";
 
 register_uri $fax_scheme => $fax_uri;
 
-pattern name    => [qw (URI fax)],
-        create  => $fax_uri
-        ;
+pattern
+  name   => [qw (URI fax)],
+  create => $fax_uri;
 
-pattern name    => [qw (URI fax nofuture)],
-        create  => $fax_uri_nf
-        ;
+pattern
+  name   => [qw (URI fax nofuture)],
+  create => $fax_uri_nf;
 
 1;
 
@@ -71,7 +69,7 @@ a post dial part, area specifier, service provider, etc.
 =head2 C<$RE{URI}{fax}{nofuture}>
 
 As above (including what's returned by C<{-keep}>), with the exception
-that I<future extensions> are not allowed. Without allowing 
+that I<future extensions> are not allowed. Without allowing
 those I<future extensions>, it becomes much easier to check a URI if
 the correct syntax for post dial, service provider, phone context,
 etc has been used - otherwise the regex could always classify them

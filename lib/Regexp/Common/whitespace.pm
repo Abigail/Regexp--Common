@@ -4,17 +4,16 @@ use 5.10.0;
 
 use strict;
 use warnings;
-no  warnings 'syntax';
+no warnings 'syntax';
 
 use Regexp::Common qw /pattern clean no_defaults/;
 
-our $VERSION = '2017060201';
+# VERSION
 
-pattern name   => [qw (ws crop)],
-        create => '(?:^\s+|\s+$)',
-        subs   => sub {$_[1] =~ s/^\s+//; $_[1] =~ s/\s+$//;}
-        ;
-
+pattern
+  name   => [qw (ws crop)],
+  create => '(?:^\s+|\s+$)',
+  subs   => sub { $_[1] =~ s/^\s+//; $_[1] =~ s/\s+$//; };
 
 1;
 

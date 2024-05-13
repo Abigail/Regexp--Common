@@ -5,94 +5,101 @@ use Regexp::Common qw /pattern clean no_defaults/;
 use strict;
 use warnings;
 
-use vars qw /$VERSION/;
-$VERSION = '2017060201';
+# VERSION
 
 use vars qw /@EXPORT @EXPORT_OK %EXPORT_TAGS @ISA/;
 
 use Exporter ();
 @ISA = qw /Exporter/;
 
-
 my %vars;
 
 BEGIN {
-    $vars {low}     = [qw /$digit $upalpha $lowalpha $alpha $alphanum $hex
-                           $escaped $mark $unreserved $reserved $pchar $uric
-                           $urics $userinfo $userinfo_no_colon $uric_no_slash/];
-    $vars {parts}   = [qw /$query $fragment $param $segment $path_segments
-                           $ftp_segments $rel_segment $abs_path $rel_path
-                           $path/];
-    $vars {connect} = [qw /$port $IPv4address $toplabel $domainlabel $hostname
-                           $host $hostport $server $reg_name $authority/];
-    $vars {URI}     = [qw /$scheme $net_path $opaque_part $hier_part
-                           $relativeURI $absoluteURI $URI_reference/];
+    $vars{low} = [
+        qw /$digit $upalpha $lowalpha $alpha $alphanum $hex
+          $escaped $mark $unreserved $reserved $pchar $uric
+          $urics $userinfo $userinfo_no_colon $uric_no_slash/
+    ];
+    $vars{parts} = [
+        qw /$query $fragment $param $segment $path_segments
+          $ftp_segments $rel_segment $abs_path $rel_path
+          $path/
+    ];
+    $vars{connect} = [
+        qw /$port $IPv4address $toplabel $domainlabel $hostname
+          $host $hostport $server $reg_name $authority/
+    ];
+    $vars{URI} = [
+        qw /$scheme $net_path $opaque_part $hier_part
+          $relativeURI $absoluteURI $URI_reference/
+    ];
 }
 
-use vars map {@$_} values %vars;
+use vars map { @$_ } values %vars;
 
 @EXPORT      = ();
-@EXPORT_OK   = map {@$_} values %vars;
-%EXPORT_TAGS = (%vars, ALL => [@EXPORT_OK]);
+@EXPORT_OK   = map { @$_ } values %vars;
+%EXPORT_TAGS = ( %vars, ALL => [@EXPORT_OK] );
 
 # RFC 2396, base definitions.
-$digit             =  '[0-9]';
-$upalpha           =  '[A-Z]';
-$lowalpha          =  '[a-z]';
-$alpha             =  '[a-zA-Z]';                # lowalpha | upalpha
-$alphanum          =  '[a-zA-Z0-9]';             # alpha    | digit
-$hex               =  '[a-fA-F0-9]';
-$escaped           =  "(?:%$hex$hex)";
-$mark              =  "[\\-_.!~*'()]";
-$unreserved        =  "[a-zA-Z0-9\\-_.!~*'()]";  # alphanum | mark
-                      # %61-%7A, %41-%5A, %30-%39
-                      #  a - z    A - Z    0 - 9
-                      # %21, %27, %28, %29, %2A, %2D, %2E, %5F, %7E
-                      #  !    '    (    )    *    -    .    _    ~
-$reserved          =  "[;/?:@&=+\$,]";
-$pchar             =  "(?:[a-zA-Z0-9\\-_.!~*'():\@&=+\$,]|$escaped)";
-                                      # unreserved | escaped | [:@&=+$,]
-$uric              =  "(?:[;/?:\@&=+\$,a-zA-Z0-9\\-_.!~*'()]|$escaped)";
-                                      # reserved | unreserved | escaped
-$urics             =  "(?:(?:[;/?:\@&=+\$,a-zA-Z0-9\\-_.!~*'()]+|"     .
-                      "$escaped)*)";
+$digit      = '[0-9]';
+$upalpha    = '[A-Z]';
+$lowalpha   = '[a-z]';
+$alpha      = '[a-zA-Z]';                  # lowalpha | upalpha
+$alphanum   = '[a-zA-Z0-9]';               # alpha    | digit
+$hex        = '[a-fA-F0-9]';
+$escaped    = "(?:%$hex$hex)";
+$mark       = "[\\-_.!~*'()]";
+$unreserved = "[a-zA-Z0-9\\-_.!~*'()]";    # alphanum | mark
+                                           # %61-%7A, %41-%5A, %30-%39
+                                           #  a - z    A - Z    0 - 9
+    # %21, %27, %28, %29, %2A, %2D, %2E, %5F, %7E
+    #  !    '    (    )    *    -    .    _    ~
+$reserved = "[;/?:@&=+\$,]";
+$pchar    = "(?:[a-zA-Z0-9\\-_.!~*'():\@&=+\$,]|$escaped)";
 
-$query             =  $urics;
-$fragment          =  $urics;
-$param             =  "(?:(?:[a-zA-Z0-9\\-_.!~*'():\@&=+\$,]+|$escaped)*)";
-$segment           =  "(?:$param(?:;$param)*)";
-$path_segments     =  "(?:$segment(?:/$segment)*)";
-$ftp_segments      =  "(?:$param(?:/$param)*)";   # NOT from RFC 2396.
-$rel_segment       =  "(?:(?:[a-zA-Z0-9\\-_.!~*'();\@&=+\$,]*|$escaped)+)";
-$abs_path          =  "(?:/$path_segments)";
-$rel_path          =  "(?:$rel_segment(?:$abs_path)?)";
-$path              =  "(?:(?:$abs_path|$rel_path)?)";
+# unreserved | escaped | [:@&=+$,]
+$uric = "(?:[;/?:\@&=+\$,a-zA-Z0-9\\-_.!~*'()]|$escaped)";
 
-$port              =  "(?:$digit*)";
-$IPv4address       =  "(?:$digit+[.]$digit+[.]$digit+[.]$digit+)";
-$toplabel          =  "(?:$alpha"."[-a-zA-Z0-9]*$alphanum|$alpha)";
-$domainlabel       =  "(?:(?:$alphanum"."[-a-zA-Z0-9]*)?$alphanum)";
-$hostname          =  "(?:(?:$domainlabel\[.])*$toplabel\[.]?)";
-$host              =  "(?:$hostname|$IPv4address)";
-$hostport          =  "(?:$host(?::$port)?)";
+# reserved | unreserved | escaped
+$urics = "(?:(?:[;/?:\@&=+\$,a-zA-Z0-9\\-_.!~*'()]+|" . "$escaped)*)";
 
-$userinfo          =  "(?:(?:[a-zA-Z0-9\\-_.!~*'();:&=+\$,]+|$escaped)*)";
-$userinfo_no_colon =  "(?:(?:[a-zA-Z0-9\\-_.!~*'();&=+\$,]+|$escaped)*)";
-$server            =  "(?:(?:$userinfo\@)?$hostport)";
+$query         = $urics;
+$fragment      = $urics;
+$param         = "(?:(?:[a-zA-Z0-9\\-_.!~*'():\@&=+\$,]+|$escaped)*)";
+$segment       = "(?:$param(?:;$param)*)";
+$path_segments = "(?:$segment(?:/$segment)*)";
+$ftp_segments  = "(?:$param(?:/$param)*)";    # NOT from RFC 2396.
+$rel_segment   = "(?:(?:[a-zA-Z0-9\\-_.!~*'();\@&=+\$,]*|$escaped)+)";
+$abs_path      = "(?:/$path_segments)";
+$rel_path      = "(?:$rel_segment(?:$abs_path)?)";
+$path          = "(?:(?:$abs_path|$rel_path)?)";
 
-$reg_name          =  "(?:(?:[a-zA-Z0-9\\-_.!~*'()\$,;:\@&=+]*|$escaped)+)";
-$authority         =  "(?:$server|$reg_name)";
+$port        = "(?:$digit*)";
+$IPv4address = "(?:$digit+[.]$digit+[.]$digit+[.]$digit+)";
+$toplabel    = "(?:$alpha" . "[-a-zA-Z0-9]*$alphanum|$alpha)";
+$domainlabel = "(?:(?:$alphanum" . "[-a-zA-Z0-9]*)?$alphanum)";
+$hostname    = "(?:(?:$domainlabel\[.])*$toplabel\[.]?)";
+$host        = "(?:$hostname|$IPv4address)";
+$hostport    = "(?:$host(?::$port)?)";
 
-$scheme            =  "(?:$alpha"."[a-zA-Z0-9+\\-.]*)";
+$userinfo          = "(?:(?:[a-zA-Z0-9\\-_.!~*'();:&=+\$,]+|$escaped)*)";
+$userinfo_no_colon = "(?:(?:[a-zA-Z0-9\\-_.!~*'();&=+\$,]+|$escaped)*)";
+$server            = "(?:(?:$userinfo\@)?$hostport)";
 
-$net_path          =  "(?://$authority$abs_path?)";
-$uric_no_slash     =  "(?:[a-zA-Z0-9\\-_.!~*'();?:\@&=+\$,]|$escaped)";
-$opaque_part       =  "(?:$uric_no_slash$urics)";
-$hier_part         =  "(?:(?:$net_path|$abs_path)(?:[?]$query)?)";
+$reg_name  = "(?:(?:[a-zA-Z0-9\\-_.!~*'()\$,;:\@&=+]*|$escaped)+)";
+$authority = "(?:$server|$reg_name)";
 
-$relativeURI       =  "(?:(?:$net_path|$abs_path|$rel_path)(?:[?]$query)?";
-$absoluteURI       =  "(?:$scheme:(?:$hier_part|$opaque_part))";
-$URI_reference     =  "(?:(?:$absoluteURI|$relativeURI)?(?:#$fragment)?)";
+$scheme = "(?:$alpha" . "[a-zA-Z0-9+\\-.]*)";
+
+$net_path      = "(?://$authority$abs_path?)";
+$uric_no_slash = "(?:[a-zA-Z0-9\\-_.!~*'();?:\@&=+\$,]|$escaped)";
+$opaque_part   = "(?:$uric_no_slash$urics)";
+$hier_part     = "(?:(?:$net_path|$abs_path)(?:[?]$query)?)";
+
+$relativeURI   = "(?:(?:$net_path|$abs_path|$rel_path)(?:[?]$query)?";
+$absoluteURI   = "(?:$scheme:(?:$hier_part|$opaque_part))";
+$URI_reference = "(?:(?:$absoluteURI|$relativeURI)?(?:#$fragment)?)";
 
 1;
 

@@ -1,75 +1,79 @@
-package Regexp::Common::balanced; {
+package Regexp::Common::balanced;
+{
 
-use 5.10.0;
+    use 5.10.0;
 
-use strict;
-use warnings;
-no  warnings 'syntax';
+    use strict;
+    use warnings;
+    no warnings 'syntax';
 
-use Regexp::Common qw /pattern clean no_defaults/;
+    use Regexp::Common qw /pattern clean no_defaults/;
 
-our $VERSION = '2017060201';
+    # VERSION
 
-my %closer = ( '{'=>'}', '('=>')', '['=>']', '<'=>'>' );
-my %cache;
+    my %closer = ( '{' => '}', '(' => ')', '[' => ']', '<' => '>' );
+    my %cache;
 
-sub nested {
-    my ($start, $finish) = @_;
+    sub nested {
+        my ( $start, $finish ) = @_;
 
-    return $cache {$start} {$finish} if exists $cache {$start} {$finish};
+        return $cache{$start}{$finish} if exists $cache{$start}{$finish};
 
-    my @starts   = map {s/\\(.)/$1/g; $_} grep {length}
-                        $start  =~ /([^|\\]+|\\.)+/gs;
-    my @finishes = map {s/\\(.)/$1/g; $_} grep {length}
-                        $finish =~ /([^|\\]+|\\.)+/gs;
+        my @starts =
+          map { s/\\(.)/$1/g; $_ } grep { length } $start =~ /([^|\\]+|\\.)+/gs;
+        my @finishes = map { s/\\(.)/$1/g; $_ }
+          grep { length } $finish =~ /([^|\\]+|\\.)+/gs;
 
-    push @finishes => ($finishes [-1]) x (@starts - @finishes);
+        push @finishes => ( $finishes[-1] ) x ( @starts - @finishes );
 
-    my @re;
-    local $" = "|";
-    foreach my $begin (@starts) {
-        my $end = shift @finishes;
+        my @re;
+        local $" = "|";
+        foreach my $begin (@starts) {
+            my $end = shift @finishes;
 
-        my $qb  = quotemeta $begin;
-        my $qe  = quotemeta $end;
-        my $fb  = quotemeta substr $begin => 0, 1;
-        my $fe  = quotemeta substr $end   => 0, 1;
+            my $qb = quotemeta $begin;
+            my $qe = quotemeta $end;
+            my $fb = quotemeta substr $begin => 0, 1;
+            my $fe = quotemeta substr $end   => 0, 1;
 
-        my $tb  = quotemeta substr $begin => 1;
-        my $te  = quotemeta substr $end   => 1;
+            my $tb = quotemeta substr $begin => 1;
+            my $te = quotemeta substr $end   => 1;
 
-        my $add;
-        if ($fb eq $fe) {
-            push @re =>
-                   qq /(?:$qb(?:(?>[^$fb]+)|$fb(?!$tb)(?!$te)|(?-1))*$qe)/;
+            my $add;
+            if ( $fb eq $fe ) {
+                push @re =>
+                  qq /(?:$qb(?:(?>[^$fb]+)|$fb(?!$tb)(?!$te)|(?-1))*$qe)/;
+            }
+            else {
+                my @clauses = "(?>[^$fb$fe]+)";
+                push @clauses => "$fb(?!$tb)" if length $tb;
+                push @clauses => "$fe(?!$te)" if length $te;
+                push @clauses => "(?-1)";
+                push @re      => qq /(?:$qb(?:@clauses)*$qe)/;
+            }
         }
-        else {
-            my   @clauses =  "(?>[^$fb$fe]+)";
-            push @clauses => "$fb(?!$tb)" if length $tb;
-            push @clauses => "$fe(?!$te)" if length $te;
-            push @clauses => "(?-1)";
-            push @re      =>  qq /(?:$qb(?:@clauses)*$qe)/;
-        }
+
+        $cache{$start}{$finish} = qr /(@re)/;
     }
 
-    $cache {$start} {$finish} = qr /(@re)/;
-}
-
-
-pattern name    => [qw /balanced -parens=() -begin= -end=/],
-        create  => sub {
-            my $flag = $_[1];
-            unless (defined $flag -> {-begin} && length $flag -> {-begin} &&
-                    defined $flag -> {-end}   && length $flag -> {-end}) {
-                my @open  = grep {index ($flag->{-parens}, $_) >= 0}
-                             ('[','(','{','<');
-                my @close = map {$closer {$_}} @open;
-                $flag -> {-begin} = join "|" => @open;
-                $flag -> {-end}   = join "|" => @close;
-            }
-            return nested @$flag {qw /-begin -end/};
-        },
-        ;
+    pattern
+      name   => [qw /balanced -parens=() -begin= -end=/],
+      create => sub {
+        my $flag = $_[1];
+        unless ( defined $flag->{-begin}
+            && length $flag->{-begin}
+            && defined $flag->{-end}
+            && length $flag->{-end} )
+        {
+            my @open = grep { index( $flag->{-parens}, $_ ) >= 0 }
+              ( '[', '(', '{', '<' );
+            my @close = map { $closer{$_} } @open;
+            $flag->{-begin} = join "|" => @open;
+            $flag->{-end}   = join "|" => @close;
+        }
+        return nested @$flag{qw /-begin -end/};
+      },
+      ;
 
 }
 

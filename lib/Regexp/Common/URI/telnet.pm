@@ -7,18 +7,17 @@ use Regexp::Common::URI::RFC1738 qw /$user $password $host $port/;
 use strict;
 use warnings;
 
-use vars qw /$VERSION/;
-$VERSION = '2017060201';
+# VERSION
 
-
-my $telnet_uri = "(?k:(?k:telnet)://(?:(?k:(?k:$user)(?::(?k:$password))?)\@)?" 
-               . "(?k:(?k:$host)(?::(?k:$port))?)(?k:/)?)";
+my $telnet_uri = "(?k:(?k:telnet)://(?:(?k:(?k:$user)(?::(?k:$password))?)\@)?"
+  . "(?k:(?k:$host)(?::(?k:$port))?)(?k:/)?)";
 
 register_uri telnet => $telnet_uri;
 
-pattern name    => [qw (URI telnet)],
-        create  => $telnet_uri,
-        ;
+pattern
+  name   => [qw (URI telnet)],
+  create => $telnet_uri,
+  ;
 
 1;
 

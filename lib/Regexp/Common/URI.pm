@@ -4,7 +4,7 @@ use 5.10.0;
 
 use strict;
 use warnings;
-no  warnings 'syntax';
+no warnings 'syntax';
 
 use Exporter ();
 
@@ -13,7 +13,7 @@ our @EXPORT_OK = qw /register_uri/;
 
 use Regexp::Common qw /pattern clean no_defaults/;
 
-our $VERSION = '2017060201';
+# VERSION
 
 # Use 'require' here, not 'use', so we delay running them after we are compiled.
 # We also do it using an 'eval'; this saves us from have repeated similar
@@ -27,16 +27,18 @@ foreach my $uri (@uris) {
 my %uris;
 
 sub register_uri {
-    my ($scheme, $uri) = @_;
-    $uris {$scheme} = $uri;
+    my ( $scheme, $uri ) = @_;
+    $uris{$scheme} = $uri;
 }
 
-pattern name    => [qw (URI)],
-        create  => sub {my $uri =  join '|' => values %uris;
-                           $uri =~ s/\(\?k:/(?:/g;
-                      "(?k:$uri)";
-        },
-        ;
+pattern
+  name   => [qw (URI)],
+  create => sub {
+    my $uri = join '|' => values %uris;
+    $uri =~ s/\(\?k:/(?:/g;
+    "(?k:$uri)";
+  },
+  ;
 
 1;
 
@@ -99,7 +101,7 @@ Identifiers (URI): Generic Syntax>. August 1998.
 
 =item B<[RFC 2616]>
 
-Fielding, R., Gettys, J., Mogul, J., Frystyk, H., Masinter, L., 
+Fielding, R., Gettys, J., Mogul, J., Frystyk, H., Masinter, L.,
 Leach, P. and Berners-Lee, Tim: I<Hypertext Transfer Protocol -- HTTP/1.1>.
 June 1999.
 
