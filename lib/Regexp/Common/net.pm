@@ -4,12 +4,11 @@ use 5.10.0;
 
 use strict;
 use warnings;
-no  warnings 'syntax';
+no warnings 'syntax';
 
 use Regexp::Common qw /pattern clean no_defaults/;
 
-our $VERSION = '2017060201';
-
+# VERSION
 
 my %IPunit = (
     dec    => q{(?k:25[0-5]|2[0-4][0-9]|[0-1]?[0-9]{1,2})},
@@ -18,10 +17,7 @@ my %IPunit = (
     bin    => q{(?k:[0-1]{1,8})},
     strict => q{(?k:2(?:5[0-5]?|[0-4][0-9]?|[6-9]?)|1[0-9]{0,2}|[3-9][0-9]?|0)},
 );
-my %MACunit = (
-    %IPunit,
-    hex => q{(?k:[0-9a-fA-F]{1,2})},
-);
+my %MACunit = ( %IPunit, hex => q{(?k:[0-9a-fA-F]{1,2})}, );
 
 my %IPv6unit = (
     hex => q {(?k:[0-9a-f]{1,4})},
@@ -29,123 +25,128 @@ my %IPv6unit = (
     HeX => q {(?k:[0-9a-fA-F]{1,4})},
 );
 
-sub dec {$_};
-sub bin {oct "0b$_"}
+sub dec { $_ }
+sub bin { oct "0b$_" }
 
 my $IPdefsep   = '[.]';
-my $MACdefsep  =  ':';
-my $IPv6defsep =  ':';
+my $MACdefsep  = ':';
+my $IPv6defsep = ':';
 
-pattern name   => [qw (net IPv4)],
-        create => "(?k:$IPunit{dec}$IPdefsep$IPunit{dec}$IPdefsep" .
-                      "$IPunit{dec}$IPdefsep$IPunit{dec})",
-        ;
+pattern
+  name   => [qw (net IPv4)],
+  create => "(?k:$IPunit{dec}$IPdefsep$IPunit{dec}$IPdefsep"
+  . "$IPunit{dec}$IPdefsep$IPunit{dec})",
+  ;
 
-pattern name   => [qw (net MAC)],
-        create => "(?k:" . join ($MACdefsep => ($MACunit{hex}) x 6) . ")",
-        subs   => sub {
-            $_ [1] = join ":" => map {sprintf "%02x" => hex}
-                                 split /$MACdefsep/ => $_ [1]
-                     if $_ [1] =~ /$_[0]/
-        },
-        ;
+pattern
+  name   => [qw (net MAC)],
+  create => "(?k:" . join( $MACdefsep => ( $MACunit{hex} ) x 6 ) . ")",
+  subs   => sub {
+    $_[1] = join ":" => map { sprintf "%02x" => hex }
+      split /$MACdefsep/ => $_[1]
+      if $_[1] =~ /$_[0]/;
+  },
+  ;
 
 foreach my $type (qw /dec oct hex bin strict/) {
-    pattern name   => [qw (net IPv4), $type, "-sep=$IPdefsep"],
-            create => sub {my $sep = $_ [1] -> {-sep};
-                           "(?k:$IPunit{$type}$sep$IPunit{$type}$sep" .
-                               "$IPunit{$type}$sep$IPunit{$type})"
-                      },
-            ;
+    pattern
+      name   => [ qw (net IPv4), $type, "-sep=$IPdefsep" ],
+      create => sub {
+        my $sep = $_[1]->{-sep};
+        "(?k:$IPunit{$type}$sep$IPunit{$type}$sep"
+          . "$IPunit{$type}$sep$IPunit{$type})";
+      },
+      ;
 
-    pattern name   => [qw (net MAC), $type, "-sep=$MACdefsep"],
-            create => sub {my $sep = $_ [1] -> {-sep};
-                           "(?k:" . join ($sep => ($MACunit{$type}) x 6) . ")",
-                      },
-            subs   => sub {
-                return if $] < 5.006 and $type eq 'bin';
-                $_ [1] = join ":" => map {sprintf "%02x" => eval $type}
-                                     $2, $3, $4, $5, $6, $7
-                         if $_ [1] =~ $RE {net} {MAC} {$type}
-                                          {-sep => $_ [0] -> {flags} {-sep}}
-                                          {-keep};
-            },
-            ;
+    pattern
+      name   => [ qw (net MAC), $type, "-sep=$MACdefsep" ],
+      create => sub {
+        my $sep = $_[1]->{-sep};
+        "(?k:" . join( $sep => ( $MACunit{$type} ) x 6 ) . ")",;
+      },
+      subs => sub {
+        return if $] < 5.006 and $type eq 'bin';
+        $_[1] = join ":" => map { sprintf "%02x" => eval $type } $2,
+          $3, $4, $5, $6, $7
+          if $_[1] =~
+          $RE{net}{MAC}{$type}{ -sep => $_[0]->{flags}{-sep} }{-keep};
+      },
+      ;
 
 }
 
-
 my %cache6;
-pattern name   => [qw (net IPv6), "-sep=$IPv6defsep", "-style=HeX"],
-        create => sub {
-            my $style = $_ [1] {-style};
-            my $sep   = $_ [1] {-sep};
+pattern
+  name   => [ qw (net IPv6), "-sep=$IPv6defsep", "-style=HeX" ],
+  create => sub {
+    my $style = $_[1]{-style};
+    my $sep   = $_[1]{-sep};
 
-            return $cache6 {$style, $sep} if $cache6 {$style, $sep};
+    return $cache6{ $style, $sep } if $cache6{ $style, $sep };
 
-            my @re;
+    my @re;
 
-            die "Impossible style '$style'\n" unless exists $IPv6unit {$style};
+    die "Impossible style '$style'\n" unless exists $IPv6unit{$style};
 
+    #
+    # Nothing missing
+    #
+    push @re => join $sep => ( $IPv6unit{$style} ) x 8;
+
+    #
+    # For "double colon" representations, at least 2 units must
+    # be omitted, leaving us with at most 6 units. 0 units is also
+    # possible. Note we can have at most one double colon.
+    #
+    for ( my $l = 0 ; $l <= 6 ; $l++ ) {
+        #
+        # We prefer to do longest match, so larger $r gets priority
+        #
+        for ( my $r = 6 - $l ; $r >= 0 ; $r-- ) {
             #
-            # Nothing missing
+            # $l is the number of blocks left of the double colon,
+            # $r is the number of blocks left of the double colon,
+            # $m is the number of omitted blocks
             #
-            push @re => join $sep => ($IPv6unit {$style}) x 8;
+            my $m    = 8 - $l - $r;
+            my $patl = $l ? ( $IPv6unit{$style} . $sep ) x $l : $sep;
+            my $patr = $r ? ( $sep . $IPv6unit{$style} ) x $r : $sep;
+            my $patm = "(?k:)" x $m;
+            my $pat  = $patl . $patm . $patr;
+            push @re => "(?:$pat)";
+        }
+    }
+    local $" = "|";
+    $cache6{ $style, $sep } = qq /(?k:(?|@re))/;
+  },
+  ;
 
-            #
-            # For "double colon" representations, at least 2 units must
-            # be omitted, leaving us with at most 6 units. 0 units is also
-            # possible. Note we can have at most one double colon.
-            #
-            for (my $l = 0; $l <= 6; $l ++) {
-                #
-                # We prefer to do longest match, so larger $r gets priority
-                #
-                for (my $r = 6 - $l; $r >= 0; $r --) {
-                    #
-                    # $l is the number of blocks left of the double colon,
-                    # $r is the number of blocks left of the double colon,
-                    # $m is the number of omitted blocks
-                    #
-                    my $m    = 8 - $l - $r;
-                    my $patl = $l ? ($IPv6unit {$style} . $sep) x $l : $sep;
-                    my $patr = $r ? ($sep . $IPv6unit {$style}) x $r : $sep;
-                    my $patm = "(?k:)" x $m;
-                    my $pat  = $patl . $patm . $patr;
-                    push @re => "(?:$pat)";
-                }
-            }
-            local $" = "|";
-            $cache6 {$style, $sep} = qq /(?k:(?|@re))/;
-        },
-;
-
-
-my $letter      =  "[A-Za-z]";
-my $let_dig     =  "[A-Za-z0-9]";
+my $letter      = "[A-Za-z]";
+my $let_dig     = "[A-Za-z0-9]";
 my $let_dig_hyp = "[-A-Za-z0-9]";
 
 # Domain names, from RFC 1035.
-pattern name   => [qw (net domain -nospace= -rfc1101=)],
-        create => sub {
-            my $rfc1101 = exists $_ [1] {-rfc1101} &&
-                        !defined $_ [1] {-rfc1101};
+pattern
+  name   => [qw (net domain -nospace= -rfc1101=)],
+  create => sub {
+    my $rfc1101 = exists $_[1]{-rfc1101}
+      && !defined $_[1]{-rfc1101};
 
-            my $lead = $rfc1101 ? "(?!$RE{net}{IPv4}(?:[.]|\$))$let_dig"
-                                : $letter;
+    my $lead =
+      $rfc1101
+      ? "(?!$RE{net}{IPv4}(?:[.]|\$))$let_dig"
+      : $letter;
 
-            if (exists $_ [1] {-nospace} && !defined $_ [1] {-nospace}) {
-                return "(?k:$lead(?:(?:$let_dig_hyp){0,61}$let_dig)?" .
-                       "(?:\\.$lead(?:(?:$let_dig_hyp){0,61}$let_dig)?)*)"
-            }
-            else {
-                return "(?k: |(?:$lead(?:(?:$let_dig_hyp){0,61}$let_dig)?" .
-                       "(?:\\.$lead(?:(?:$let_dig_hyp){0,61}$let_dig)?)*))"
-            }
-        },
-        ;
-
-
+    if ( exists $_[1]{-nospace} && !defined $_[1]{-nospace} ) {
+        return "(?k:$lead(?:(?:$let_dig_hyp){0,61}$let_dig)?"
+          . "(?:\\.$lead(?:(?:$let_dig_hyp){0,61}$let_dig)?)*)";
+    }
+    else {
+        return "(?k: |(?:$lead(?:(?:$let_dig_hyp){0,61}$let_dig)?"
+          . "(?:\\.$lead(?:(?:$let_dig_hyp){0,61}$let_dig)?)*))";
+    }
+  },
+  ;
 
 1;
 
@@ -221,7 +222,7 @@ Leading 0s are allowed, as long as each component does not exceed 3
 digits.
 
 If C<< -sep=I<P> >> is specified the pattern I<P> is used as the separator.
-By default I<P> is C<qr/[.]/>. 
+By default I<P> is C<qr/[.]/>.
 
 =head2 C<$RE{net}{IPv4}{strict}{-sep}>
 
@@ -229,7 +230,7 @@ Returns a pattern that matches a valid IP address in "dotted decimal",
 but disallow any leading 0s.
 
 If C<< -sep=I<P> >> is specified the pattern I<P> is used as the separator.
-By default I<P> is C<qr/[.]/>. 
+By default I<P> is C<qr/[.]/>.
 
 
 =head2 C<$RE{net}{IPv4}{hex}{-sep}>
@@ -306,7 +307,7 @@ Returns a pattern that matches a valid MAC address as colon separated
 decimals.
 
 If C<< -sep=I<P> >> is specified the pattern I<P> is used as the separator.
-By default I<P> is C<qr/:/>. 
+By default I<P> is C<qr/:/>.
 
 =head2 C<$RE{net}{MAC}{hex}{-sep}>
 
@@ -344,10 +345,10 @@ C<< 0000:0000:0000:0000:0000:0000:0000:0000 >>). The hex numbers may be
 in either case.
 
 If the C<< -sep >> option is used, its argument is a pattern that matches
-the separator that separates groups. This defaults to C<< : >>. The 
+the separator that separates groups. This defaults to C<< : >>. The
 C<< -style >> option is used to denote which case the hex numbers may be.
 The default style, C<< 'HeX' >> indicates both lower case letters C<< 'a' >>
-to C<< 'f' >> and upper case letters C<< 'A' >> to C<< 'F' >> will be 
+to C<< 'f' >> and upper case letters C<< 'A' >> to C<< 'F' >> will be
 matched. The style C<< 'HEX' >> restricts matching to upper case letters,
 and C<< 'hex' >> only matches lower case letters.
 

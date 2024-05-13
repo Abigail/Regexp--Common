@@ -8,20 +8,20 @@ use Regexp::Common::URI::RFC2384 qw /$enc_user $enc_auth_type/;
 use strict;
 use warnings;
 
-use vars qw /$VERSION/;
-$VERSION = '2017060201';
-
+# VERSION
 
 my $scheme = "pop";
-my $uri    = "(?k:(?k:$scheme)://(?:(?k:$enc_user)"     .  
-             "(?:;AUTH=(?k:[*]|$enc_auth_type))?\@)?"   .
-             "(?k:$host)(?::(?k:$port))?)";
+my $uri =
+    "(?k:(?k:$scheme)://(?:(?k:$enc_user)"
+  . "(?:;AUTH=(?k:[*]|$enc_auth_type))?\@)?"
+  . "(?k:$host)(?::(?k:$port))?)";
 
 register_uri $scheme => $uri;
 
-pattern name    => [qw (URI POP)],
-        create  => $uri,
-        ;
+pattern
+  name   => [qw (URI POP)],
+  create => $uri,
+  ;
 
 1;
 

@@ -4,14 +4,14 @@ use 5.10.0;
 
 use strict;
 use warnings;
-no  warnings 'syntax';
+no warnings 'syntax';
 
 use Regexp::Common qw /pattern clean no_defaults/;
 
-our $VERSION = '2017060201';
+# VERSION
 
 sub gen_list_pattern {
-    my ($pat, $sep, $lsep) = @_;
+    my ( $pat, $sep, $lsep ) = @_;
     $lsep = $sep unless defined $lsep;
     return "(?k:(?:(?:$pat)(?:$sep))*(?:$pat)(?k:$lsep)(?:$pat))";
 }
@@ -19,24 +19,27 @@ sub gen_list_pattern {
 my $defpat = '.*?\S';
 my $defsep = '\s*,\s*';
 
-pattern name   => ['list', "-pat=$defpat", "-sep=$defsep", '-lastsep'],
-        create => sub {gen_list_pattern (@{$_[1]}{-pat, -sep, -lastsep})},
-        ;
+pattern
+  name   => [ 'list', "-pat=$defpat", "-sep=$defsep", '-lastsep' ],
+  create => sub { gen_list_pattern( @{ $_[1] }{ -pat, -sep, -lastsep } ) },
+  ;
 
-pattern name   => ['list', 'conj', '-word=(?:and|or)'],
-        create => sub {gen_list_pattern($defpat, $defsep,
-                                        '\s*,?\s*'.$_[1]->{-word}.'\s*');
-                  },
-        ;
+pattern
+  name   => [ 'list', 'conj', '-word=(?:and|or)' ],
+  create => sub {
+    gen_list_pattern( $defpat, $defsep, '\s*,?\s*' . $_[1]->{-word} . '\s*' );
+  },
+  ;
 
-pattern name   => ['list', 'and'],
-        create => sub {gen_list_pattern ($defpat, $defsep, '\s*,?\s*and\s*')},
-        ;
+pattern
+  name   => [ 'list', 'and' ],
+  create => sub { gen_list_pattern( $defpat, $defsep, '\s*,?\s*and\s*' ) },
+  ;
 
-pattern name   => ['list', 'or'],
-        create => sub {gen_list_pattern ($defpat, $defsep, '\s*,?\s*or\s*')},
-        ;
-
+pattern
+  name   => [ 'list', 'or' ],
+  create => sub { gen_list_pattern( $defpat, $defsep, '\s*,?\s*or\s*' ) },
+  ;
 
 1;
 

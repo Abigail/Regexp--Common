@@ -7,25 +7,24 @@ use Regexp::Common::URI::RFC2396 qw /$host $port $path_segments $query/;
 use strict;
 use warnings;
 
-use vars qw /$VERSION/;
-$VERSION = '2017060201';
+# VERSION
 
+my $http_uri = "(?k:(?k:http)://(?k:$host)(?::(?k:$port))?"
+  . "(?k:/(?k:(?k:$path_segments)(?:[?](?k:$query))?))?)";
 
-my $http_uri = "(?k:(?k:http)://(?k:$host)(?::(?k:$port))?"           .
-               "(?k:/(?k:(?k:$path_segments)(?:[?](?k:$query))?))?)";
-
-my $https_uri = $http_uri; $https_uri =~ s/http/https?/;
+my $https_uri = $http_uri;
+$https_uri =~ s/http/https?/;
 
 register_uri HTTP => $https_uri;
 
-pattern name    => [qw (URI HTTP), "-scheme=http"],
-        create  => sub {
-            my $scheme =  $_ [1] -> {-scheme};
-            my $uri    =  $http_uri;
-               $uri    =~ s/http/$scheme/;
-            $uri;
-        }
-        ;
+pattern
+  name   => [ qw (URI HTTP), "-scheme=http" ],
+  create => sub {
+    my $scheme = $_[1]->{-scheme};
+    my $uri    = $http_uri;
+    $uri =~ s/http/$scheme/;
+    $uri;
+  };
 
 1;
 
@@ -109,7 +108,7 @@ Identifiers (URI): Generic Syntax>. August 1998.
 
 =item B<[RFC 2616]>
 
-Fielding, R., Gettys, J., Mogul, J., Frystyk, H., Masinter, L., 
+Fielding, R., Gettys, J., Mogul, J., Frystyk, H., Masinter, L.,
 Leach, P. and Berners-Lee, Tim: I<Hypertext Transfer Protocol -- HTTP/1.1>.
 June 1999.
 

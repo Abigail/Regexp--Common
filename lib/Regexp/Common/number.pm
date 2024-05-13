@@ -4,157 +4,173 @@ use 5.10.0;
 
 use strict;
 use warnings;
-no  warnings 'syntax';
+no warnings 'syntax';
 
 use Config;
 use Regexp::Common qw /pattern clean no_defaults/;
 
-our $VERSION = '2017060201';
-
+# VERSION
 
 sub _croak {
     require Carp;
     goto &Carp::croak;
 }
 
-my $digits = join ("", 0 .. 9, "A" .. "Z");
+my $digits = join( "", 0 .. 9, "A" .. "Z" );
 
 sub int_creator {
-    my $flags = $_ [1];
-    my ($sep, $group, $base, $places, $sign) =
-            @{$flags} {qw /-sep -group -base -places -sign/};
+    my $flags = $_[1];
+    my ( $sep, $group, $base, $places, $sign ) =
+      @{$flags}{qw /-sep -group -base -places -sign/};
 
     # Deal with the bases.
-    _croak "Base must be between 1 and 36" unless $base >=  1 &&
-                                                  $base <= 36;
+    _croak "Base must be between 1 and 36"
+      unless $base >= 1
+      && $base <= 36;
     my $chars = substr $digits, 0, $base;
 
-    $sep = ',' if exists $flags -> {-sep} && !defined $flags -> {-sep};
+    $sep = ',' if exists $flags->{-sep} && !defined $flags->{-sep};
 
     my $max = $group;
-       $max = $2 if $group =~ /^\s*(\d+)\s*,\s*(\d+)\s*$/;
+    $max = $2 if $group =~ /^\s*(\d+)\s*,\s*(\d+)\s*$/;
 
     my $quant = $places ? "{$places}" : "+";
 
-    return $sep ? qq {(?k:(?k:$sign)(?k:[$chars]{1,$max}} .
-                  qq {(?:$sep} . qq {[$chars]{$group})*))}
-                : qq {(?k:(?k:$sign)(?k:[$chars]$quant))}
+    return $sep
+      ? qq {(?k:(?k:$sign)(?k:[$chars]{1,$max}}
+      . qq {(?:$sep}
+      . qq {[$chars]{$group})*))}
+      : qq {(?k:(?k:$sign)(?k:[$chars]$quant))};
 }
 
-sub real_creator { 
-    my ($base, $places, $radix, $sep, $group, $expon, $sign) =
-            @{$_[1]}{-base, -places, -radix, -sep, -group, -expon, -sign};
+sub real_creator {
+    my ( $base, $places, $radix, $sep, $group, $expon, $sign ) =
+      @{ $_[1] }{ -base, -places, -radix, -sep, -group, -expon, -sign };
     _croak "Base must be between 1 and 36"
-           unless $base >= 1 && $base <= 36;
-    $sep = ',' if exists $_[1]->{-sep}
-               && !defined $_[1]->{-sep};
-    if ($base > 14 && $expon =~ /^[Ee]$/) {$expon = 'G'}
-    foreach ($radix, $sep, $expon) {$_ = "[$_]" if 1 == length}
+      unless $base >= 1 && $base <= 36;
+    $sep = ','
+      if exists $_[1]->{-sep}
+      && !defined $_[1]->{-sep};
+    if ( $base > 14 && $expon =~ /^[Ee]$/ ) { $expon = 'G' }
+    foreach ( $radix, $sep, $expon ) { $_ = "[$_]" if 1 == length }
     my $chars = substr $digits, 0, $base;
     return $sep
-           ? qq {(?k:(?i)(?k:$sign)(?k:(?=$radix?[$chars])}              .
-             qq {(?k:[$chars]{1,$group}(?:(?:$sep)[$chars]{$group})*)}   .
-             qq {(?:(?k:$radix)(?k:[$chars]{$places}))?)}                .
-             qq {(?:(?k:$expon)(?k:(?k:$sign)(?k:[$chars]+))|))}
-           : qq {(?k:(?i)(?k:$sign)(?k:(?=$radix?[$chars])}              .
-             qq {(?k:[$chars]*)(?:(?k:$radix)(?k:[$chars]{$places}))?)}  .
-             qq {(?:(?k:$expon)(?k:(?k:$sign)(?k:[$chars]+))|))};
+      ? qq {(?k:(?i)(?k:$sign)(?k:(?=$radix?[$chars])}
+      . qq {(?k:[$chars]{1,$group}(?:(?:$sep)[$chars]{$group})*)}
+      . qq {(?:(?k:$radix)(?k:[$chars]{$places}))?)}
+      . qq {(?:(?k:$expon)(?k:(?k:$sign)(?k:[$chars]+))|))}
+      : qq {(?k:(?i)(?k:$sign)(?k:(?=$radix?[$chars])}
+      . qq {(?k:[$chars]*)(?:(?k:$radix)(?k:[$chars]{$places}))?)}
+      . qq {(?:(?k:$expon)(?k:(?k:$sign)(?k:[$chars]+))|))};
 }
-sub decimal_creator { 
-    my ($base, $places, $radix, $sep, $group, $sign) =
-            @{$_[1]}{-base, -places, -radix, -sep, -group, -sign};
+
+sub decimal_creator {
+    my ( $base, $places, $radix, $sep, $group, $sign ) =
+      @{ $_[1] }{ -base, -places, -radix, -sep, -group, -sign };
     _croak "Base must be between 1 and 36"
-           unless $base >= 1 && $base <= 36;
-    $sep = ',' if exists $_[1]->{-sep}
-               && !defined $_[1]->{-sep};
-    foreach ($radix, $sep) {$_ = "[$_]" if 1 == length}
+      unless $base >= 1 && $base <= 36;
+    $sep = ','
+      if exists $_[1]->{-sep}
+      && !defined $_[1]->{-sep};
+    foreach ( $radix, $sep ) { $_ = "[$_]" if 1 == length }
     my $chars = substr $digits, 0, $base;
     return $sep
-           ? qq {(?k:(?i)(?k:$sign)(?k:(?=$radix?[$chars])}               .
-             qq {(?k:[$chars]{1,$group}(?:(?:$sep)[$chars]{$group})*)}    .
-             qq {(?:(?k:$radix)(?k:[$chars]{$places}))?))}
-           : qq {(?k:(?i)(?k:$sign)(?k:(?=$radix?[$chars])}               .
-             qq {(?k:[$chars]*)(?:(?k:$radix)(?k:[$chars]{$places}))?))}
+      ? qq {(?k:(?i)(?k:$sign)(?k:(?=$radix?[$chars])}
+      . qq {(?k:[$chars]{1,$group}(?:(?:$sep)[$chars]{$group})*)}
+      . qq {(?:(?k:$radix)(?k:[$chars]{$places}))?))}
+      : qq {(?k:(?i)(?k:$sign)(?k:(?=$radix?[$chars])}
+      . qq {(?k:[$chars]*)(?:(?k:$radix)(?k:[$chars]{$places}))?))};
 }
 
+pattern
+  name   => [qw (num int -sep= -base=10 -group=3 -sign=[-+]?)],
+  create => \&int_creator,
+  ;
 
-pattern name   => [qw (num int -sep= -base=10 -group=3 -sign=[-+]?)],
-        create => \&int_creator,
-        ;
+pattern
+  name => [
+    qw (num real -base=10),
+    '-places=0,', qw (-radix=[.] -sep= -group=3 -expon=E -sign=[-+]?)
+  ],
+  create => \&real_creator,
+  ;
 
-pattern name   => [qw (num real -base=10), '-places=0,',
-                   qw (-radix=[.] -sep= -group=3 -expon=E -sign=[-+]?)],
-        create => \&real_creator,
-        ;
-
-pattern name   => [qw (num decimal -base=10), '-places=0,',
-                   qw (-radix=[.] -sep= -group=3 -sign=[-+]?)],
-        create => \&decimal_creator,
-        ;
+pattern
+  name => [
+    qw (num decimal -base=10),
+    '-places=0,',
+    qw (-radix=[.] -sep= -group=3 -sign=[-+]?)
+  ],
+  create => \&decimal_creator,
+  ;
 
 sub real_synonym {
-    my ($name, $base) = @_;
-    pattern name   => ['num', $name, '-places=0,', '-radix=[.]',
-                       '-sep=', '-group=3', '-expon=E', '-sign=[-+]?'],
-            create => sub {my %flags = (%{$_[1]}, -base => $base);
-                           real_creator (undef, \%flags);
-                      }
-            ;
+    my ( $name, $base ) = @_;
+    pattern
+      name => [
+        'num',   $name,      '-places=0,', '-radix=[.]',
+        '-sep=', '-group=3', '-expon=E',   '-sign=[-+]?'
+      ],
+      create => sub {
+        my %flags = ( %{ $_[1] }, -base => $base );
+        real_creator( undef, \%flags );
+      };
 }
 
-
-real_synonym (hex => 16);
-real_synonym (dec => 10);
-real_synonym (oct =>  8);
-real_synonym (bin =>  2);
-
+real_synonym( hex => 16 );
+real_synonym( dec => 10 );
+real_synonym( oct => 8 );
+real_synonym( bin => 2 );
 
 #          2147483647  == 2^31 - 1
 # 9223372036854775807  == 2^63 - 1
-pattern name    => [qw (num square)],
-        create  => sub {
-            use re 'eval';
-            my $sixty_four_bits = $Config {use64bitint};
-            #
-            # CPAN testers claim it fails on 5.8.8 and darwin 9.0.
-            #
-            my $num = $sixty_four_bits
-                    ? '0*(?:(?:9(?:[0-1][0-9]{17}'  .
-                             '|2(?:[0-1][0-9]{16}'  .
-                             '|2(?:[0-2][0-9]{15}'  .
-                             '|3(?:[0-2][0-9]{14}'  .
-                             '|3(?:[0-6][0-9]{13}'  .
-                             '|7(?:[0-1][0-9]{12}'  .
-                             '|20(?:[0-2][0-9]{10}' .
-                             '|3(?:[0-5][0-9]{9}'   .
-                             '|6(?:[0-7][0-9]{8}'   .
-                             '|8(?:[0-4][0-9]{7}'   .
-                             '|5(?:[0-3][0-9]{6}'   .
-                             '|4(?:[0-6][0-9]{5}'   .
-                             '|7(?:[0-6][0-9]{4}'   .
-                             '|7(?:[0-4][0-9]{3}'   .
-                             '|5(?:[0-7][0-9]{2}'   .
-                             '|80(?:[0-6])))))))))))))))))|[1-8]?[0-9]{0,18})'
-                     : '0*(?:2(?:[0-0][0-9]{8}'  .
-                           '|1(?:[0-3][0-9]{7}'  .
-                           '|4(?:[0-6][0-9]{6}'  .
-                           '|7(?:[0-3][0-9]{5}'  .
-                           '|4(?:[0-7][0-9]{4}'  .
-                           '|8(?:[0-2][0-9]{3}'  .
-                           '|3(?:[0-5][0-9]{2}'  .
-                           '|6(?:[0-3][0-9]{1}'  .
-                           '|4[0-7])))))))))|1?[0-9]{1,9}';
-            qr {($num)(?(?{length $^N && sqrt ($^N) == int sqrt ($^N)})|(?!))}
-        },
-        ;
+pattern
+  name   => [qw (num square)],
+  create => sub {
+    use re 'eval';
+    my $sixty_four_bits = $Config{use64bitint};
+    #
+    # CPAN testers claim it fails on 5.8.8 and darwin 9.0.
+    #
+    my $num =
+      $sixty_four_bits
+      ? '0*(?:(?:9(?:[0-1][0-9]{17}'
+      . '|2(?:[0-1][0-9]{16}'
+      . '|2(?:[0-2][0-9]{15}'
+      . '|3(?:[0-2][0-9]{14}'
+      . '|3(?:[0-6][0-9]{13}'
+      . '|7(?:[0-1][0-9]{12}'
+      . '|20(?:[0-2][0-9]{10}'
+      . '|3(?:[0-5][0-9]{9}'
+      . '|6(?:[0-7][0-9]{8}'
+      . '|8(?:[0-4][0-9]{7}'
+      . '|5(?:[0-3][0-9]{6}'
+      . '|4(?:[0-6][0-9]{5}'
+      . '|7(?:[0-6][0-9]{4}'
+      . '|7(?:[0-4][0-9]{3}'
+      . '|5(?:[0-7][0-9]{2}'
+      . '|80(?:[0-6])))))))))))))))))|[1-8]?[0-9]{0,18})'
+      : '0*(?:2(?:[0-0][0-9]{8}'
+      . '|1(?:[0-3][0-9]{7}'
+      . '|4(?:[0-6][0-9]{6}'
+      . '|7(?:[0-3][0-9]{5}'
+      . '|4(?:[0-7][0-9]{4}'
+      . '|8(?:[0-2][0-9]{3}'
+      . '|3(?:[0-5][0-9]{2}'
+      . '|6(?:[0-3][0-9]{1}'
+      . '|4[0-7])))))))))|1?[0-9]{1,9}';
+    qr {($num)(?(?{length $^N && sqrt ($^N) == int sqrt ($^N)})|(?!))};
+  },
+  ;
 
-pattern name    => [qw (num roman)],
-        create  => '(?xi)(?=[MDCLXVI])
+pattern
+  name   => [qw (num roman)],
+  create => '(?xi)(?=[MDCLXVI])
                          (?k:M{0,4}
                             (?:C[DM]|D?C{0,4})?
                             (?:X[LC]|L?X{0,4})?
                             (?:I[VX]|V?I{0,4})?)'
-        ;
+  ;
 
 1;
 
@@ -266,7 +282,7 @@ I<N> is 3.
 If C<-expon=I<P>> is specified, the pattern I<P> is used as the exponential
 marker.  The default value of I<P> is C<qr/[Ee]/>.
 
-If C<-sign=I<P>> is specified, the pattern I<P> is used to match the 
+If C<-sign=I<P>> is specified, the pattern I<P> is used to match the
 leading sign (and the sign of the exponent). This defaults to C<< [-+]? >>,
 means means that an optional plus or minus sign can be used.
 
@@ -417,7 +433,7 @@ the matched number will be returned in C<$1>.
 
 Returns a pattern that matches an integer written in Roman numbers.
 Case doesn't matter. There is no unique way of writing Roman numerals,
-but we will not match anything. We require the Roman numerals to 
+but we will not match anything. We require the Roman numerals to
 list the symbols in order (largest first). The symbols for thousand
 (C<< M >>), hundred (C<< C >>), ten (C<< X >>), and one (C<< I >>)
 can not be repeated more than four times. The symbols for five hundred
@@ -426,10 +442,10 @@ than once. A sequence of four repeated characters may also be written
 as a subtraction: by using the repeated character just once, and have
 it followed by the symbol which is 5 or 10 as large. So, four can be
 written as C<< IIII >>, or as C<< IV >>, and nine may be written as
-C<< VIIII >> or C<< IX >>. This corresponds to most modern uses of 
+C<< VIIII >> or C<< IX >>. This corresponds to most modern uses of
 Roman numerals.
 
-The largest number which will be matched is 4999, or 
+The largest number which will be matched is 4999, or
 C<< MMMMDCCCCLXXXXVIIII >>, or C<< MMMMCMXCIX >>.
 
 Under C<-keep>, the number will be captured in $1.

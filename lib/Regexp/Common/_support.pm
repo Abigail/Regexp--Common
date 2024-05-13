@@ -4,9 +4,9 @@ use 5.10.0;
 
 use strict;
 use warnings;
-no  warnings 'syntax';
+no warnings 'syntax';
 
-our $VERSION = '2017060201';
+# VERSION
 
 #
 # Returns true/false, depending whether the given the argument
@@ -20,23 +20,22 @@ sub luhn {
     my $arg  = shift;
     my $even = 0;
     my $sum  = 0;
-    while (length $arg) {
+    while ( length $arg ) {
         my $num = chop $arg;
         return if $num lt '0' || $num gt '9';
-        if ($even && (($num *= 2) > 9)) {$num = 1 + ($num % 10)}
+        if ( $even && ( ( $num *= 2 ) > 9 ) ) { $num = 1 + ( $num % 10 ) }
         $even = 1 - $even;
         $sum += $num;
     }
-    !($sum % 10)
+    !( $sum % 10 );
 }
 
 sub import {
     my $pack   = shift;
     my $caller = caller;
     no strict 'refs';
-    *{$caller . "::" . $_} = \&{$pack . "::" . $_} for @_;
+    *{ $caller . "::" . $_ } = \&{ $pack . "::" . $_ } for @_;
 }
-
 
 1;
 
@@ -58,7 +57,7 @@ Regexp::Common::support -- Support functions for Regexp::Common.
 =head1 DESCRIPTION
 
 This module contains some subroutines to be used by other C<Regexp::Common>
-modules. It's not intended to be used directly. Subroutines from the 
+modules. It's not intended to be used directly. Subroutines from the
 module may disappear without any notice, or their meaning or interface
 may change without notice.
 

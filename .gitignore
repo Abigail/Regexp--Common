@@ -7,3 +7,5 @@ MYMETA.*
 *.pdf
 *.txt
 *.csv
+.build/
+Regexp-Common-*

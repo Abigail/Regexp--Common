@@ -8,12 +8,10 @@ use Regexp::Common::URI::RFC1808 qw /$pchars $pchar_range/;
 use strict;
 use warnings;
 
-use vars qw /$VERSION/;
-$VERSION = '2017060201';
+# VERSION
 
-
-my $pchars_notab      = "(?:(?:[$pchar_range]+|" . 
-                        "%(?:[1-9a-fA-F][0-9a-fA-F]|0[0-8a-fA-F]))*)";
+my $pchars_notab =
+  "(?:(?:[$pchar_range]+|" . "%(?:[1-9a-fA-F][0-9a-fA-F]|0[0-8a-fA-F]))*)";
 
 my $gopherplus_string = $pchars;
 my $search            = $pchars;
@@ -22,19 +20,23 @@ my $selector          = $pchars;
 my $selector_notab    = $pchars_notab;
 my $gopher_type       = "(?:[0-9+IgT])";
 
-my $scheme     = "gopher";
-my $uri        = "(?k:(?k:$scheme)://(?k:$host)(?::(?k:$port))?" .
-                 "/(?k:(?k:$gopher_type)(?k:$selector)))";
-my $uri_notab  = "(?k:(?k:$scheme)://(?k:$host)(?::(?k:$port))?"              .
-                 "/(?k:(?k:$gopher_type)(?k:$selector_notab)"                 .
-                 "(?:%09(?k:$search_notab)(?:%09(?k:$gopherplus_string))?)?))";
+my $scheme = "gopher";
+my $uri    = "(?k:(?k:$scheme)://(?k:$host)(?::(?k:$port))?"
+  . "/(?k:(?k:$gopher_type)(?k:$selector)))";
+my $uri_notab =
+    "(?k:(?k:$scheme)://(?k:$host)(?::(?k:$port))?"
+  . "/(?k:(?k:$gopher_type)(?k:$selector_notab)"
+  . "(?:%09(?k:$search_notab)(?:%09(?k:$gopherplus_string))?)?))";
 
 register_uri $scheme => $uri;
 
-pattern name    => [qw (URI gopher -notab=)],
-        create  => sub { exists $_ [1] {-notab} &&
-                       !defined $_ [1] {-notab} ? $uri_notab : $uri},
-        ;
+pattern
+  name   => [qw (URI gopher -notab=)],
+  create => sub {
+    exists $_[1]{-notab}
+      && !defined $_[1]{-notab} ? $uri_notab : $uri;
+  },
+  ;
 
 1;
 

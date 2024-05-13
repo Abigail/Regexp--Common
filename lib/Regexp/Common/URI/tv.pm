@@ -1,4 +1,4 @@
-# TV URLs. 
+# TV URLs.
 # Internet draft: draft-zigmond-tv-url-03.txt
 
 package Regexp::Common::URI::tv;
@@ -10,18 +10,17 @@ use Regexp::Common::URI::RFC2396 qw /$hostname/;
 use strict;
 use warnings;
 
-use vars qw /$VERSION/;
-$VERSION = '2017060201';
-
+# VERSION
 
 my $tv_scheme = 'tv';
 my $tv_url    = "(?k:(?k:$tv_scheme):(?k:$hostname)?)";
 
 register_uri $tv_scheme => $tv_url;
 
-pattern name    => [qw (URI tv)],
-        create  => $tv_url,
-        ;
+pattern
+  name   => [qw (URI tv)],
+  create => $tv_url,
+  ;
 
 1;
 

@@ -3,24 +3,23 @@ package Regexp::Common::URI::wais;
 use Regexp::Common               qw /pattern clean no_defaults/;
 use Regexp::Common::URI          qw /register_uri/;
 use Regexp::Common::URI::RFC1738 qw /$host $port
-                                     $search $database $wtype $wpath/;
+  $search $database $wtype $wpath/;
 
 use strict;
 use warnings;
 
-use vars qw /$VERSION/;
-$VERSION = '2017060201';
-
+# VERSION
 
 my $scheme = 'wais';
-my $uri    = "(?k:(?k:$scheme)://(?k:$host)(?::(?k:$port))?/(?k:(?k:$database)" 
-           . "(?k:[?](?k:$search)|/(?k:$wtype)/(?k:$wpath))?))";
+my $uri    = "(?k:(?k:$scheme)://(?k:$host)(?::(?k:$port))?/(?k:(?k:$database)"
+  . "(?k:[?](?k:$search)|/(?k:$wtype)/(?k:$wpath))?))";
 
 register_uri $scheme => $uri;
 
-pattern name    => [qw (URI WAIS)],
-        create  => $uri,
-        ;
+pattern
+  name   => [qw (URI WAIS)],
+  create => $uri,
+  ;
 
 1;
 
@@ -80,7 +79,7 @@ The I<database>.
 
 =item $7
 
-The part following the I<database> if given, including the question mark 
+The part following the I<database> if given, including the question mark
 or slash.
 
 =item $8
