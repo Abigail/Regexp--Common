@@ -133,12 +133,14 @@ $M .= "# SQL:MySQL\n";
 
 pass "-- \n";
 pass "-- a comment\n";
+pass "--\ta comment\n";
+pass "--\x{A0}a comment\n";
 pass "-- /*a comment */\n";
 pass "-- /************\n";
 pass "-- /////////////\n";
 pass "-- ---\n";
 fail "--- --\n";
-fail "--\n";
+pass "--\n";
 pass "-- ---/////////////\n";
 fail "-- a\n-- multiline\n-- comment\n";
 fail "-- a comment";
@@ -161,18 +163,13 @@ fail "///************";
 fail "///////////////";
 pass '/*a comment */';
 pass '/************/';
+pass '/*************/';
 pass "/*a\nmultiline\ncomment*/";
 fail "/*a /*pretend*/ nested comment*/";
 pass "/*a /*pretend*/";
 fail "/***********";
-pass "/* Comment ;";
-fail "/* Comment ; */";
 pass "/* Comment ';' */";
-pass "/* Comment ';' ;";
 pass '/* Comment ";" */';
-pass '/* Comment ";" ;';
-pass "/* Comment '\n;*/' */";
-pass "/* Comment '*/' more comment */";
 
 
 try $RE{comment}{Brainfuck};

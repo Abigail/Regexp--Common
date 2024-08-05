@@ -262,10 +262,18 @@ pattern name    => [qw (comment HTML)],
         create  => q {(?k:(?k:<!)(?k:(?:--(?k:[^-]*(?:-[^-]+)*)--\s*)*)(?k:>))},
         ;
 
-
+# MySQL comments:
+#    -- Till end of line (whitespace must follow --)
+#    #  Till end of line
+#    /* Multiline comment */
+# https://dev.mysql.com/doc/refman/8.4/en/comments.html
+#
+# Note the use of (?u:\s) instead of \s. If Unicode isn't in effect, \s does
+# not quite match the same characters as [\v\h]. See the beginning of the
+# section "Whitespace" section in perlrecharclass manual.
 pattern name    => [qw /comment SQL MySQL/],
-        create  => q {(?k:(?:#|-- )[^\n]*\n|} .
-                   q {/\*(?:(?>[^*;"']+)|"[^"]*"|'[^']*'|\*(?!/))*(?:;|\*/))},
+        create  => q {(?k:(?:#|--(?=(?u:\s)))[^\n]*\n|} .
+                   q {/\*(?:(?>[^*]+)|\*(?!/))*(?:;|\*/))},
         ;
 
 # Anything that isn't <>[]+-.,
