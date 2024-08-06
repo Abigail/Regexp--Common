@@ -19,7 +19,7 @@ my %args  = (
         'Config'                  => 0,
     },
     MIN_PERL_VERSION     =>  5.010,
-    AUTHOR               => 'Abigail <regexp-common@abigail.be>',
+    AUTHOR               => 'Abigail <regexp-common@abigail.freedom.nl>',
     LICENSE              => 'mit',
     META_MERGE           => {
        "meta-spec"       => {version => 2},

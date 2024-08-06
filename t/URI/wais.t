@@ -76,7 +76,7 @@ sub create_parts {
     # Hosts.
     # Host/ports are tested with other URIs as well, we're not using
     # all the combinations here.
-    $good [0] = [qw /www.abigail.be 127.0.0.1 w--w--w3.ABIGAIL.nl/];
+    $good [0] = [qw /www.abigail.freedom.nl 127.0.0.1 w--w--w3.ABIGAIL.nl/];
     $bad  [0] = [qw /www.example..com w+w.example.com 127.0.0.0.1/];
 
     # Ports.

@@ -56,8 +56,8 @@ sub create_parts {
     my (@good, @bad);
 
     # Hosts.
-    $good [0] = ["", qw /www.abigail.be www.PERL.com a.b.c.d.e.f.g.h.i.j.k.x
-                         127.0.0.1 w--w--w.abigail.be w3.abigail.be/];
+    $good [0] = ["", qw /www.abigail.freedom.nl www.PERL.com a.b.c.d.e.f.g.h.i.j.k.x
+                         127.0.0.1 w--w--w.abigail.freedom.nl w3.abigail.freedom.nl/];
     $bad  [0] = [qw /www.example..com w+w.example.com w--.example.com
                      127.0.1 127.0.0.0.1 -w.example.com www.example.1com/];
 

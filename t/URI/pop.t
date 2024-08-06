@@ -73,7 +73,7 @@ sub create_parts {
     $bad  [1] = ["", qw /"password" camel-][/];
 
     # Hosts.
-    $good [2] = [qw /pop3.abigail.be pop3.PERL.com 127.0.0.1/];
+    $good [2] = [qw /pop3.abigail.freedom.nl pop3.PERL.com 127.0.0.1/];
     $bad  [2] = [qw /www.example..com w+w.example.com 127.0.0.0.1
                      w--.example.com -w.example.com www.example.1com/];
 

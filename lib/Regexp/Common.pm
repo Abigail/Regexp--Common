@@ -830,14 +830,14 @@ Damian Conway (damian@conway.org)
 
 =head1 MAINTENANCE
 
-This package is maintained by Abigail S<(I<regexp-common@abigail.be>)>.
+This package is maintained by Abigail S<(I<regexp-common@abigail.freedom.nl>)>.
 
 =head1 BUGS AND IRRITATIONS
 
 Bound to be plenty.
 
 For a start, there are many common regexes missing.
-Send them in to I<regexp-common@abigail.be>.
+Send them in to I<regexp-common@abigail.freedom.nl>.
 
 There are some POD issues when installing this module using a pre-5.6.0 perl;
 some manual pages may not install, or may not install correctly using a perl

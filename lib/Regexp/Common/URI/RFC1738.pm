@@ -137,7 +137,7 @@ Locators (URL)>. December 1994.
 
 =head1 AUTHOR
 
-Abigail S<(I<regexp-common@abigail.be>)>.
+Abigail S<(I<regexp-common@abigail.freedom.nl>)>.
 
 =head1 BUGS AND IRRITATIONS
 

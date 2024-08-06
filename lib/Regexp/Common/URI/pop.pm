@@ -97,7 +97,7 @@ L<Regexp::Common::URI> for other supported URIs.
 
 =head1 AUTHOR
 
-Abigail. (I<regexp-common@abigail.be>).
+Abigail. (I<regexp-common@abigail.freedom.nl>).
 
 =head1 BUGS AND IRRITATIONS
 

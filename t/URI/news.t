@@ -52,8 +52,8 @@ sub create_parts {
 
     my @good_arts  = qw {fnord banzai123 4567 000 (!!make-$$$-fast**)
                          %00%FF%12''' really? ?/?/?/&=:;};
-    my @good_hosts = qw /www.abigail.be www.PERL.com a.b.c.d.e.f.g.h.i.j.k.x
-                         127.0.0.1 w--w--w.abigail.be w3.abigail.be/;
+    my @good_hosts = qw /www.abigail.freedom.nl www.PERL.com a.b.c.d.e.f.g.h.i.j.k.x
+                         127.0.0.1 w--w--w.abigail.freedom.nl w3.abigail.freedom.nl/;
 
     my @bad_arts   = ("", qw /%GG %F %7- %% {} <> ~abigail []/);
     my @bad_hosts  = ("", qw /www.example..com w+w.example.com

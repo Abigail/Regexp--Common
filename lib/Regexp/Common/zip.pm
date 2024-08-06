@@ -3258,16 +3258,16 @@ Find postal codes.
 =head1 AUTHORS
 
 Damian Conway S<(I<damian@conway.org>)> and
-Abigail S<(I<regexp-common@abigail.be>)>.
+Abigail S<(I<regexp-common@abigail.freedom.nl>)>.
 
 =head1 MAINTENANCE
 
-This package is maintained by Abigail S<(I<regexp-common@abigail.be>)>.
+This package is maintained by Abigail S<(I<regexp-common@abigail.freedom.nl>)>.
 
 =head1 BUGS AND IRRITATIONS
 
 Zip codes for most countries are missing.
-Send them in to I<regexp-common@abigail.be>.
+Send them in to I<regexp-common@abigail.freedom.nl>.
 
 =head1 LICENSE and COPYRIGHT
 

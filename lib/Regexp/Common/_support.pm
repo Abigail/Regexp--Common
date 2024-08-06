@@ -76,7 +76,7 @@ L<http://www.webopedia.com/TERM/L/Luhn_formula.html>.
 
 =head1 AUTHOR
 
-Abigail S<(I<regexp-common@abigail.be>)>.
+Abigail S<(I<regexp-common@abigail.freedom.nl>)>.
 
 =head1 BUGS AND IRRITATIONS
 

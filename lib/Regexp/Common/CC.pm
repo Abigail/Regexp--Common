@@ -81,7 +81,7 @@ L<Regexp::Common> for a general description of how to use this interface.
 
 =over 4
 
-=item L<http://www.beachnet.com/~hstiles/cardtype.html>
+=item L<http://www.freedom.nlachnet.com/~hstiles/cardtype.html>
 
 Credit Card Validation - Check Digits 
 
@@ -98,15 +98,15 @@ Luhn formula
 =head1 AUTHORS
 
 Damian Conway S<(I<damian@conway.org>)> and
-Abigail S<(I<regexp-common@abigail.be>)>.
+Abigail S<(I<regexp-common@abigail.freedom.nl>)>.
 
 =head1 MAINTENANCE
 
-This package is maintained by Abigail S<(I<regexp-common@abigail.be>)>.
+This package is maintained by Abigail S<(I<regexp-common@abigail.freedom.nl>)>.
 
 =head1 BUGS AND IRRITATIONS
 
-Bound to be plenty. Send them in to S<I<regexp-common@abigail.be>>.
+Bound to be plenty. Send them in to S<I<regexp-common@abigail.freedom.nl>>.
 
 =head1 LICENSE and COPYRIGHT
 

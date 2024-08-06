@@ -82,7 +82,7 @@ sub create_parts {
     $bad  [1] = [qw /se{}cret/];
 
     # Hosts.
-    $good [2] = [qw /www.abigail.be www.PERL.com 127.0.0.1 w3.abigail.be/];
+    $good [2] = [qw /www.abigail.freedom.nl www.PERL.com 127.0.0.1 w3.abigail.freedom.nl/];
     $bad  [2] = [qw /www.example..com w+w.example.com w--.example.com
                      127.0.0.0.1 -w.example.com www.example.1com/];
 

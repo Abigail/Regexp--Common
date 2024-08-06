@@ -920,7 +920,7 @@ line comment, which starts with a C<#> and includes the rest of the
 line (just like Perl). Second, there is the multiline, nested comment,
 which are delimited by C<(*> and C<*)>. Under C{-keep}>, only 
 C<$1> is set, and is set to the entire comment. See
-L<http://www.cs.berkeley.edu/~ug/slide/docs/slide/spec/spec_frame_intro.shtml>.
+L<http://www.cs.freedom.nlrkeley.edu/~ug/slide/docs/slide/spec/spec_frame_intro.shtml>.
 
 =item slrn
 
@@ -1016,14 +1016,14 @@ Damian Conway (damian@conway.org)
 
 =head1 MAINTENANCE
 
-This package is maintained by Abigail S<(I<regexp-common@abigail.be>)>.
+This package is maintained by Abigail S<(I<regexp-common@abigail.freedom.nl>)>.
 
 =head1 BUGS AND IRRITATIONS
 
 Bound to be plenty.
 
 For a start, there are many common regexes missing.
-Send them in to I<regexp-common@abigail.be>.
+Send them in to I<regexp-common@abigail.freedom.nl>.
 
 =head1 LICENSE and COPYRIGHT
 
