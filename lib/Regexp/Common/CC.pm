@@ -9,7 +9,7 @@ no  warnings 'syntax';
 use Regexp::Common qw /pattern clean no_defaults/;
 use Regexp::Common::_support qw /luhn/;
 
-our $VERSION = '2017060201';
+our $VERSION = '2024080701';
 
 my @cards = (
     # Name           Prefix                    Length           mod 10

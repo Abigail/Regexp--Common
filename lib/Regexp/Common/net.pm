@@ -8,7 +8,7 @@ no  warnings 'syntax';
 
 use Regexp::Common qw /pattern clean no_defaults/;
 
-our $VERSION = '2017060201';
+our $VERSION = '2024080701';
 
 
 my %IPunit = (

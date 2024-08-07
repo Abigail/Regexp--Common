@@ -1,3 +1,6 @@
+Version 2024080701 Wed Aug  7 11:00:44 CEST 2024
++ Update the MySQL comment pattern.
+
 Version 2017060201 Fri Jun  2 23:48:32 CEST 2017
 + Prepare for 5.26: don't rely on '.' being present in @INC when testing.
 
