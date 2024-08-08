@@ -8,7 +8,7 @@ use Regexp::Common::URI::RFC2806 qw /$fax_subscriber
 use strict;
 use warnings;
 
-our $VERSION = '2024080701';
+our $VERSION = '2024080801';
 
 
 my $fax_scheme  = 'fax';

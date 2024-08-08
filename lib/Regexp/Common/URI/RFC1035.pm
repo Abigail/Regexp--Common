@@ -5,7 +5,7 @@ use Regexp::Common qw /pattern clean no_defaults/;
 use strict;
 use warnings;
 
-our $VERSION = '2024080701';
+our $VERSION = '2024080801';
 
 use Exporter ();
 our @ISA = qw /Exporter/;

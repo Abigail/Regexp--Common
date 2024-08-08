@@ -8,7 +8,7 @@ use Regexp::Common::URI::RFC2384 qw /$enc_user $enc_auth_type/;
 use strict;
 use warnings;
 
-our $VERSION = '2024080701';
+our $VERSION = '2024080801';
 
 
 my $scheme = "pop";

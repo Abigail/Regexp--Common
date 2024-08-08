@@ -10,7 +10,7 @@ use Regexp::Common::URI::RFC2396 qw /$hostname/;
 use strict;
 use warnings;
 
-our $VERSION = '2024080701';
+our $VERSION = '2024080801';
 
 
 my $tv_scheme = 'tv';

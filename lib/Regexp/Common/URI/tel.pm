@@ -8,7 +8,7 @@ use Regexp::Common::URI::RFC2806 qw /$telephone_subscriber
 use strict;
 use warnings;
 
-our $VERSION = '2024080701';
+our $VERSION = '2024080801';
 
 
 my $tel_scheme  = 'tel';

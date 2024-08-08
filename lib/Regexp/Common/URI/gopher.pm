@@ -8,7 +8,7 @@ use Regexp::Common::URI::RFC1808 qw /$pchars $pchar_range/;
 use strict;
 use warnings;
 
-our $VERSION = '2024080701';
+our $VERSION = '2024080801';
 
 
 my $pchars_notab      = "(?:(?:[$pchar_range]+|" . 

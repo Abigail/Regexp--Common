@@ -6,7 +6,7 @@ use strict;
 use warnings;
 no  warnings 'syntax';
 
-our $VERSION = '2024080701';
+our $VERSION = '2024080801';
 our %RE;
 our %sub_interface;
 our $AUTOLOAD;

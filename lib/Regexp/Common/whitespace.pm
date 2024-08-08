@@ -8,7 +8,7 @@ no  warnings 'syntax';
 
 use Regexp::Common qw /pattern clean no_defaults/;
 
-our $VERSION = '2024080701';
+our $VERSION = '2024080801';
 
 pattern name   => [qw (ws crop)],
         create => '(?:^\s+|\s+$)',

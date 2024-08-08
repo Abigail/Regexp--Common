@@ -1,4 +1,5 @@
-Version 2024080701 Wed Aug  7 11:00:44 CEST 2024
+Version 2024080801 Thu Aug  8 19:06:47 CEST 2024
++ Eliminate 'use vars'.
 + Update the MySQL comment pattern.
 
 Version 2017060201 Fri Jun  2 23:48:32 CEST 2017

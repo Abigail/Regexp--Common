@@ -7,7 +7,7 @@ use Regexp::Common::URI::RFC1738 qw /$unreserved_range $escape $hostport/;
 use strict;
 use warnings;
 
-our $VERSION = '2024080701';
+our $VERSION = '2024080801';
 
 
 use Exporter ();
