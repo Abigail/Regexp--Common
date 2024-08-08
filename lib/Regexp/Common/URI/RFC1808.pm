@@ -13,13 +13,10 @@ BEGIN {
 use strict;
 use warnings;
 
-use vars qw /$VERSION/;
-$VERSION = '2024080701';
-
-use vars qw /@EXPORT @EXPORT_OK %EXPORT_TAGS @ISA/;
+our $VERSION = '2024080701';
 
 use Exporter ();
-@ISA = qw /Exporter/;
+our @ISA = qw /Exporter/;
 
 
 my %vars;
@@ -37,65 +34,66 @@ BEGIN {
                            $absoluteURL $URL/],
 }
 
-use vars map {@$_} values %vars;
-
-@EXPORT      = qw /$host/;
-@EXPORT_OK   = map {@$_} values %vars;
-%EXPORT_TAGS = (%vars, ALL => [@EXPORT_OK]);
+our @EXPORT      = qw /$host/;
+our @EXPORT_OK   = map {@$_} values %vars;
+our %EXPORT_TAGS = (%vars, ALL => [@EXPORT_OK]);
 
 # RFC 1808, base definitions.
 
 # Lowlevel definitions.
-$punctuation       =  '[<>#%"]';
-$reserved_range    = q [;/?:@&=];
-$reserved          =  "[$reserved_range]";
-$national          =  '[][{}|\\^~`]';
-$extra             =  "[!*'(),]";
-$safe              =  '[-$_.+]';
+our $punctuation       =  '[<>#%"]';
+our $reserved_range    = q [;/?:@&=];
+our $reserved          =  "[$reserved_range]";
+our $national          =  '[][{}|\\^~`]';
+our $extra             =  "[!*'(),]";
+our $safe              =  '[-$_.+]';
 
-$digit             =  '[0-9]';
-$digits            =  '[0-9]+';
-$hialpha           =  '[A-Z]';
-$lowalpha          =  '[a-z]';
-$alpha             =  '[a-zA-Z]';                 # lowalpha | hialpha
-$alphadigit        =  '[a-zA-Z0-9]';              # alpha    | digit
+our $digit             =  '[0-9]';
+our $digits            =  '[0-9]+';
+our $hialpha           =  '[A-Z]';
+our $lowalpha          =  '[a-z]';
+our $alpha             =  '[a-zA-Z]';                 # lowalpha | hialpha
+our $alphadigit        =  '[a-zA-Z0-9]';              # alpha    | digit
 
-$hex               =  '[a-fA-F0-9]';
-$escape            =  "(?:%$hex$hex)";
+our $hex               =  '[a-fA-F0-9]';
+our $escape            =  "(?:%$hex$hex)";
 
-$unreserved_range  = q [-a-zA-Z0-9$_.+!*'(),];  # alphadigit | safe | extra
-$unreserved        =  "[$unreserved_range]";
-$uchar             =  "(?:$unreserved|$escape)";
-$uchars            =  "(?:(?:$unreserved+|$escape)*)";
+our $unreserved_range  = q [-a-zA-Z0-9$_.+!*'(),];  # alphadigit | safe | extra
+our $unreserved        =  "[$unreserved_range]";
+our $uchar             =  "(?:$unreserved|$escape)";
+our $uchars            =  "(?:(?:$unreserved+|$escape)*)";
 
-$pchar_range       = qq [$unreserved_range:\@&=];
-$pchar             =  "(?:[$pchar_range]|$escape)";
-$pchars            =  "(?:(?:[$pchar_range]+|$escape)*)";
+our $pchar_range       = qq [$unreserved_range:\@&=];
+our $pchar             =  "(?:[$pchar_range]|$escape)";
+our $pchars            =  "(?:(?:[$pchar_range]+|$escape)*)";
 
 
 # Parts
-$fragment          =  "(?:(?:[$unreserved_range$reserved_range]+|$escape)*)";
-$query             =  "(?:(?:[$unreserved_range$reserved_range]+|$escape)*)";
+our $fragment          =  "(?:(?:[$unreserved_range$reserved_range]+|" .
+                                 "$escape)*)";
+our $query             =  "(?:(?:[$unreserved_range$reserved_range]+|" .
+                                 "$escape)*)";
 
-$param             =  "(?:(?:[$pchar_range/]+|$escape)*)";
-$params            =  "(?:$param(?:;$param)*)";
+our $param             =  "(?:(?:[$pchar_range/]+|$escape)*)";
+our $params            =  "(?:$param(?:;$param)*)";
 
-$segment           =  "(?:(?:[$pchar_range]+|$escape)*)";
-$fsegment          =  "(?:(?:[$pchar_range]+|$escape)+)";
-$path              =  "(?:$fsegment(?:/$segment)*)";
+our $segment           =  "(?:(?:[$pchar_range]+|$escape)*)";
+our $fsegment          =  "(?:(?:[$pchar_range]+|$escape)+)";
+our $path              =  "(?:$fsegment(?:/$segment)*)";
 
-$net_loc           =  "(?:(?:[$pchar_range;?]+|$escape)*)";
-$scheme            =  "(?:(?:[-a-zA-Z0-9+.]+|$escape)+)";
+our $net_loc           =  "(?:(?:[$pchar_range;?]+|$escape)*)";
+our $scheme            =  "(?:(?:[-a-zA-Z0-9+.]+|$escape)+)";
 
-$rel_path          =  "(?:$path?(?:;$params)?(?:?$query)?)";
-$abs_path          =  "(?:/$rel_path)";
-$net_path          =  "(?://$net_loc$abs_path?)";
+our $rel_path          =  "(?:$path?(?:;$params)?(?:?$query)?)";
+our $abs_path          =  "(?:/$rel_path)";
+our $net_path          =  "(?://$net_loc$abs_path?)";
 
-$relativeURL       =  "(?:$net_path|$abs_path|$rel_path)";
-$generic_RL        =  "(?:$scheme:$relativeURL)";
-$absoluteURL       =  "(?:$generic_RL|" .
-                "(?:$scheme:(?:[$unreserved_range$reserved_range]+|$escape)*))";
-$URL               =  "(?:(?:$absoluteURL|$relativeURL)(?:#$fragment)?)";
+our $relativeURL       =  "(?:$net_path|$abs_path|$rel_path)";
+our $generic_RL        =  "(?:$scheme:$relativeURL)";
+our $absoluteURL       =  "(?:$generic_RL|" .
+                          "(?:$scheme:(?:[$unreserved_range$reserved_range]+|" .
+                                         "$escape)*))";
+our $URL               =  "(?:(?:$absoluteURL|$relativeURL)(?:#$fragment)?)";
 
 
 1;

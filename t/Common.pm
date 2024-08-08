@@ -2,18 +2,19 @@ package t::Common;
 
 use strict;
 use lib  qw {blib/lib}, ".";
-use vars qw /@ISA @EXPORT @EXPORT_OK $DEBUG/;
 
 use Regexp::Common;
 use Exporter ();
 
 use warnings;
 
-@ISA       = qw /Exporter/;
-@EXPORT    = qw /run_tests run_new_tests NORMAL_PASS NORMAL_FAIL FAIL $DEBUG/;
-@EXPORT_OK = qw /cross criss_cross pass fail
-                 d pd dd pdd l ll L LL a aa w ww _x xx X XX h hh
-                 gimme sample/;
+our $DEBUG;
+our @ISA       = qw /Exporter/;
+our @EXPORT    = qw /run_tests run_new_tests NORMAL_PASS NORMAL_FAIL
+                                             FAIL $DEBUG/;
+our @EXPORT_OK = qw /cross criss_cross pass fail
+                     d pd dd pdd l ll L LL a aa w ww _x xx X XX h hh
+                     gimme sample/;
 
 my @STATES = qw /pass fail/;
 

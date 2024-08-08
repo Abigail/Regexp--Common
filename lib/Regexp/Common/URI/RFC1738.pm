@@ -5,14 +5,10 @@ use Regexp::Common qw /pattern clean no_defaults/;
 use strict;
 use warnings;
 
-use vars qw /$VERSION/;
-$VERSION = '2024080701';
-
-use vars qw /@EXPORT @EXPORT_OK %EXPORT_TAGS @ISA/;
+our $VERSION = '2024080701';
 
 use Exporter ();
-@ISA = qw /Exporter/;
-
+our @ISA = qw /Exporter/;
 
 my %vars;
 
@@ -30,74 +26,73 @@ BEGIN {
                            $fieldname $fieldvalue $fieldspec $ppath/];
 }
 
-use vars map {@$_} values %vars;
 
-@EXPORT      = qw /$host/;
-@EXPORT_OK   = map {@$_} values %vars;
-%EXPORT_TAGS = (%vars, ALL => [@EXPORT_OK]);
+our @EXPORT      = qw /$host/;
+our @EXPORT_OK   = map {@$_} values %vars;
+our %EXPORT_TAGS = (%vars, ALL => [@EXPORT_OK]);
 
 # RFC 1738, base definitions.
 
 # Lowlevel definitions.
-$digit             =  '[0-9]';
-$digits            =  '[0-9]+';
-$hialpha           =  '[A-Z]';
-$lowalpha          =  '[a-z]';
-$alpha             =  '[a-zA-Z]';                 # lowalpha | hialpha
-$alphadigit        =  '[a-zA-Z0-9]';              # alpha    | digit
-$safe              =  '[-$_.+]';
-$extra             =  "[!*'(),]";
-$national          =  '[][{}|\\^~`]';
-$punctuation       =  '[<>#%"]';
-$unreserved_range  = q [-a-zA-Z0-9$_.+!*'(),];  # alphadigit | safe | extra
-$unreserved        =  "[$unreserved_range]";
-$reserved          =  '[;/?:@&=]';
-$hex               =  '[a-fA-F0-9]';
-$escape            =  "(?:%$hex$hex)";
-$uchar             =  "(?:$unreserved|$escape)";
-$uchars            =  "(?:(?:$unreserved|$escape)*)";
-$xchar             =  "(?:[$unreserved_range;/?:\@&=]|$escape)";
-$xchars            =  "(?:(?:[$unreserved_range;/?:\@&=]|$escape)*)";
+our $digit             =  '[0-9]';
+our $digits            =  '[0-9]+';
+our $hialpha           =  '[A-Z]';
+our $lowalpha          =  '[a-z]';
+our $alpha             =  '[a-zA-Z]';                 # lowalpha | hialpha
+our $alphadigit        =  '[a-zA-Z0-9]';              # alpha    | digit
+our $safe              =  '[-$_.+]';
+our $extra             =  "[!*'(),]";
+our $national          =  '[][{}|\\^~`]';
+our $punctuation       =  '[<>#%"]';
+our $unreserved_range  = q [-a-zA-Z0-9$_.+!*'(),];  # alphadigit | safe | extra
+our $unreserved        =  "[$unreserved_range]";
+our $reserved          =  '[;/?:@&=]';
+our $hex               =  '[a-fA-F0-9]';
+our $escape            =  "(?:%$hex$hex)";
+our $uchar             =  "(?:$unreserved|$escape)";
+our $uchars            =  "(?:(?:$unreserved|$escape)*)";
+our $xchar             =  "(?:[$unreserved_range;/?:\@&=]|$escape)";
+our $xchars            =  "(?:(?:[$unreserved_range;/?:\@&=]|$escape)*)";
 
 # Connection related stuff.
-$port              =  "(?:$digits)";
-$hostnumber        =  "(?:$digits\[.]$digits\[.]$digits\[.]$digits)";
-$toplabel          =  "(?:$alpha\[-a-zA-Z0-9]*$alphadigit|$alpha)";
-$domainlabel       =  "(?:(?:$alphadigit\[-a-zA-Z0-9]*)?$alphadigit)";
-$hostname          =  "(?:(?:$domainlabel\[.])*$toplabel)";
-$host              =  "(?:$hostname|$hostnumber)";
-$hostport          =  "(?:$host(?::$port)?)";
+our $port              =  "(?:$digits)";
+our $hostnumber        =  "(?:$digits\[.]$digits\[.]$digits\[.]$digits)";
+our $toplabel          =  "(?:$alpha\[-a-zA-Z0-9]*$alphadigit|$alpha)";
+our $domainlabel       =  "(?:(?:$alphadigit\[-a-zA-Z0-9]*)?$alphadigit)";
+our $hostname          =  "(?:(?:$domainlabel\[.])*$toplabel)";
+our $host              =  "(?:$hostname|$hostnumber)";
+our $hostport          =  "(?:$host(?::$port)?)";
 
-$user              =  "(?:(?:[$unreserved_range;?&=]|$escape)*)";
-$password          =  "(?:(?:[$unreserved_range;?&=]|$escape)*)";
-$login             =  "(?:(?:$user(?::$password)?\@)?$hostport)";
+our $user              =  "(?:(?:[$unreserved_range;?&=]|$escape)*)";
+our $password          =  "(?:(?:[$unreserved_range;?&=]|$escape)*)";
+our $login             =  "(?:(?:$user(?::$password)?\@)?$hostport)";
 
 # Parts (might require more if we add more URIs).
 
 # FTP/file
-$fsegment          =  "(?:(?:[$unreserved_range:\@&=]|$escape)*)";
-$fpath             =  "(?:$fsegment(?:/$fsegment)*)";
+our $fsegment          =  "(?:(?:[$unreserved_range:\@&=]|$escape)*)";
+our $fpath             =  "(?:$fsegment(?:/$fsegment)*)";
 
 # NNTP/news.
-$group             =  "(?:$alpha\[-A-Za-z0-9.+_]*)";
-$article           =  "(?:(?:[$unreserved_range;/?:&=]|$escape)+" .
-                      '@' . "$host)";
-$grouppart         =  "(?:[*]|$article|$group)"; # It's important that
-                                                 # $article goes before
-                                                 # $group.
+our $group             =  "(?:$alpha\[-A-Za-z0-9.+_]*)";
+our $article           =  "(?:(?:[$unreserved_range;/?:&=]|$escape)+" .
+                          '@' . "$host)";
+our $grouppart         =  "(?:[*]|$article|$group)"; # It's important that
+                                                     # $article goes before
+                                                     # $group.
 
 # WAIS.
-$search            =  "(?:(?:[$unreserved_range;:\@&=]|$escape)*)";
-$database          =  $uchars;
-$wtype             =  $uchars;
-$wpath             =  $uchars;
+our $search            =  "(?:(?:[$unreserved_range;:\@&=]|$escape)*)";
+our $database          =  $uchars;
+our $wtype             =  $uchars;
+our $wpath             =  $uchars;
 
 # prospero
-$psegment          =  "(?:(?:[$unreserved_range?:\@&=]|$escape)*)";
-$fieldname         =  "(?:(?:[$unreserved_range?:\@&]|$escape)*)";
-$fieldvalue        =  "(?:(?:[$unreserved_range?:\@&]|$escape)*)";
-$fieldspec         =  "(?:;$fieldname=$fieldvalue)";
-$ppath             =  "(?:$psegment(?:/$psegment)*)";
+our $psegment          =  "(?:(?:[$unreserved_range?:\@&=]|$escape)*)";
+our $fieldname         =  "(?:(?:[$unreserved_range?:\@&]|$escape)*)";
+our $fieldvalue        =  "(?:(?:[$unreserved_range?:\@&]|$escape)*)";
+our $fieldspec         =  "(?:;$fieldname=$fieldvalue)";
+our $ppath             =  "(?:$psegment(?:/$psegment)*)";
 
 #
 # The various '(?:(?:[$unreserved_range ...]|$escape)*)' above need

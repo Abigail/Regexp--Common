@@ -8,8 +8,7 @@ use Regexp::Common::URI::RFC1738 qw /$grouppart $group $article
 use strict;
 use warnings;
 
-use vars qw /$VERSION/;
-$VERSION = '2024080701';
+our $VERSION = '2024080701';
 
 
 my $news_scheme = 'news';

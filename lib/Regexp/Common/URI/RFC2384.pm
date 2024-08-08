@@ -7,13 +7,11 @@ use Regexp::Common::URI::RFC1738 qw /$unreserved_range $escape $hostport/;
 use strict;
 use warnings;
 
-use vars qw /$VERSION/;
-$VERSION = '2024080701';
+our $VERSION = '2024080701';
 
-use vars qw /@EXPORT @EXPORT_OK %EXPORT_TAGS @ISA/;
 
 use Exporter ();
-@ISA = qw /Exporter/;
+our @ISA = qw /Exporter/;
 
 
 my %vars;
@@ -25,27 +23,25 @@ BEGIN {
     $vars {parts}   = [qw /$pop_url/];
 }
 
-use vars map {@$_} values %vars;
-
-@EXPORT      = qw /$host/;
-@EXPORT_OK   = map {@$_} values %vars;
-%EXPORT_TAGS = (%vars, ALL => [@EXPORT_OK]);
+our @EXPORT      = qw /$host/;
+our @EXPORT_OK   = map {@$_} values %vars;
+our %EXPORT_TAGS = (%vars, ALL => [@EXPORT_OK]);
 
 # RFC 2384, POP3.
 
 # Lowlevel definitions.
-$achar_range       =  "$unreserved_range&=~";
-$achar             =  "(?:[$achar_range]|$escape)";
-$achars            =  "(?:(?:[$achar_range]+|$escape)*)";
-$achar_more        =  "(?:(?:[$achar_range]+|$escape)+)";
-$enc_sasl          =  $achar_more;
-$enc_user          =  $achar_more;
-$enc_ext           =  "(?:[+](?:APOP|$achar_more))";
-$enc_auth_type     =  "(?:$enc_sasl|$enc_ext)";
-$auth              =  "(?:;AUTH=(?:[*]|$enc_auth_type))";
-$user_auth         =  "(?:$enc_user$auth?)";
-$server            =  "(?:(?:$user_auth\@)?$hostport)";
-$pop_url           =  "(?:pop://$server)";
+our $achar_range       =  "$unreserved_range&=~";
+our $achar             =  "(?:[$achar_range]|$escape)";
+our $achars            =  "(?:(?:[$achar_range]+|$escape)*)";
+our $achar_more        =  "(?:(?:[$achar_range]+|$escape)+)";
+our $enc_sasl          =  $achar_more;
+our $enc_user          =  $achar_more;
+our $enc_ext           =  "(?:[+](?:APOP|$achar_more))";
+our $enc_auth_type     =  "(?:$enc_sasl|$enc_ext)";
+our $auth              =  "(?:;AUTH=(?:[*]|$enc_auth_type))";
+our $user_auth         =  "(?:$enc_user$auth?)";
+our $server            =  "(?:(?:$user_auth\@)?$hostport)";
+our $pop_url           =  "(?:pop://$server)";
 
 
 1;

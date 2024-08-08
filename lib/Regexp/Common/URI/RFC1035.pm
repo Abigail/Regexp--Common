@@ -5,13 +5,10 @@ use Regexp::Common qw /pattern clean no_defaults/;
 use strict;
 use warnings;
 
-use vars qw /$VERSION/;
-$VERSION = '2024080701';
-
-use vars qw /@EXPORT @EXPORT_OK %EXPORT_TAGS @ISA/;
+our $VERSION = '2024080701';
 
 use Exporter ();
-@ISA = qw /Exporter/;
+our @ISA = qw /Exporter/;
 
 my %vars;
 
@@ -21,21 +18,19 @@ BEGIN {
     $vars {domain}  = [qw /$domain/];
 }
 
-use vars map {@$_} values %vars;
-
-@EXPORT      = qw /$host/;
-@EXPORT_OK   = map {@$_} values %vars;
-%EXPORT_TAGS = (%vars, ALL => [@EXPORT_OK]);
+our @EXPORT      = qw /$host/;
+our @EXPORT_OK   = map {@$_} values %vars;
+our %EXPORT_TAGS = (%vars, ALL => [@EXPORT_OK]);
 
 # RFC 1035.
-$digit             = "[0-9]";
-$letter            = "[A-Za-z]";
-$let_dig           = "[A-Za-z0-9]";
-$let_dig_hyp       = "[-A-Za-z0-9]";
-$ldh_str           = "(?:[-A-Za-z0-9]+)";
-$label             = "(?:$letter(?:(?:$ldh_str){0,61}$let_dig)?)";
-$subdomain         = "(?:$label(?:[.]$label)*)";
-$domain            = "(?: |(?:$subdomain))";
+our $digit             = "[0-9]";
+our $letter            = "[A-Za-z]";
+our $let_dig           = "[A-Za-z0-9]";
+our $let_dig_hyp       = "[-A-Za-z0-9]";
+our $ldh_str           = "(?:[-A-Za-z0-9]+)";
+our $label             = "(?:$letter(?:(?:$ldh_str){0,61}$let_dig)?)";
+our $subdomain         = "(?:$label(?:[.]$label)*)";
+our $domain            = "(?: |(?:$subdomain))";
 
 
 1;

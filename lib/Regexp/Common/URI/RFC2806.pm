@@ -6,13 +6,11 @@ use Regexp::Common::URI::RFC2396 qw /$unreserved $escaped $hex/;
 use strict;
 use warnings;
 
-use vars qw /$VERSION/;
-$VERSION = '2024080701';
+our $VERSION = '2024080701';
 
-use vars qw /@EXPORT @EXPORT_OK %EXPORT_TAGS @ISA/;
 
 use Exporter ();
-@ISA = qw /Exporter/;
+our @ISA = qw /Exporter/;
 
 
 my %vars;
@@ -39,102 +37,101 @@ BEGIN {
     $vars {modem}   = [qw //];
 }
 
-use vars map {@$_} values %vars;
 
-@EXPORT      = ();
-@EXPORT_OK   = map {@$_} values %vars;
-%EXPORT_TAGS = (%vars, ALL => [@EXPORT_OK]);
+our @EXPORT      = ();
+our @EXPORT_OK   = map {@$_} values %vars;
+our %EXPORT_TAGS = (%vars, ALL => [@EXPORT_OK]);
 
 
 # RFC 2806, URIs for tel, fax & modem.
-$dtmf_digit        =  "(?:[*#ABCD])";
-$wait_for_dial_tone=  "(?:w)";
-$one_second_pause  =  "(?:p)";
-$pause_character   =  "(?:[wp])";   # wait_for_dial_tone | one_second_pause.
-$visual_separator  =  "(?:[\\-.()])";
-$phonedigit        =  "(?:[0-9\\-.()])";  # DIGIT | visual_separator
-$escaped_no_dquote =  "(?:%(?:[01]$hex)|2[013-9A-Fa-f]|[3-9A-Fa-f]$hex)";
-$quoted_string     =  "(?:%22(?:(?:%5C(?:$unreserved|$escaped))|" .
-                              "$unreserved+|$escaped_no_dquote)*%22)";
-                      # It is unclear wether we can allow only unreserved
-                      # characters to unescaped, or can we also use uric
-                      # characters that are unescaped? Or pchars?
-$token_char        =  "(?:[!'*\\-.0-9A-Z_a-z~]|" .
+our $dtmf_digit        =  "(?:[*#ABCD])";
+our $wait_for_dial_tone=  "(?:w)";
+our $one_second_pause  =  "(?:p)";
+our $pause_character   =  "(?:[wp])";   # wait_for_dial_tone | one_second_pause.
+our $visual_separator  =  "(?:[\\-.()])";
+our $phonedigit        =  "(?:[0-9\\-.()])";  # DIGIT | visual_separator
+our $escaped_no_dquote =  "(?:%(?:[01]$hex)|2[013-9A-Fa-f]|[3-9A-Fa-f]$hex)";
+our $quoted_string     =  "(?:%22(?:(?:%5C(?:$unreserved|$escaped))|" .
+                                  "$unreserved+|$escaped_no_dquote)*%22)";
+                          # It is unclear wether we can allow only unreserved
+                          # characters to unescaped, or can we also use uric
+                          # characters that are unescaped? Or pchars?
+our $token_char        =  "(?:[!'*\\-.0-9A-Z_a-z~]|" .
                           "%(?:2[13-7ABDEabde]|3[0-9]|4[1-9A-Fa-f]|" .
                               "5[AEFaef]|6[0-9A-Fa-f]|7[0-9ACEace]))";
-                      # Only allowing unreserved chars to be unescaped.
-$token_chars       =  "(?:(?:[!'*\\-.0-9A-Z_a-z~]+|"                   .
-                            "%(?:2[13-7ABDEabde]|3[0-9]|4[1-9A-Fa-f]|" .
-                                "5[AEFaef]|6[0-9A-Fa-f]|7[0-9ACEace]))*)";
-$future_extension  =  "(?:;$token_chars"                       .
-                      "(?:=(?:(?:$token_chars(?:[?]$token_chars)?)|" .
-                      "$quoted_string))?)";
-$provider_hostname =   $domain;
-$provider_tag      =  "(?:tsp)";
-$service_provider  =  "(?:;$provider_tag=$provider_hostname)";
-$private_prefix    =  "(?:(?:[!'E-OQ-VX-Z_e-oq-vx-z~]|"                   .
-                         "(?:%(?:2[124-7CFcf]|3[AC-Fac-f]|4[05-9A-Fa-f]|" .
-                                "5[1-689A-Fa-f]|6[05-9A-Fa-f]|"           .
-                                "7[1-689A-Ea-e])))"                       .
-                         "(?:[!'()*\\-.0-9A-Z_a-z~]+|"                    .
-                         "(?:%(?:2[1-9A-Fa-f]|3[AC-Fac-f]|"               .
-                            "[4-6][0-9A-Fa-f]|7[0-9A-Ea-e])))*)";
-$local_network_prefix
-                   =  "(?:[0-9\\-.()*#ABCDwp]+)";
-$global_network_prefix
-                   =  "(?:[+][0-9\\-.()]+)";
-$network_prefix    =  "(?:$global_network_prefix|$local_network_prefix)";
-$phone_context_ident
-                   =  "(?:$network_prefix|$private_prefix)";
-$phone_context_tag =  "(?:phone-context)";
-$area_specifier    =  "(?:;$phone_context_tag=$phone_context_ident)";
-$post_dial         =  "(?:;postd=[0-9\\-.()*#ABCDwp]+)";
-$isdn_subaddress   =  "(?:;isub=[0-9\\-.()]+)";
-$t33_subaddress    =  "(?:;tsub=[0-9\\-.()]+)";
+                          # Only allowing unreserved chars to be unescaped.
+our $token_chars       =  "(?:(?:[!'*\\-.0-9A-Z_a-z~]+|"                   .
+                                "%(?:2[13-7ABDEabde]|3[0-9]|4[1-9A-Fa-f]|" .
+                                    "5[AEFaef]|6[0-9A-Fa-f]|7[0-9ACEace]))*)";
+our $future_extension  =  "(?:;$token_chars"                       .
+                          "(?:=(?:(?:$token_chars(?:[?]$token_chars)?)|" .
+                          "$quoted_string))?)";
+our $provider_hostname =   $domain;
+our $provider_tag      =  "(?:tsp)";
+our $service_provider  =  "(?:;$provider_tag=$provider_hostname)";
+our $private_prefix    =  "(?:(?:[!'E-OQ-VX-Z_e-oq-vx-z~]|"                   .
+                             "(?:%(?:2[124-7CFcf]|3[AC-Fac-f]|4[05-9A-Fa-f]|" .
+                                    "5[1-689A-Fa-f]|6[05-9A-Fa-f]|"           .
+                                    "7[1-689A-Ea-e])))"                       .
+                             "(?:[!'()*\\-.0-9A-Z_a-z~]+|"                    .
+                             "(?:%(?:2[1-9A-Fa-f]|3[AC-Fac-f]|"               .
+                                "[4-6][0-9A-Fa-f]|7[0-9A-Ea-e])))*)";
+our $local_network_prefix
+                       =  "(?:[0-9\\-.()*#ABCDwp]+)";
+our $global_network_prefix
+                       =  "(?:[+][0-9\\-.()]+)";
+our $network_prefix    =  "(?:$global_network_prefix|$local_network_prefix)";
+our $phone_context_ident
+                       =  "(?:$network_prefix|$private_prefix)";
+our $phone_context_tag =  "(?:phone-context)";
+our $area_specifier    =  "(?:;$phone_context_tag=$phone_context_ident)";
+our $post_dial         =  "(?:;postd=[0-9\\-.()*#ABCDwp]+)";
+our $isdn_subaddress   =  "(?:;isub=[0-9\\-.()]+)";
+our $t33_subaddress    =  "(?:;tsub=[0-9\\-.()]+)";
 
-$local_phone_number=  "(?:[0-9\\-.()*#ABCDwp]+$isdn_subaddress?"      .
-                         "$post_dial?$area_specifier"                 .
-                         "(?:$area_specifier|$service_provider|"      .
-                            "$future_extension)*)";
-$local_phone_number_no_future
-                   =  "(?:[0-9\\-.()*#ABCDwp]+$isdn_subaddress?"      .
-                         "$post_dial?$area_specifier"                 .
-                         "(?:$area_specifier|$service_provider)*)";
-$fax_local_phone   =  "(?:[0-9\\-.()*#ABCDwp]+$isdn_subaddress?"      .
-                         "$t33_subaddress?$post_dial?$area_specifier" .
-                         "(?:$area_specifier|$service_provider|"      .
-                            "$future_extension)*)";
-$fax_local_phone_no_future
-                   =  "(?:[0-9\\-.()*#ABCDwp]+$isdn_subaddress?"      .
-                         "$t33_subaddress?$post_dial?$area_specifier" .
-                         "(?:$area_specifier|$service_provider)*)";
-$base_phone_number =  "(?:[0-9\\-.()]+)";
-$global_phone_number
-                   =  "(?:[+]$base_phone_number$isdn_subaddress?"     .
-                                              "$post_dial?"           .
-                         "(?:$area_specifier|$service_provider|"      .
-                            "$future_extension)*)";
-$global_phone_number_no_future
-                   =  "(?:[+]$base_phone_number$isdn_subaddress?"     .
-                                              "$post_dial?"           .
-                         "(?:$area_specifier|$service_provider)*)";
-$fax_global_phone  =  "(?:[+]$base_phone_number$isdn_subaddress?"     .
-                              "$t33_subaddress?$post_dial?"           .
-                         "(?:$area_specifier|$service_provider|"      .
-                            "$future_extension)*)";
-$fax_global_phone_no_future
-                   =  "(?:[+]$base_phone_number$isdn_subaddress?"     .
-                              "$t33_subaddress?$post_dial?"           .
-                         "(?:$area_specifier|$service_provider)*)";
-$telephone_subscriber
-                   =  "(?:$global_phone_number|$local_phone_number)";
-$telephone_subscriber_no_future
-                   =  "(?:$global_phone_number_no_future|" .
-                         "$local_phone_number_no_future)";
-$fax_subscriber    =  "(?:$fax_global_phone|$fax_local_phone)";
-$fax_subscriber_no_future
-                   =  "(?:$fax_global_phone_no_future|"    .
-                         "$fax_local_phone_no_future)";
+our $local_phone_number=  "(?:[0-9\\-.()*#ABCDwp]+$isdn_subaddress?"      .
+                             "$post_dial?$area_specifier"                 .
+                             "(?:$area_specifier|$service_provider|"      .
+                                "$future_extension)*)";
+our $local_phone_number_no_future
+                       =  "(?:[0-9\\-.()*#ABCDwp]+$isdn_subaddress?"      .
+                             "$post_dial?$area_specifier"                 .
+                             "(?:$area_specifier|$service_provider)*)";
+our $fax_local_phone   =  "(?:[0-9\\-.()*#ABCDwp]+$isdn_subaddress?"      .
+                             "$t33_subaddress?$post_dial?$area_specifier" .
+                             "(?:$area_specifier|$service_provider|"      .
+                                "$future_extension)*)";
+our $fax_local_phone_no_future
+                       =  "(?:[0-9\\-.()*#ABCDwp]+$isdn_subaddress?"      .
+                             "$t33_subaddress?$post_dial?$area_specifier" .
+                             "(?:$area_specifier|$service_provider)*)";
+our $base_phone_number =  "(?:[0-9\\-.()]+)";
+our $global_phone_number
+                       =  "(?:[+]$base_phone_number$isdn_subaddress?"     .
+                                                  "$post_dial?"           .
+                             "(?:$area_specifier|$service_provider|"      .
+                                "$future_extension)*)";
+our $global_phone_number_no_future
+                       =  "(?:[+]$base_phone_number$isdn_subaddress?"     .
+                                                  "$post_dial?"           .
+                             "(?:$area_specifier|$service_provider)*)";
+our $fax_global_phone  =  "(?:[+]$base_phone_number$isdn_subaddress?"     .
+                                  "$t33_subaddress?$post_dial?"           .
+                             "(?:$area_specifier|$service_provider|"      .
+                                "$future_extension)*)";
+our $fax_global_phone_no_future
+                       =  "(?:[+]$base_phone_number$isdn_subaddress?"     .
+                                  "$t33_subaddress?$post_dial?"           .
+                             "(?:$area_specifier|$service_provider)*)";
+our $telephone_subscriber
+                       =  "(?:$global_phone_number|$local_phone_number)";
+our $telephone_subscriber_no_future
+                       =  "(?:$global_phone_number_no_future|" .
+                             "$local_phone_number_no_future)";
+our $fax_subscriber    =  "(?:$fax_global_phone|$fax_local_phone)";
+our $fax_subscriber_no_future
+                       =  "(?:$fax_global_phone_no_future|"    .
+                             "$fax_local_phone_no_future)";
 
 1;
 

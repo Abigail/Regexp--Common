@@ -8,8 +8,7 @@ use Regexp::Common::URI::RFC1738 qw /$host $port $ppath $fieldname $fieldvalue
 use strict;
 use warnings;
 
-use vars qw /$VERSION/;
-$VERSION = '2024080701';
+our $VERSION = '2024080701';
 
 
 my $scheme = 'prospero';
