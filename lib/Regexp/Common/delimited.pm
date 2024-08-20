@@ -38,7 +38,7 @@ sub gen_delimited {
         }
         elsif (length $esc) {
             push @pat =>
-                "(?k:$del)(?k:[^$esc$cdel]*(?:$esc.[^$esc$cdel]*)*)(?k:$cdel)";
+                "(?k:$del)(?k:[^$esc$cdel]*(?s:$esc.[^$esc$cdel]*)*)(?k:$cdel)";
         }
         else {
             push @pat => "(?k:$del)(?k:[^$cdel]*)(?k:$cdel)";
