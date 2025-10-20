@@ -72,6 +72,24 @@ sub create_parts {
     $bad  [0] = ["", qw /www.example..com w+w.example.com w--.example.com
                          127.0.1 127.0.0.0.1 -w.example.com www.example.1com/];
 
+    # RFC3986 hosts: IPv6 literals & IPvFuture
+    push @{ $good[0] }, (
+        '[2001:db8::1]',
+        '[::1]',
+        '[v7.fe80]',          # IPvFuture: v 1*HEXDIG "." 1*(unreserved / sub-delims / ":")
+        '[vF.a-b~]',          # unreserved + sub-delims in tail are allowed
+    );
+
+    push @{ $bad[0] }, (
+        '2001:db8::1',        # IPv6 must be bracketed
+        '[2001:db8::1',       # missing closing bracket
+        '[]',                 # empty IP-literal
+        '[vZ.abc]',           # 'Z' is not HEXDIG in the version
+        '[v1.]',              # empty tail is not allowed
+        '256.0.0.1',          # invalid IPv4 dec-octet
+        'exa mple.com',       # space not allowed in reg-name
+    );
+
     # Ports.
     $good [1] = [undef, "", 80];
     $bad  [1] = [qw /-19 : port/];

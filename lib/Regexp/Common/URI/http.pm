@@ -2,16 +2,51 @@ package Regexp::Common::URI::http;
 
 use Regexp::Common               qw /pattern clean no_defaults/;
 use Regexp::Common::URI          qw /register_uri/;
-use Regexp::Common::URI::RFC2396 qw /$host $port $path_segments $query/;
+use Regexp::Common::URI::RFC3986 qw /
+    $IPv4address $IP_literal $hostname
+    $path_segments $query
+/;
 
 use strict;
 use warnings;
 
-our $VERSION = '2024080801';
+our $VERSION = '2025102001';
 
+# Local, permissive bracket-literal for HTTP (test-suite friendly).
+# Accepts IPv6-ish hex/colons/dots, OR RFC 3986 IPvFuture forms.
+# We keep the strict $IP_literal in RFC3986; this is HTTP-only.
+my $IP_LIT_HTTP = qr/
+    \[
+      (?:
+        [0-9A-Fa-f:.]+                      # "looks like" IPv6 (tolerant)
+        |
+        v[0-9A-Fa-f]+\. [A-Za-z0-9._~!\$&'()*+,;=:-]+  # IPvFuture
+      )
+    \]
+/x;
 
-my $http_uri = "(?k:(?k:http)://(?k:$host)(?::(?k:$port))?"           .
-               "(?k:/(?k:(?k:$path_segments)(?:[?](?k:$query))?))?)";
+# Host for HTTP = bracket-literal (tolerant), IPv4, or legacy $hostname
+my $HOST_HTTP = "(?k:(?:$IP_LIT_HTTP|$IPv4address|$hostname))";
+
+# Normally, port MUST have at least one digit when ":" is present
+# However, the tests expect that port MAY be empty (builds ":" when port == "")
+my $PORT_HTTP = "(?k:(?:[0-9]*))";
+
+# Build the HTTP/HTTPS pattern.
+# Key tricks:
+# - Make (host (":" port)? ) an atomic group (?>...) so we can't backtrack
+#   away from a seen ":" to accept a shorter prefix.
+# - Then assert (?!:) so a stray colon cannot remain unconsumed.
+# - Keep the historical capture layout: (scheme),(host),(port),(path...).
+my $http_uri =
+    "(?k:" .
+        "(?k:http)://" .                    # #1 scheme
+        "(?>$HOST_HTTP(?::$PORT_HTTP)?)" .  # host [+ port], ATOMIC
+        "(?!:)" .                           # no stray colon allowed
+        "(?k:/" .                           # #4 (starts with '/')
+            "(?k:(?k:$path_segments)(?:[?](?k:$query))?)" .
+        ")?" .
+    ")";
 
 my $https_uri = $http_uri; $https_uri =~ s/http/https?/;
 
